@@ -1,0 +1,223 @@
+
+
+interesting: Just put a quick note explaining.
+  5: data nerds will stop in the street and swoon when they find out they can infochimp this for free.
+  1: Most people will never find a need for this.  The very few who do will be stoked you helped put it here.
+
+  A '1' dataset is still interesting and worthwhile - those who need such a dataset will find it very exciting.  By 'interest' we mean to characterize the breadth of people who would dig on this.
+  
+authoritative: '''Authoritative''' refers to the people and agencies that prepared the data sources.
+  5: Researcher and leading expert, from a noteable institution, publishing peer reviewed data, with clearly-cited sources.
+  1: Wikipedia articles that have not passed their review processes.
+  
+accurate: |
+	  How well you can expect this data to quantify the real world phenomena it describes.
+
+	  This should indicate is a general estimate of that conformity that accounts for both the [http://en.wikipedia.org/wiki/Accuracy accuracy and precision] of the data -- skip the semantics and highlight the ways the data might miss its target.
+	  
+	  A dataset can be highly accurate but only moderately authoritative: a collection of data from wikipedia or other crowdsourced knowledge, but that has been widely tested and found to be of high quality.
+
+	  Conversely, an authoritative dataset can have poor precision.  The 5000 years of Lunar Eclipse data is prepared by an expert at NASA with citations and peer reviews of the best available literature.  However, we have no way to precisely predict the earth's rotational speed for dates thousands of years in the past or future, and so eclipse times will come with uncertainties of several hours near the boundaries of that dataset.
+
+	  Finally, if a dataset lacks accuracy but contains a corresponding estimate for the magnitude and direction for error and bias, credit that towards your evaluation.
+	  
+	  5: Full characterization of its subject AND of sources for error and bias.  Methods fully explained, supporting work cited.
+	  1: Data is the best available but has limited accuracy.  Give, or link to, a reasonable description of those limitations.
+  
+comprehensive: | Just put a quick note explaining
+	       5: This dataset exhaustively characterizes its subject.  Think "US Census" or "Oxford English Dictionary"
+	       1: This dataset, though useful, contains an incomplete picture of its subject.  At time of writing, we have only ~35 years of stock market data with only US stocks and daily intervals.
+
+
+
+
+
+
+Be Descriptive - Be Honest - Be Neighborly - Be Complete - Be Effective
+
+Be Descriptive
+ * describe the data as well as you can.  If it's in good XML and well described someone can come along later and do all that namespace RDF blah blah blah.
+
+But we'll take it how it is
+
+It's best if it's in XML
+
+It's best of all if it's schematized.
+
+The schema is advice.  Do what it takes to describe it fully without breaking anything.
+
+It's better to fully describe than worry about consistency (but always please to use valid XML).
+
+Only if it's free to share, distribute and mashup.
+Most raw data sets *are* free to share, distribute and mashup.
+Use good manners
+
+
+Put as much related information in a table as seems useful. It's easier to strip out than pivot in.
+Worry about usefulness more than 'database normalization'
+
+Partition files so that they're no more than 1-2MB in size, but not more than say 10-50 pieces.  Split a 1.8MB table into sub-1MB files, split a 200MB table into ~10MB pieces; in both cases break files at sensible points.  Concatenating rows is easier than columns.
+
+
+
+from http://www.amstat.org/publications/jse/v1n1/datasets.html
+
+3. Guidelines for Submitting Dataset Articles
+
+An article for the "Datasets and Stories" section should be an expansion of the narrative which is found in the "doc" file. It should follow the general guidelines for any JSE article and will be subject to a similar review process. Authors are encouraged to emphasize the "story" aspect of this section by elaborating on the circumstances and questions which led to the collection of the data. We also encourage descriptions of creative ways the data might be used in teaching statistics, particularly those that are based on actual experiences.
+4. Criteria for Suitable Datasets
+
+We hesitate to define in advance what are or are not "good" datasets, but several criteria will be considered before making data available in the archives.
+
+(a) Copyright issues. It is the responsibility of the contributor to secure any permissions needed to make the data freely available to all.
+
+(b) Reality. In general, we prefer "real" as opposed to "artificial" data, although we acknowledge the usefulness of some well-crafted "fake" data in certain teaching situations.
+
+(c) Size.Very large datasets (e.g., greater than 1 megabyte of storage) are discouraged unless they have particularly interesting pedagogical appeal. On the other hand, very small datasets (e.g., a two-way table demonstrating Simpson's paradox) may not require computer analysis, but are still useful examples to have for teaching and should be included in the archives.
+
+(d) General appeal. We are seeking datasets which other instructors might find useful. While that does not exclude examples which are specific to a given discipline, we caution contributors to avoid technical jargon and arcane situations which might be accessible or appeal to only a very limited audience of students.
+
+(e) Other JSE articles. Authors of other articles in this journal may choose to make raw data relevant to their articles available through the JSE data archives.
+
+(f) Textbook data. In general, datasets appearing in textbooks would require specific permission from the publisher in order to be included in the JSE data archives. We will consider requests from authors or publishers to make data files for an entire text available through the JSE data archives. 
+
+ Appendix
+A Template for Data Documentation (DOC) Files
+
+This form is available at http://www.amstat.org/publications/jse/datasets.template.html
+NAME: A descriptive title
+TYPE: e.g., Random sample, Census, Time series, Designed experiment,...
+SIZE: Number of observations, number of variables
+
+DESCRIPTIVE ABSTRACT:
+A brief (no more than 10 lines) description of the dataset.
+
+SOURCES:
+Acknowledge any published data sources or give brief description of origins of the data.
+
+VARIABLE DESCRIPTIONS:
+Provide a "key" for reading the ASCII data file. Explain any variable codings (including missing values) and/or measurement units.
+
+SPECIAL NOTES:
+Describe any special circumstances which should be brought to the attention of persons attempting to analyze the data.
+
+STORY BEHIND THE DATA:
+A brief narrative describing the origins of the data and the reasons they were collected. This is a good place to supply any background needed to understand the underlying variables, describe relevant issues, and suggest questions which might be of interest. This and the next section should be fairly concise. If you find them getting too long -- it's time to write a full "Datasets" article!
+
+PEDAGOGICAL NOTES:
+Suggest some ways an instructor might use the data in class. Describe any interesting features and/or statistical concepts which are well illustrated.
+
+REFERENCES:
+Include any references not in the SOURCES section.
+
+SUBMITTED BY:
+Name
+Affiliation
+Surface address
+e-mail address
+
+(This gives you credit and provides a source for instructors who find the data useful to get clarifications if needed.) 
+
+
+
+
+"
+In all free text fields (except the title), feel free to use simple wikitext markup:
+    * link to [http:// Web Site] with one [] and space between URL and text,
+    * link to [[awesome_dataset|other datasets]], with pipe between shortname and text if they differ,
+    * while stars * make bulleted text, hashes # make an ordered list and two spaces indent.
+
+We don't render markup yet but it's harmless and it will be there when we do.
+    "
+
+Explanation of import fields:
+
+  - vic_name:                 String    # short name for this dataset; follow standard identifier rules, make it suggest a rough categorization.
+  - vic_title:                		# Brief (one-line) descriptive title for the dataset
+  - vic_tags:                           # Freeform tags for the dataset, separated by commas (non-space non-commas are stripped).
+  - vic_contributors:  |                # Each person or organizations who assembled, prepared or distributed the dataset.  Include links and citations wherever possible.
+      - |
+        http://link.to.dataset/heck/ya
+        Name of contributor #1          # (order roughly by significance of contribution)
+        #...
+      - |
+        http://your.url.here/
+        Your Name Here	                # Make sure to include yourself 
+    
+  - vic_story:                          # Overview of the dataset, its sources, 
+  - vic_story_usage:                    # Technical Notes on how to use the data and how it was gathered.
+  - rights:                             
+  - vic_fields:
+          - shortname: |      	# short name for each field following standard identifier rules (only alphanumerics plus _, first character is a letter).
+              Description	# Explanation of how that field is used.
+
+  - interesting:              { rating: , story: "" }
+  - accurate:           { rating: , story: "" }
+  - authoritative:      { rating: , story: "" }
+  - comprehensive:      { rating: , story: "" }                              
+  - rate_interesting:         ''
+  - story_interesting:         ''
+  - rate_accurate:         ''
+  - story_accurate:         ''
+  - rate_authoritative:         ''
+  - story_authoritative:         ''
+  - rate_comprehensive:         ''
+  - story_comprehensive:         ''
+  - vic_see_also:             
+  - vic_coverage:             
+  - vic_uploadedby_username:  dataset was created by this user 
+  - vic_lastmodby_username:   dataset was last modified by this user
+  - vic_approvedby_username:  dataset was approved by this user
+  - vic_created_at:           date dataset was created
+  - vic_modified_at:          date of most recent modification
+  - vic_approved_at:          date dataset was approved for display
+  - vic_approved:             is this dataset approved? (boolean)
+  - vic_dnloaded_count:       number of times this dataset has been downloaded
+  - vic_size:                 uncompressed size, in bytes, of this dataset
+  - vic_rows:                 rows in this dataset.  Each structured element counts as one row.
+  - vic_cols:                 columns of this dataset.  Each sub field of a structured element counts as one column, regardless of its multiplicity.
+                            
+
+interesting: >-
+    Breadth of interest. 
+    
+    Examples:
+        
+    5: any true data nerd will stop in the street to gaze in wonder at the opportunities present in this dataset.
+
+    1: Most people will never find a need for this.  The very few who do will be stoked you helped put it here.
+
+    A '1' dataset is still interesting and worthwhile - those who need such a dataset will find it very exciting.  By 'interest' we mean to characterize the breadth of people who would dig on this.
+
+  Just put a quick note explaining.
+  
+authoritative: >-
+    Credentials of the people and agencies that prepared this data source.  
+        
+    Examples:
+        
+    5: Prepared by a researcher and leading expert in this field, associated with a noteable institution, publishing peer reviewed data, with clearly-cited sources.
+    
+    1: Wikipedia articles that have not passed their review processes.
+  
+accurate: >-
+    How well ([http://en.wikipedia.org/wiki/Accuracy how precisely and how accurately]) this data describes its subject.
+         
+    A dataset can be highly accurate but only moderately authoritative: a collection of data from wikipedia or other crowdsourced knowledge, but that has been widely tested and found to be of high quality.
+
+    Conversely, an authoritative dataset can have poor precision.  The 5000 years of Lunar Eclipse data is prepared by an expert at NASA with citations and peer reviews of the best available literature.  However, we have no way to precisely predict the earth's rotational speed for dates thousands of years in the past or future, and so eclipse times will come with uncertainties of several hours near the boundaries of that dataset.
+
+    Finally, if a dataset lacks accuracy but contains a corresponding estimate for the magnitude and direction for error and bias, credit that towards your evaluation.
+
+    Examples:
+        
+    5: Full characterization of its subject AND of sources for error and bias.  Methods fully explained, supporting work cited.
+
+    1: Data is the best available but has limited accuracy.  Give, or link to, a reasonable description of those limitations.
+  
+comprehensive: >
+    How completely this dataset describes its subject and its knowledge neighborhood
+    
+    5: This dataset exhaustively characterizes its subject.  Think "US Census" or "Oxford English Dictionary"
+    
+    1: This dataset, though useful, contains an incomplete picture of its subject.  At time of writing, we have only ~35 years of stock market data with only US stocks and daily intervals.

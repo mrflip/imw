@@ -1,0 +1,359 @@
+h1. infochimps.org Simple Schema Template
+
+* [[InfiniteMonkeywrench]]
+* How to use [[HOWTO Textile]] to make descriptions that look great in plain text and turn into styled HTML.
+
+h2. name:
+
+Name for This Dataset (free text) - in Titlecase
+
+h2. uniqid:
+
+UniqueNameAsIdentifier. If no name is specified, the field name will be
+"turned into a unique identifier":http://www.railsapi.org/ActiveSupport::CoreExtensions::String::Inflections
+
+
+h2. collection: 
+
+Is this one part of a collection of datasets, like the tables from the
+Statistical Abstract or IMDB?  Name the collection here.
+
+**Note**: the collection, and size/shape/structure fields may become one
+'privileged tag' field; at the moment formats and collection are freetext
+fields, while size shape and structure should be just stuffed into notes.
+
+h2. formats
+
+Some of
+* xls
+* csv
+* yaml
+* xml
+* tsv  (tab separated)
+* flat (fixed-width columns).
+Not using mime types but maybe we should.  Feel free to qualify your entry or extend this list.
+
+	
+h2. Tags
+
+"...This dataset should appear if I search on '...'" <-- those are tags
+
+Ex:
+
+    tags:  "gamma, ray, radiation, man in the moon, marigolds, botany, nuclear"
+
+h2. Notes -- Freeform Descriptive Notes
+
+h3. Recommended: include these if applicable
+
+* desc:
+  Describe the dataset, what it's good for, how it was prepared.
+  
+  A normal person should be able to read this fearlessly.
+  
+  Ex:
+      
+      21,986 names (names.txt)
+
+      This database contains the most common names used in the United
+      States and Great Britain.  Spelling checkers may want to supplement
+      their basic word list with this one.
+      
+* usage:
+
+  Anything non-obvious about how to use or apply the dataset; Technical Notes on
+  how to use the data and how it was gathered. This is where all the really
+  nerdy stuff goes.
+
+  Ex:
+      - usage: >
+        To convert dollars of any year 1665 to estimated 2017 to dollars of the
+        base year (CPI [1982-84], 2005, or other years, DIVIDE that year's
+        dollar amount by the conversion factor (CF) for that base year, rounded
+        to no more than four decimal places (more cautious: prior to 1913 round
+        to 2 decimal places; for 1913 and later round to 3 decimal places).
+  
+* see_also:
+  Other related datasets (freetext for now)
+  
+* rights: Any rights statements attached by contributors.  Use good manners and
+  respect people's hard work.
+
+
+h3. Other suggestions:
+
+You can put in any old note name that suggests itself. 
+
+* implementation_suggestion:
+  how this file might be used or adjusted for a specific application.
+* file_structure:
+  if it's not YAML/XML/CSV or other standard, describe the file structure.
+* snippet: >
+    A representative slice of the raw data.
+    Limit yourself to under a few thousand characters.
+    (filed under notes)
+* shape: 
+  Yaml-looking text, or something else if it makes more sense.  Some ideas:
+  
+      table: [ rows,  cols  ]
+      tree:  [ width, depth ]
+      graph: [ nodes, edges ]
+      ...
+
+   if the data isn't in a standard format (XML, YAML, JSON), estimate the size
+   and dimensionality of the file.
+
+* stats:
+** value: min, max, avg, stdev, %ile
+** frequency: num_distinct, median_freq, mode
+** length: min, max, avg, stdev, %ile
+* coverage
+  Indicate the coverage, if applicable: spatial (Central Africa? Mars?),
+  temporal (Pliestocene Era? 1970s?) or whatever else would seem usefully
+  descriptive.
+
+* more:
+   Date Format Type Creator Rights Publisher Identifier Source Relation
+   Language Keywords Coverage Description Contributors URI Fragment
+	
+h2. contributors
+
+List the people/organizations who created or prepared the dataset.  Include
+links and citations wherever possible.  This gives credit where it's deserved,
+and allows people to trace the provenance of the data.
+
+As always, omit fields that don't apply.
+
+* name   - freetext name
+* uniqid - identifier style uniq name
+* roles
+** collected, converted, distributed, verified, translated_language
+* cite - citation (in wikipedia citation style), if any
+* desc -
+  Free form description of contribution, along with any statement by the contributor.
+  Put information about the dataset's __content__ in the appropriate @note@,
+  information about the contribution, rights, &c. here.
+
+  
+h3. Example:
+
+<nowiki><code><pre>
+
+    - url:        http://ichart.finance.yahoo.com/table.csv?s=AAPL&a=00&b=1&c=1900&d=11&e=31&f=2030&g=v&ignore=.csv
+      name:       Yahoo Finance
+      uniqid:     finance.yahoo.com
+      role:       distributed
+  
+    - url:        http://www.nasdaq.com/asp/symbols.asp?exchange=q
+      name:       NASDAQ site
+      story:      Company Symbols to Names
+	  
+    - url:        http://infochimps.org/flip
+      uniqid:     infochimps.org/flip
+      name:       Philip (flip) Kromer
+      role:       converted
+
+    - cite:       'Alpher, R. A., H. Bethe and G. Gamow. "The Origin of Chemical Elements," Physical Review, 73 (1948), 803.'
+      
+</pre>
+</code>
+</nowiki>
+      
+h2. Fields
+
+Each field is a record with one or more of the following.  As always, omit anything
+that doesn't make sense or you don't feel like filling in.
+
+For the tags and units: __enter what makes sense__.  To build the One True
+Dataset, we need a hierarchy of types, units and concepts that will allow
+you to discover adjoining concepts.
+
+Problem is, apart from the datatypes we don't know what those look like,
+so we're going to put in stuff that points in that direction; once there's
+a sizable faux ontology in place we can go back and impose some order.
+
+So if what's suggested below seems insane it may well be. Look at what
+people've been filling in for those fields and proceed accordingly, but if
+you have a better idea try it out.
+
+And remember that a thing can be more than one kind of thing.  I'm a Rock Star, Physicist __and__ Taxpayer.  Chicken is a type of __bird__ (isa animal...), an agricultural commodity and a recipe ingredient.  It's more important to just simply and quickly describe things as they are than to design some straightjacket schema of perfect crystalline beauty (and corresponding brittleness and inutility).
+
+h3. Note about free text fields
+
+Freetext fields use the simple "Textile":http://hobix.com/textile/quick.html
+markup; see more at
+* http://hobix.com/textile/quick.html
+* http://www.instiki.org/show/WikiSyntax
+
+h3. Data Field uniqid:  
+
+UniqueNameAsIdentifier. If no name is specified, the field name will be "turned
+into a unique identifier":http://www.railsapi.org/ActiveSupport::CoreExtensions::String::Inflections
+
+h3. Data Field name:    
+
+Name for This Field (free text) - in Titlecase    
+
+A dataset can (and should) be as structured as you like, but right now we
+only summarize a flat list of datafields.  For hierarchical datasets, do
+something reasonable like use a common prefix+underbar:
+
+    fields:
+	  - title:        'The name of this whatever'
+	  - location_lat: 'Latitude  field of the location object'
+	  - location_lng: 'Longitude field of the location object'
+
+Err on the side of longer, rather than shorter, datafield names -- we
+eventually want to identify common patterns (temperature, geographic
+location, chemical element, etc) and structure them correspondingly.
+
+	
+h3. Data Field datatype:
+
+One of the "kwalify":http://kuwata-lab.com/kwalify/ruby/users-guide.html
+datatypes:
+
+* str
+* int
+* float
+* number (== int or float)
+* text (== str or number)
+* bool
+* date
+* time
+* timestamp 
+* scalar (all but seq and map)
+* seq
+* map
+* any (means any data)
+	
+h3. Data Field tags:
+
+The **concept** represented by this datafield, as separate from its
+**representation**.
+
+'distance', 'time', 'value.money' are concepts; 'meters', 'year',
+'currency.usd.2005' are ways to represent those concepts.
+
+Ex: 
+* "Total yearly exports in constant dollars" with "exports rate:value.money country"
+* "Frequency of search terms" with "numberdensity language.phrase internet"
+
+h3. Data Field units:
+
+Presentation of this concept, as space-separated string of atomic units.
+
+Use anything that the "Frink units":http://futureboy.homeip.net/frinkdata/units.txt library (an extension of the "BSD units":http://www.freebsd.org/cgi/man.cgi?query=units collection) understands.
+
+* 'newtons' and 'kilogram meters / seconds^2^' are the same thing.
+* If something is a percent change, specify as <nowiki>(thing / thing)% or (thing / thing)percent; and if something is a delta change, give the time period of that change.  For example, Percent composition by mass of the earth's atmosphere would have units (kg/kg)percent; population percentage change by year would have units of (persons/persons)% / year.</nowiki>
+	
+h2. Ratings
+
+This is too much text for something so poorly thought out right now.  Here it is
+anyhoo.
+
+* Accurate: How well ([http://en.wikipedia.org/wiki/Accuracy how precisely and
+  how accurately]) does this data characterize its subject?
+
+  A dataset can be highly accurate but only moderately authoritative: a
+  collection of data from wikipedia or other crowdsourced knowledge, but that
+  has been widely tested and found to be of high quality. Or it can be
+  authoritative with poor precision: the 5000 year eclipse table is fully
+  authoritative, but due to a slow drift in the length of a day, eclipse times
+  for 2000 years ago have uncertainties of several hours.
+
+  If a dataset lacks accuracy but estimates its standard error, count that in
+  its favor.
+
+* Authoritative: What are the credentials of this dataset's sources?
+
+  5: Prepared by a researcher and leading expert in this field, associated
+     with a noteable institution, publishing peer reviewed data, with
+     clearly-cited sources.
+     
+  1: Wikipedia articles that have not passed their review processes.
+
+* Comprehensive: How completely does this dataset describe its subject?
+
+  5: Exhaustive characterizatopm. Think "US Census" or IMDB.com.
+  
+  1: This dataset, though useful, contains an incomplete picture of its
+     subject.  For example, at time of writing, we have only about 35 years of
+     stock market data with only US stocks and daily intervals.
+
+* Interest: How broadly interesting is this dataset?
+
+  5: any true data nerd will "stop in the street":http://xkcd.com/356/ to
+     gaze in wonder at the opportunities present in this dataset.
+     
+  1: Most  people will never find  a need for  this.  The very few that do
+     will be stoked you helped put it here.
+
+h1. Kwalify schema
+
+* name
+* desc
+* default
+* (class name)
+* units
+* tags
+
+* type:
+** scalar
+*** text
+*** string
+*** number:
+****  int
+****  fixed
+****  float
+****  bool
+*** datetime
+****  date
+****  time
+** seq
+** map
+** (graph)
+** (tree)
+** any
+* constraints:
+** required
+** length  min max
+** value   min max
+** pattern
+** enum
+** accuracy
+** unique
+*stats:
+** value:
+  min, max, avg, stdev, %ile
+** frequency:
+  num_distinct, median_freq
+  mode
+** length:
+  min, max, avg, stdev, %ile, 
+
+h1. How to Upload 
+
+Sumbit your files by FTP to ftp://ftp.mrflip.com/incoming (yes, that's off the
+imfochimp domain.)  If you'd rather toss them up on Box.net or your own
+server, that's fine too.
+
+Either way, please email info@infochimps.org to alert the batch process Bonobos
+that you've left this kickass dataset for them.  Also, if you're talking about
+a dataset bigger than say 20GB compressed, contact us to make sure we're ready
+for that kind of delivery.
+
+Send your upload as a single compressed tar.gz or tar.bz2 or .zip file.  If
+possible, convert the dataset to XML or YAML or JSON, and use the simple
+commented template at http://infochimps.org/help/simpleschema.yaml to describe
+the dataset.  If your data comes instead with a RelaxNG/w3C/DTD schema then
+don't worry about any fields already described in there.
+
+The one essential element is a reference all primary sources of thsi data, and
+a brief description of any changes since then.  Include yourself among the
+contributors.
+
+But we will accept interesting data in whatever form you can deliver, for some
+noble chimp down the line to schematize and convert.
+

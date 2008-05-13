@@ -1,0 +1,297 @@
+#!/usr/bin/env ruby
+#
+# h2. imw/bin/archive_uploader -- script to upload files and directories to archive.org
+#
+#
+# == About
+#
+# We've been granted "infinite bandwidth, infinite storage" from the
+# good folks at http://www.archive.org and we intend to use it!  This
+# script is meant to help automate the process of uploading content to
+# archive.org.
+#
+# Archive.org won't simply accept rsync/ssh/ftp/sftp/&c connections;
+# they have a somewhat
+# complicated[http://www.archive.org/help/contrib-advanced.php]
+# submission policy:
+#
+#  1. One directory (named <tt>DIRECTORY</tt>) at a time can be submitted.
+#  2. This directory must contain two XML files:
+#    <tt>DIRECTORY_files.xml</tt>:: a list of files in <tt>DIRECTORY</tt>
+#    <tt>DIRECTORY_meta.xml</tt>:: metadata about the files in
+#    <tt>DIRECTORY</tt>
+#  3. It must be uploaded to archive.org using FTP.
+#  4. To inform the "contribution engine" an <tt>HTTP GET</tt> request should
+#     be issued to a particular address determined by the email of 
+#     the uploader, the mediatype of the files, and the name of the
+#     directory.  This request will return an XML file in one of two formats
+#
+#       <result type="success">
+#         <message>Item successfully added</message>
+#       </result>
+#     or
+#       <result type="error" code="ERROR_CODE">
+#         <message>ERROR MESSAGE</message>
+#       </result>
+#
+# This functions defined herein automate this process of uploading a
+# directory and confirming whether archive.org properly got the
+# contents.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+# 
+
+require 'rexml/document'
+require 'optparse'
+require 'find'
+require 'open-uri'
+
+require 'imw/utils/validate'
+require 'imw/utils/error'
+
+# describe the specifications for archive.org
+archive_specs = "Specifications for submitting to archive.org
+(see http://www.archive.org/help/contrib-advanced.php for complete discussion):
+
+archive.org accepts submissions one directory at a time.  If the name
+of this directory is 'DIRECTORY' then at the root of the directory
+there must be two files: 'DIRECTORY_files.xml' and
+'DIRECTORY_meta.xml'.
+
+The 'DIRECTORY_meta.xml' file must look something like this
+
+  <metadata>
+    <collection>name_of_collection</collection>
+    <mediatype>mediatype</mediatype>
+    <title>The Title to Use</title>
+    <optional-metadata-1>...</optional-metadata-1>
+    ....
+  </metadata>
+
+and the 'DIRECTORY_files.xml' file must look something like this 
+
+  <files>
+    <file name='filename1.ext'>
+      <format>FILE_FORMAT</format>
+      <optional-metadata-1>...</optional-metadata-1>
+      ...
+    </file>
+  </files>
+
+where the 'FILE_FORMAT' specifier is chosen from a list provided at
+the above URL and a <file> node exists for each file in the directory.
+(see 'archive_uploader --file-formats')"
+
+# allowed file format strings
+File_formats = ["128Kbps MP3","128kbps M3U","160Kbps MP3","192Kbps MP3","24bit Flac","256Kb MPEG4","256Kb QuickTime","256Kbps MP3","320Kbps MP3","3GP","56Kb QuickTime","64Kb MPEG4","64Kb QuickTime","64Kbps M3U","64Kbps MP3","64Kbps MP3 ZIP","96Kbps MP3","AIFF","ARC","Abbyy GZ","Abbyy ZIP","Animated GIF","Article Metadata XML","Book Cover","Book Cover","Book Cover Image","Checksums","Cinepack","Collection Header","DAT","DV Video","DivX","DjVu","DjVuTXT","Djvu XML","Flac","Flac FingerPrint","Flash Video","Flippy ZIP","Grayscale LuraTech PDF","HTML","HiRes MPEG4","IV50","Image Container PDF","Item Image","JPEG","MPEG1","MPEG2","MPEG4","Metadata","Microfilm Original TIFF ZIP","Motion JPEG","Multi Page Original TIFF","Multi Page Processed TIFF","Ogg Theora","Ogg Vorbis","PDF","QuickTime","RAR","Real Media","Scribe Scandata ZIP","Shockwave Flash","Shorten","Single Book Page Text","Single Page FIXME JPEG Tar","Single Page FIXME JPEG ZIP","Single Page Library JP2 Tar","Single Page Library JP2 ZIP","Single Page Library TIFF ZIP","Single Page Original CR2 Tar","Single Page Original JP2 Tar","Single Page Original JP2 ZIP","Single Page Original JPEG","Single Page Original JPEG Tar","Single Page Original JPEG ZIP","Single Page Original TIFF","Single Page Original TIFF ZIP","Single Page Processed JP2 Tar","Single Page Processed JP2 ZIP","Single Page Processed JPEG","Single Page Processed JPEG Tar","Single Page Processed JPEG ZIP","Single Page Processed TIFF","Single Page Processed TIFF ZIP","Single Page Processed TIFF ZIP","Single Page Pure JP2 Tar","Single Page Pure JP2 ZIP","Single Page Raw JP2 Tar","Single Page Raw JP2 ZIP","Single Page Raw JPEG Tar","Single Page Raw JPEG ZIP","Single Page Watermark JP2 Tar","Single Page Watermark JP2 ZIP","Single Page Zipped PDF","Standard LuraTech PDF","TAR","TGZiped Text Files","Text","Thumbnail","VBR M3U","VBR MP3","VBR ZIP","WAVE","Windows Media","Windows Media Audio","ZIP","h.264 MPEG4"]
+
+# default options
+Options = {:verbose => false,:check => false,:email => 'uploader@infochimps.org', :spec => false,:showff => false}
+
+# customize the libxml error handler so that it doesn't spew errors to
+# screen.  we hang onto the error messages in this array and spit them
+# out later when we need to
+#Xml_parse_errors = []
+#XML::Parser.register_error_handler(lambda { |msg| Xml_parse_errors << msg})
+
+# before looking for options first check to see that something was
+# actually passed to the script
+if ARGV.size == 0 then puts "no arguments: try 'archive_uploader --help'" ; exit() end
+
+begin
+  opts = OptionParser.new do |opts|
+    opts.banner = "Usage: archive_uploader [OPTIONS] file1 file2 ..."
+    opts.separator ""
+    opts.separator "Options:"
+    
+    opts.on("-v","--verbose","Print verbose output") { |v| Options[:verbose] = v }
+
+    opts.on("-s","--spec","See the specifications required by archive.org") { |s| Options[:spec] = s }
+
+    opts.on("-c","--check",
+            "Check that all directories to be uploaded meet archive.org specifications",
+            "  (but don't upload anything)") do |c|
+      Options[:check] = c
+    end
+
+    opts.on("-f","--file-formats","Show the file formats allowed by archive.org") { |f| Options[:showff] = f }
+
+    opts.on("-e","--email [EMAIL]","Set email address of uploader") do |e|
+      raise OptionParser::InvalidOption,"must provide an email address" if e.nil?
+      raise OptionParser::InvalidOption,"invalid email: #{e}" unless is_email?(e)
+      Options[:email] = e
+    end
+
+    opts.on_tail("-h", "--help", "Show this help message") do
+      puts opts
+      exit()
+    end
+  end.parse!
+
+rescue OptionParser::InvalidOption
+  puts $!
+  exit()
+end
+#Options.each_pair {|option,value| puts "#{option}: #{value}"}
+
+# Check that a directory being uploaded contains the XML metadata
+# files required by archive.org and raises an appropriate error if
+# they're not found.
+#
+# It is unclear in the
+# specification[http://www.archive.org/help/contrib-advanced.php]
+# given by archive.org whether <tt>DIRECTORY</tt> can contain other
+# nested directories and, if so, how to describe these directories in
+# the corresponding <tt>DIRECTORY_files.XML</type> file.  Some
+# assumptions are made here.
+def check_directory_meets_archive_spec(directory)
+  directory = File.expand_path(directory)
+  # if directory is named DIRECTORY...
+  raise IMW::IMWError,"not a directory: #{directory}" unless directory.class == String and FileTest.directory?(directory)
+  basename = File.basename(directory) 
+
+  # ...then it must contain the two XML files...
+  all_files = Dir.entries(directory)
+  files_name = basename + '_files.xml'
+  meta_name = basename + '_meta.xml'
+  raise IMW::IMWError, "#{directory} doesn't contain #{files_name}" unless  all_files.member?(files_name)
+  raise IMW::IMWError, "#{directory} doesn't contain #{meta_name}" unless all_files.member?(meta_name)
+
+  # ...each of which must meet the archive.org spec...
+
+  # ...so check the meta file...
+  begin
+    meta_path = directory + '/' + meta_name
+    meta_xml = REXML::Document.new(File.new(meta_path))
+    # ...root must be 'metadata'
+    raise IMW::IMWError, "root node must be 'metadata' in #{meta_path}" unless meta_xml.root.name == 'metadata'
+    # ...must contain these elements and they must be non-empty
+    ['collection','mediatype','title'].each do |element|
+      raise IMW::IMWError, "root node must contain element '#{element}' in #{meta_path}" unless meta_xml.root.elements.map{|e| e.name}.member?(element)
+      raise IMW::IMWError, "element '#{element}' must be non-empty in #{meta_path}" unless meta_xml.root.elements[element].has_text?
+    end
+  rescue REXML::ParseException => e
+    raise IMW::IMWError, "XML is malformed in #{meta_path}\n#{e.message}"
+  end
+
+  # ...and now check the files file...
+  files = []
+  begin
+    files_path = directory + '/' + files_name
+    files_xml = REXML::Document.new(File.new(files_path))
+    # ...root must be 'files'
+    raise IMW::IMWError, "root node must be 'files' in #{files_path}" unless files_xml.root.name == 'files'
+    # ...root must contain several non-empty 'file' nodes
+    raise IMW::IMWError, "root node must be non-empty in #{files_path}" unless files_xml.root.has_elements?
+    raise IMW::IMWError, "root node must contain only 'file' elements in #{files_path}" unless files_xml.root.elements.all? {|element| element.name == 'file'}
+    files_xml.root.elements.each do |element|
+      # ...each file node must have an attribute 'name' which refers
+      # to a real file...
+      raise IMW::IMWError, "each 'file' element must contain a 'name' attribute in #{files_path}" unless element.attributes.member?('name')
+      rel_filename = element.attributes['name']
+      abs_filename = directory + '/' + rel_filename
+      raise IMW::IMWError, "filename '#{abs_filename}' in #{files_path} is not a file" unless FileTest.file?(abs_filename)
+      files << abs_filename # store files for later comparison to disk
+      # ...each file node must have a format node which contains one
+      # of the allowed file formats above...
+      format_node = element.elements['format']
+      raise IMW::IMWError, "each 'file' element must have a 'format' element in #{files_path}" unless format_node
+      raise IMW::IMWError, "format '#{format_node.text}' is not a valid file format in #{files_path}.  Try 'archive_uploader -f'" unless File_formats.member?(format_node.text)
+    end
+    # ...all the files in the directory must be contained in the XML...
+    ignore = [files_path,meta_path]
+    Find.find(directory) do |path|
+      if FileTest.directory?(path) then next end
+      if FileTest.file?(path) then
+        if ignore.member?(path) then next end # except the two XML files we've been checking...
+      else
+        raise IMW::IMWError,"found file #{path} in #{directory} which is not included in #{files_path}" unless files.member?(path)
+      end
+    end
+  rescue REXML::ParseException => e
+    raise IMW::IMWError, "XML is malformed in  #{files_path}\n#{e.message}"
+  end
+  # and we're done checking -- no errors are returned
+end
+
+# Directories need to be uploaded via FTP to the servers at
+# archive.org
+def upload_to_archive(directory)
+  true
+end
+
+# Helper function to get the mediatype from a directory
+def mediatype(directory)
+  xml = REXML::Document.new(File.new(directory + '/' + File.basename(directory) + '_meta.xml'))
+  xml.root.elements['mediatype'].text
+end
+
+# Check whether <tt>directory</tt> was uploaded successfully by
+# querying archive.org.
+def check_directory_was_uploaded(directory)
+  xml_file = open("http://www.archive.org/services/contrib-submit.php?user_email=#{Options[:email]}&server=#{mediatype(directory)}-uploads.archive.org&dir=#{directory}")
+  xml = REXML::Document.new(xml_file)
+  result_type = xml.root.attributes['type']
+  if result_type == 'error' then
+    error_code = xml.root.attributes['code']
+    error_message = xml.root.elements['message'].text
+    raise IMW::IMWError,"directory #{directory} not uploaded: (#{error_code}) #{error_message}"
+  end
+end
+
+# If -s then just show specification and exit
+if Options[:spec] then puts archive_specs ; exit() end
+
+# if -f then just show file formats and exit
+if Options[:showff] then puts File_formats ; exit() end
+
+# exit if no directories were specified
+if ARGV.size == 0 then puts "no directories specified to upload.  Try 'archive_uploader --help'" ; exit() end
+
+# check all directories to be uploaded
+problems = false
+ARGV.each do |directory|
+  begin
+    check_directory_meets_archive_spec(directory)
+    if Options[:verbose] then puts "#{directory} meets archive.org standard" end
+  rescue IMW::IMWError => e
+    puts "#{directory} fails to meet archive.org standard:\n\t#{e.message}"
+    problems = true
+  end
+end
+if Options[:verbose] then
+  puts '-' * 80
+  if not problems then
+    puts "All directories meet the archive.org specs."
+  else
+    puts "Not all directories meet the archive.org specs.  See http://www.archive.org/help/contrib-advanced.php"
+    exit()
+  end
+end
+if problems then exit() end
+if Options[:check] then exit() end # bail if only checking the directories
+
+# upload each directory
+ARGV.each do |directory|
+  begin
+    upload_to_archive(directory)
+  rescue IMW::IMWError
+    puts $!
+  rescue
+    puts $!
+  end
+end
+
+# check that each upload was successful
+ARGV.each do |directory|
+  begin
+    check_directory_was_uploaded(directory)
+  rescue
+    puts $!
+  end
+end
+
+# puts "#{File.basename(__FILE__)}: A peal of thunder signals the descent of a giant hand from the heavens.  You swat at it with your Monkeywrench but it's just no use..." # at bottom

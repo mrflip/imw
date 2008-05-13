@@ -1,0 +1,57 @@
+f
+Good:
+10	mcdc2.missouri.edu		Geocodes (also census data)		http://mcdc2.missouri.edu/webrepts/commoncodes/
+16	www.census.gov			Many census &c tables
+11	oregonstate.edu			constant currency spreadsheet		http://oregonstate.edu/cla/polisci/faculty-research/sahr/sahr.htm
+40	www.echoditto.com		zip code to congressional rep		http://www.echoditto.com/zip2rep
+41	stuff.metafilter.com		metafilter database			http://stuff.metafilter.com
+14	www-personal.umich.edu		Library of little network datasets	http://www-personal.umich.edu/~mejn/netdata/
+15	www.cs.utexas.edu		Library of little datamining test sets	http://www.cs.utexas.edu/users/ml/riddle/data.html
+17	www.cia.gov			World factbook				https://www.cia.gov/library/publications/the-world-factbook/
+18	www.fhwa.dot.gov		Highway Statistics			http://www.fhwa.dot.gov/policy/ohim/hs06/
+20	ovrt.nist.gov			AnthroKids - Anth'c Data of Children	http://ovrt.nist.gov/projects/anthrokids/
+21	physics.nist.gov		Fundamental Physical Constants		http://physics.nist.gov/cuu/Constants/Table/allascii.txt
+21	physics.nist.gov		Conversion Factors for Units		http://physics.nist.gov/Pubs/SP811/appenB8.html
+24	ftp.ripe.net			WHOIS database for RIPE			ftp://ftp.ripe.net/ripe/dbase
+23	eh.net				Economic History Services		http://eh.net/databases/
+25	www.amstat.org			Journal of Statistics Education sets	http://www.amstat.org/publications/jse/
+31	quackle				Quackle scrabble program		http://web.mit.edu/jasonkb/www/quackle/
+26	www.archive.org			Amazon mining
+32	ucrel.lancs.ac.uk		Word frequencies from BNC		http://www.kilgarriff.co.uk/bnc-readme.html
+01	deim.urv.cat			Miscellaneous Network Data sets		http://deim.urv.cat/~aarenas/data/welcome.htm
+05	ourworld.cs.com			Material Properties			http://ourworld.cs.com/MJVanVoorhis/techdata/techdata.htm
+07	www4.wiwiss.fu-berlin.de	Factbook and Eurostat			http://www4.wiwiss.fu-berlin.de/factbook/
+19	sunearth.gsfc.nasa.gov		Eclipses				http://eclipse.gsfc.nasa.gov/eclipse.html
+22	maia.usno.navy.mil		Astronomical Time			ftp://maia.usno.navy.mil/ser7
+12 *	citeseer.ist.psu.edu		Citeseer				http://citeseer.ist.psu.edu/oai.html
+28 *	download.geonames.org		Geonames				http://download.geonames.org/export/
+
+
+ind . -maxdepth 1 -type d | perl -MData::Dumper -e '
+	local $/;
+	$_ = <>;
+	@foo= split "\n", $_;
+
+	@foo = map{ s!^\./!!; join ".",(reverse split /\./,$_) } @foo;
+	for my $url (sort @foo) { printf "%s\n", join ".",(reverse split /\./,$url) }
+	'
+
+Many, Small  (leave for community):
+09	lib.stat.cmu.edu		Library of data				http://lib.stat.cmu.edu/modules.php?op=modload&name=Downloads&file=index&req=viewdownload&cid=2
+13	www.umass.edu			
+08	www.umass.edu-nonlocal
+33	physchem.ox.ac.uk		MSDS and chemistry charts		http://msds.chem.ox.ac.uk/
+
+Ask for:
+03	numbrary.com			
+02	electoral-vote.com		A few political datasets
+
+Have to unscrape:
+04 H	www.milebymile.com		
+06 H	www.measuringworth.com		Currency constant value
+
+Cruft:
+30	www.h-net.org			
+27	wiki.dbpedia.org		
+29 *	www.geonames.org		Geonames
+

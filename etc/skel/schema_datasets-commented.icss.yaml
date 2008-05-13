@@ -1,0 +1,33 @@
+--- 
+
+#
+# Information and processing instructions specific to each
+# dataset.
+#
+
+# Feel free to add in any of the missing ( Contributors Rating Fields )
+# if they differ by dataset for any reason.
+
+- infochimps_schema:
+        
+    # Name for This Dataset (free text) - in Titlecase
+    name:               ""
+    # A unique_name_in_identifier_form
+    uniqid:             statab2008_0001_populationandarea1790to2000
+    
+    # freeform tags for real-world concepts, space separated (put phrases in ""s)
+    # Think: "If I were searching for this, what might I type in?"
+    tags:               ''
+            
+    #
+    # Free-form descriptive notes
+    notes:
+        # This dataset
+        desc:           |-
+              (...)
+      
+        # 'table: [rows, columns]' or whatever makes sense
+        shape:          "table: [~, ~]"
+
+        # an illustrative snip from the dataset; less than about 1k, plz
+        snippet:        ''

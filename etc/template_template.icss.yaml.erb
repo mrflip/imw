@@ -1,0 +1,29 @@
+-- infochimps_schema_template:
+    coll_uniqid:    <%= $imw.coll.to_s.underscore %>  
+    collection:     <%= $imw.coll.to_s.titleize %>
+    notes:
+      desc:     |-
+          # contributor desc here
+          
+      usage:    |-
+          # usage notes, if any
+
+      rights:   |-
+          # note any rights and restrictions asserted by source of data
+          
+      # Add any other notes you like, in the form
+      # note_name: "note_string"
+
+    contributors:
+      - name:       # name
+        uniqid:     # uniqid
+        url:        # url
+        cite:       # cite
+        desc: |-
+            # contributor desc here
+            
+    ratings:
+      accurate:       { rating: 3, by: 'initial', desc: '' }
+      authoritative:  { rating: 3, by: 'initial', desc: '' }
+      comprehensive:  { rating: 3, by: 'initial', desc: '' }
+      interesting:    { rating: 3, by: 'initial', desc: '' }

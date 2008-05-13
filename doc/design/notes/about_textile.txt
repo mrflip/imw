@@ -1,0 +1,127 @@
+
+h1. Textile Markup for freetext fields (notes, desc):
+
+h3. Note about free text fields
+
+Freetext fields use the simple "Textile":http://hobix.com/textile/quick.html
+markup; see more at
+* http://hobix.com/textile/quick.html
+* http://www.instiki.org/show/WikiSyntax
+
+h3. This code:
+
+<nowiki><code><pre>
+
+h3. Styled Text
+
+	__italics__	
+	**bold**
+	%{color:red}Styled with the given (arbitrary) CSS tags%
+	@inline code@
+	<code><pre>extended code (annoying, huh? look for this to be fixed).</pre></code>
+
+h3. Headings
+
+	h1. Main (1st level) Heading
+	h2. Section (2d level) heading
+	h3. Sub heading
+
+h3. Bulleted list:
+
+	* First item
+	* Second item
+
+h3. Numbered list
+	
+	# First item	
+	# Second item
+	##  sub list
+	##  and so forth
+	
+	1. This works too
+	2. Second item
+
+h3. Links:
+
+	"linked text":http://url.for.link/hooray
+	http://url.com/will/be/automatically/linked
+	sowill_an@email.address.com
+	!http://link.to/an/image/with/exclamation/points!	
+
+h3. Table:
+
+    |_. header |_. for |_. columns |	
+	|a|table|row|
+	|b|table|row|
+
+h3. Other: 
+
+h4. some simple math
+
+	log ~10~your_mom
+	x = -b +- sqrt( b^2^ - 4 a c ) / 2 a
+
+h4. Most safe HTML works too: em, strong, etc.	
+
+</pre>
+</code>
+</nowiki>
+
+
+h3. Becomes this HTML:
+
+h4. Styled Text
+
+__italics__	
+**bold**
+%{color:red}Styled with the given (arbitrary) CSS tags%
+@inline code@
+<code><pre>extended code (annoying, huh? look for this to be fixed).</pre></code>
+
+h4. Headings
+
+h1. Main (1st level) Heading
+
+h2. Section (2d level) heading
+
+h4. Sub heading
+
+h4. Bulleted list:
+
+* First item
+* Second item
+
+h4. Numbered list
+
+# First item	
+# Second item
+##  sub list
+##  and so forth
+
+h4. Numbered list, too
+
+1. This works too
+
+2. Second item
+
+h4. Links:
+
+"linked text":http://url.for.link/hooray
+http://url.com/will/be/automatically/linked
+sowill_an@email.address.com
+!http://link.to/an/image/with/exclamation/points!	
+
+h4. Table:
+
+|_. header |_. for |_. columns |
+|a|table|row|
+|b|table|row|
+
+h4. Other: 
+
+* some simple math
+** log ~10~your_mom
+** x = -b + sqrt( b^2^ - 4 a c ) / 2 a
+
+* Most safe HTML works too: **em**, **strong**, &c.	
+

@@ -1,0 +1,112 @@
+
+h1. Commands
+
+!!!! This was used for planning; you'll want to run rake -T for a real idea !!!
+
+
+Here are all the imw routines and commands.
+
+===========================================================================
+
+IMW Tasks
+
+All of these take a "pool=cat/subcat/poolname" arg; or, run them in a directory
+and imw will try to guess.
+
+===========================================================================
+h2. rip: acquire source data
+
+rip             scrapes each of the urls in munge_config.rips
+rip:clean       rm all files under ripd/(url) for each url in config
+
+
+===========================================================================
+h2. pool: Define and manage data pools
+
+pool:generate   creates a new munger project
+                config.yaml, munge.rake
+                
+pool:rename     dest=newcat/newsubcat/newpool
+
+pool:metrics
+  * for each of [:ripd, :rawd, :pool, :fixd]:
+    - # files, directories, directory depth
+    - total size in bytes
+
+===========================================================================             
+h2. munge: transform source into payload
+
+munge           runs the :process task defined in munge.rake
+                ?? config ??
+munge:copy      copy files (with renaming) (munge_config_[coll].yaml)
+munge:repack    open specified packages; copy with rename; kill temp.
+                unpackage. (munge_config_[coll].yaml)
+munge:fragment	break a file up at a byte marker, at a line number, or
+		at the nearest following regexp match.
+
+imw munge:lint
+imw munge:lint:schema
+imw munge:lint:config
+  * check the munger for well-formedness
+
+===========================================================================             
+h2. pkg: Package
+
+
+
+
+
+===========================================================================
+h2. load: 
+
+
+
+===========================================================================
+h2. workflow config file
+
+imw_config:
+    rip:
+      - name:       foo.bar
+        url:        http://dl.foo.bar
+        recurse:    yes
+        level:      3
+        # (default no-parent, no-clobber, no-span-hosts)
+      - url:        http://
+
+    copy:
+      - from:
+        to:
+
+      - patt:
+        sub:
+
+      ...
+
+    repack:
+      - from:       ...
+        to:         ...
+        save:       yes|n (default no)
+
+
+    munge:
+      - flat:
+          - cartoon:    si5   |i3 |f3.2  |i|s25
+            sample:     A12345 123 123.69 2 Giant Hairy Monkeyballs
+            # list or space-separated string
+            fields:     type prod_id qty price sold desc
+            temp_fields:
+              # fields defined in flat-file extraction but not final schema
+              - uniqname:   type
+                datatype:   string
+
+      - remap:
+          - aasdf
+          # remap field names
+
+      
+===========================================================================
+h2. Munging routines
+
+flat file munger
+
+     picture, schema    => 

@@ -1,0 +1,17 @@
+Icon?
+.DS_Store
+TAGS
+*.tmproj
+.settings
+.project
+.pydevproject
+.tasks-cache
+.svn
+.bzr
+.hg
+/**/cache/*
+/**/log/*
+/**/tmp/*/*
+/**/db/*.sqlite3
+/**/config/database.yml
+/**/*DONTVERSION*

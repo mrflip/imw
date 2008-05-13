@@ -1,0 +1,12 @@
+# This will be File::expand_path()'ed, so things like "~" are OK 
+imw_root_dir:         "~/ics"
+
+# SQLite version 3.x
+#   gem install sqlite3-ruby (not necessary on OS X Leopard)
+# Same configuration as the openrecord gem in Rails -- see docs there.
+schemadb:
+    adapter:       sqlite3
+    database_file: imw/db/schemadb.sqlite3 # This will get $IMW_ROOT prefixed.
+    timeout:       5000
+
+pkg_formats: ['tar.bz2', 'tar.gz', 'zip']

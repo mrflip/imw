@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsi:schema elementFormDefault="qualified"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://vizsage.com/infochimp/vic"
+  targetNamespace="http://vizsage.com/infochimp/vic"
+  >
+
+  <xsi:annotation>
+    <xsi:documentation xml:lang="en">
+      Conversions among time conventions valid for the distant past and the distant future.
+    </xsi:documentation>
+  </xsi:annotation>
+
+  <!--
+    ======================================================================
+    Header
+  -->
+  
+  <xsi:complexType name="attribution">
+    <xsi:sequence>
+      <xsi:element name="attribStatement" type="xsi:string"/>
+      <xsi:element name="attribRights"    type="xsi:string"/>
+      <xsi:any minOccurs="0"/>
+    </xsi:sequence>
+    <xsi:attribute name="name"   type="xsi:string"/>
+    <xsi:attribute name="class"  type="xsi:string"/>
+    <xsi:attribute name="ondate" type="xsi:string"/>
+    <xsi:attribute name="url"    type="xsi:string"/>
+    <xsi:anyAttribute  />
+  </xsi:complexType>
+
+  <xsi:element name="intro">
+    <xsi:complexType>
+      <xsi:sequence>
+
+      <xsi:element name="title"        type="xsi:string"/>
+      <xsi:element name="description"  type="xsi:string"/>
+      <xsi:element name="keywords"     type="xsi:string"/>
+      <xsi:element name="format"       type="xsi:string"/>
+      <xsi:element name="version"      type="xsi:string"/>
+      
+      <xsi:element name="attribution"  type="attribution" maxOccurs="unbounded"/>
+      <xsi:element name="coverage"     type="xsi:string"   maxOccurs="unbounded"/>
+
+      <xsi:element name="rights"><xsi:complexType mixed="true">
+        <xsi:sequence><xsi:any minOccurs="0"/></xsi:sequence><xsi:anyAttribute/>
+      </xsi:complexType></xsi:element>
+
+      <xsi:any minOccurs="0"/>
+      </xsi:sequence>
+      <xsi:anyAttribute/>
+    </xsi:complexType>
+  </xsi:element>
+ 
+  
+  <!-- 
+    <xsi:element name="intro">
+      <xsi:complexType>
+        <xsi:sequence><xsi:any minOccurs="0"/></xsi:sequence>
+        <xsi:anyAttribute  />
+      </xsi:complexType>
+    </xsi:element>
+   -->
+
+  <!--
+   ! ======================================================================
+   !  Type Definitions
+   !
+  -->
+
+  <xsi:simpleType name="extDate">
+    <xsi:annotation><xsi:documentation xml:lang="en">
+      We can't use the built in date because it no yuo's the year 0000
+       http://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html#dateTime
+    </xsi:documentation></xsi:annotation>
+    <xsi:restriction base="xsi:string">
+      <xsi:pattern value="[\+\-]?[0-9]{4,}-[0-9]{2}-[0-9]{2}.*"/>
+    </xsi:restriction>
+  </xsi:simpleType>
+  
+  <xsi:simpleType name="extDateTime">
+    <xsi:annotation><xsi:documentation xml:lang="en">
+      Note that 60 seconds has to be allowed for leap seconds
+    </xsi:documentation></xsi:annotation>
+    <xsi:restriction base="xsi:string">
+      <xsi:pattern value="[\+\-]?[0-9]{4,}-[0-9]{2}-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60).*"/>
+    </xsi:restriction>
+  </xsi:simpleType>
+
+  <xsi:simpleType name="gregDate"><xsi:restriction base="extDate"></xsi:restriction></xsi:simpleType>
+  <xsi:simpleType name="julnDate"><xsi:restriction base="extDate"></xsi:restriction></xsi:simpleType>
+  <xsi:simpleType name="inflDate"><xsi:restriction base="extDate"></xsi:restriction></xsi:simpleType>
+
+  <!--
+    ======================================================================
+    Data fields
+  -->
+
+  <xsi:complexType name="astrotimeDatum">
+    <xsi:sequence><xsi:any minOccurs="0"/></xsi:sequence>
+    <xsi:attribute name="tai"        type="xsi:decimal"/>
+    <xsi:attribute name="gregDate"   type="gregDate"/>
+    <xsi:attribute name="julnDate"   type="julnDate"/>
+    <xsi:attribute name="inflDate"   type="inflDate"/>
+    <xsi:attribute name="mjd"        type="xsi:decimal"/>
+    <xsi:attribute name="jd"         type="xsi:decimal"/>
+    <xsi:attribute name="tt"         type="extDateTime"/>
+    <xsi:attribute name="utc"        type="extDateTime"/>
+    <xsi:attribute name="dut"        type="xsi:decimal"/>
+    <xsi:attribute name="leapsecs"   type="xsi:integer"/>   
+    <xsi:attribute name="deltaT"     type="xsi:decimal"/>
+    <xsi:attribute name="deltaTUncy" type="xsi:decimal"/>
+    <xsi:anyAttribute  />
+  </xsi:complexType>
+
+  <!--
+    ======================================================================
+    Key and Uniqueness definitions
+  -->
+
+  <xsi:element name="astronomicaltime" type="astrotimeDatum">
+    <xsi:key name="taiKey"     ><xsi:selector xpath="./"/><xsi:field xpath="@tai"     /></xsi:key>
+    <xsi:key name="gregDateKey"><xsi:selector xpath="./"/><xsi:field xpath="@gregDate"/></xsi:key>
+    <xsi:key name="julnDateKey"><xsi:selector xpath="./"/><xsi:field xpath="@julnDate"/></xsi:key>
+    <xsi:key name="inflDateKey"><xsi:selector xpath="./"/><xsi:field xpath="@inflDate"/></xsi:key>
+    <xsi:key name="mjdKey"     ><xsi:selector xpath="./"/><xsi:field xpath="@mjd"     /></xsi:key>
+    <xsi:key name="jdKey"      ><xsi:selector xpath="./"/><xsi:field xpath="@jd"      /></xsi:key>
+    <xsi:key name="ttKey"      ><xsi:selector xpath="./"/><xsi:field xpath="@tt"      /></xsi:key>
+    <xsi:key name="utcKey"     ><xsi:selector xpath="./"/>
+      <xsi:field xpath="@utc"/><xsi:field xpath="@leapsecs"/>
+    </xsi:key>
+  </xsi:element>
+ 
+</xsi:schema>
+
+
+<!--
+
+###########################################################################
+
+Notes on XSD and schema ingredients
+
+###########################################################################
+
+-->
+
+
+http://dublincore.org/documents/dcmi-terms/#H2
+
+
+
+<title></title>
+<subject     > tags go here</subject>
+<description >free-text account of the content.</description>
+<format  dc:format="text/xml" dc:type="dataset" vic:format="infochimp" vic:version="1.0" />
+
+<-- There can be lots of these -->
+<attribution class="source"                  ondate="" attributionURL="" attributionName=""><attributionstatement>I'm the original source of this data</attributionstatement><rights id="" href="">copyright info goes here.</rights></attribution>
+<attribution class="publisher"               ondate="" attributionURL="" attributionName="">I distributed the data vizsage.com/infochimp</attribution>
+<attribution class="creator"                 ondate="" attributionURL="" attributionName=""></attribution>     
+<attribution class="contributor preparer"    ondate="" attributionURL="" attributionName="">I prepared    the data </attribution>
+<attribution class="contributor transformer" ondate="" attributionURL="" attributionName="">I transformed the data </attribution>
+<attribution class="contributor translator"  ondate="" attributionURL="" attributionName="">I translated (between languages) the data </attribution>
+
+<!-- 
+   Coverage:
+     What range of time and place does the data describe?
+     Multiple permitted. 
+     Use tags that make sense. Make up your own coverage class if you need.
+     Use whatever coding makes sense, but try to key it UNAMBIGUOUSLY to something universal.
+     Avoid mixing them. -->
+  <coverage-union></coverage-union>
+  <coverage-intersection></coverage-intersection>
+  <coverage class="temporal"  
+            timebeg="19700621000000Z" timeend="20010101115900Z" >
+         OR timeat="654643254654687" 
+         OR timelabel="Cenozoic"
+       with formatdesc=""    formats: ISO8601, tai, strptime, ... 
+            formaturl="     this should be a URL.
+  </coverage>
+
+  <coverage class="spatial"  
+            latbeg="" latend="" lngbeg="" lngend="">
+            a="lat lng mean exactly the same thing as d1 d2"
+            OR d1beg="" d2beg="" ... dnbeg="" d1end="" d2end="" ... dnend="" 
+         OR latat=""  lngat=""                       OR d1at 
+         OR placelabel="Chicago"
+       with formatdesc=""        formats: latlngdec, latlngDMS, FIPS, iso3166 country code, http://www.getty.edu/research/tools/vocabulary/tgn/index.html
+            formaturl=""      this should be a URL.
+  </coverage>
+
+<language langcode="" lang="" langsubtag=""> 
+    only include this if there would be different versions for different languages
+    as in Belgian holidays in dutch vs. french
+    language code http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
+    http://www.loc.gov/standards/iso639-2/langhome.html
+    strive for one data file with multiple localizations.
+</language>
+
+<rdf:RDF xmlns="http://creativecommons.org/ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <cc:license           rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+    <cc:permits         rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+    <cc:permits         rdf:resource="http://creativecommons.org/ns#Distribution"/>
+    <cc:requires        rdf:resource="http://creativecommons.org/ns#Notice"/>
+    <cc:requires        rdf:resource="http://creativecommons.org/ns#Attribution"/>
+    <cc:permits         rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+    <cc:requires        rdf:resource="http://creativecommons.org/ns#ShareAlike"/>
+    <cc:morePermissions rdf:resource="http://vizsage.com/license" />
+    <cc:attributionName rdf:resource="http://vizsage.com/infochimp" />
+  </cc:license>
+</rdf:RDF>
+
+</infochimp>
+
+
+
+# =========================================================================
+# 
+# Credit
+
+You are free to use this file but please credit:
+  Gathered the data 
+  And this notice from the data source:
+  It comes with the following copyright
+  This data was transformed into this excellent universal format by
+  The data was distributed by
+  Their hard work is graciously respected.
+
+This is stolen from the inkscape
+
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"date",			N_("Date"),		"dc:date",   		RDF_CONTENT,	N_("Date associated with the creation of this document (YYYY-MM-DD).")                                 ;
+RDF_FORMAT_LINE, 	RDF_EDIT_HARDCODED,	"format",		N_("Format"),		"dc:format", 		RDF_CONTENT,	N_("The physical or digital manifestation of this document (MIME type).")                              ;
+RDF_FORMAT_LINE, 	RDF_EDIT_HARDCODED,	"type",			N_("Type"),		"dc:type", 		RDF_RESOURCE,	N_("Type of document (DCMI Type).")                                                                    ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"creator",		N_("Creator"), 		"dc:creator", 		RDF_AGENT,	N_("Name of entity primarily responsible for making the content of this document.")                    ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"rights",		N_("Rights"),		"dc:rights", 		RDF_AGENT,	N_("Name of entity with rights to the Intellectual Property of this document.")                        ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"publisher",		N_("Publisher"),	"dc:publisher", 	RDF_AGENT,	N_("Name of entity responsible for making this document available.")                                   ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"identifier",		N_("Identifier"),	"dc:identifier", 	RDF_CONTENT,	N_("Unique URI to reference this document.")                                                           ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"source",		N_("Source"),		"dc:source", 		RDF_CONTENT,	N_("Unique URI to reference the source of this document.")                                             ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"relation",		N_("Relation"), 	"dc:relation", 		RDF_CONTENT,	N_("Unique URI to a related document.")                                                                ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"language",		N_("Language"), 	"dc:language", 		RDF_CONTENT,	N_("Two-letter language tag with optional subtags for the language of this document.  (e.g. 'en-GB')") ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"subject",		N_("Keywords"), 	"dc:subject", 		RDF_BAG,	N_("The topic of this document as comma-separated key words, phrases, or classifications.")            ;
+RDF_FORMAT_LINE, 	RDF_EDIT_GENERIC,	"coverage",		N_("Coverage"), 	"dc:coverage", 		RDF_CONTENT,	N_("Extent or scope of this document.")                                                                ;
+RDF_FORMAT_MULTILINE, 	RDF_EDIT_GENERIC,	"description",		N_("Description"),	"dc:description", 	RDF_CONTENT,	N_("A short account of the content of this document.")                                                 ;
+RDF_FORMAT_MULTILINE, 	RDF_EDIT_GENERIC,	"contributor",		N_("Contributors"),	"dc:contributor", 	RDF_AGENT,	N_("Names of entities responsible for making contributions to the content of this document.")          ;
+RDF_FORMAT_LINE, 	RDF_EDIT_SPECIAL,	"license_uri",		N_("URI"),		"cc:license", 		RDF_RESOURCE,	N_("URI to this document's license's namespace definition.")                                           ;
+RDF_FORMAT_MULTILINE, 	RDF_EDIT_SPECIAL,	"license_fragment", 	N_("Fragment"), 	"License", 		RDF_XML,	N_("XML fragment for the RDF 'License' section.")                                                      ;
+
+
+<rdf:RDF xmlns="http://creativecommons.org/ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <Work rdf:about="">
+    <dc:title      >title of work</dc:title>
+    <dc:date       >year</dc:date>
+    <dc:description>description of work</dc:description>
+    <dc:creator><Agent><dc:title>creator</dc:title></Agent></dc:creator>
+    <dc:rights ><Agent><dc:title>holder </dc:title></Agent></dc:rights>
+    <dc:type    rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+    <dc:source  rdf:resource="source"/>
+    <license    rdf:resource="http://creativecommons.org/licenses/by/2.0/"/>
+  </Work>
+</rdf:RDF>
+
+<dc:subject>
+  <rdf:Bag>
+    <rdf:li>open clip art logo</rdf:li>
+    <rdf:li>images</rdf:li>
+    <rdf:li>logo</rdf:li>
+    <rdf:li>clip art</rdf:li>
+    <rdf:li>ocal</rdf:li>
+    <rdf:li>logotype</rdf:li>
+    <rdf:li>filetype</rdf:li>
+  </rdf:Bag>
+</dc:subject>
+
+<copyrightinfo class="factsnocc">Compilations of facts cannot be copyrighted in the US. In the Supreme Court decision <a href="http://www.law.cornell.edu/copyright/cases/499_US_340.htm" class="factsnocc">Feist Publications, Inc. v. Rural Telephone Service Co., 499 U.S. 340, 1991</a>: <blockquote class="factsnocc">"Facts, whether alone or as part of a compilation, are not original and therefore may not be copyrighted. A factual compilation is eligible for copyright if it features an original selection or arrangement of facts, but the copyright is limited to the particular selection or arrangement. In no event may copyright extend to the facts themselves."</blockquote></copyrightinfo>
+
+<copyrightinfo class="creditkthxbye">http://vizsage.com/license/Vizsage-License-BY-NC-SA.html
+You are free
+# To Share:
+  To copy, distribute or transmit the work, and
+# To Remix:
+  You are free to adapt the work.  Among other things to try, you may compile
+  it within another software project and include it in a webpage or published 
+  work.
+
+Under the following conditions:
+# Attribution:
+  Attribute the work of those listed in the credits as well as the Vizsage 
+  Infochimp project <a href="vizsage.com/infochimp">Vizsage.com/infochimp</a>
+  (but not in any way that suggests they endorse you or your use of the work).
+# Share Alike. 
+  If you alter, transform, or build upon this work, you may distribute the 
+  resulting work only under the same or similar license to this one.
+# Be Transparent
+  Do not obfuscate the structure of the raw data.
+# Be Honest
+  Do not knowingly modify this file to represent false statements as facts.
+This license is derived from the Creative Commons CC-BY-SA-3.0 license but 
+IS NOT A CREATIVE COMMONS LICENSE.
+</copyrightinfo>

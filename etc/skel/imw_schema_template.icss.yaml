@@ -1,0 +1,128 @@
+---
+- infochimps_schema:
+    schema_version:     0.2
+        
+
+
+- infochimps_dataset:
+
+    revision:           1
+
+    # Relational view 
+    rows:               0
+    cols:               0
+    tables:             0
+    
+    
+    #
+    # Fundamental description
+    #
+    name:               Statistical Abstract of the United States 2008
+    uniqname:           statisticalabstract_2008
+    id:                 1
+    tags:               "us united states usa america census demographics government "
+    formats:            { csv: {}, yaml: {}, xls: {} }
+    
+    #
+    # Contributors
+    #
+    contributors:
+      - name:           US Census Bureau
+        id:             3
+        cite:           |-
+          U.S. Census Bureau,
+          Statistical Abstract of the United States: 2008 (127th Edition)
+          Washington, DC, 2007;
+          "http://www.census.gov/statab/www/":http://www.census.gov/statab/www
+        url:            http://www.census.gov/statab/www
+        role:           source
+        desc:           ""
+        uniqname:       gov.census/statab
+      - name:           Philip (flip) Kromer
+        id:             4
+        url:            http://infochimp.org/flip
+        role:           converted
+        uniqname:       org.infochimp/flip
+
+    #
+    # Free-form descriptive notes
+    #
+    notes:
+        desc:           |
+            The Statistical Abstract of the United States is the standard summary of
+            statistics on the social, political, and economic organization of the
+            United States.
+        usage:          |
+            The Statistical Abstract files are distributed by the census
+            department as excel files.
+        rights:         >-
+            All US Census Bureau materials, regardless of the media, are entirely in  the public domain. 
+            
+    #
+    # Field listing
+    # 
+    fields:
+      - name:           Census Date
+        uniqname:       census_date
+        concepts:       date
+        units:          date.iso
+        datatype:       date
+      - name:           Census data notes
+        concepts:       _note
+        units:          _note
+        datatype:       str
+        uniqname:       census_data_notes
+      - name:           Resident population - Number
+        concepts:       country persons
+        units:          persons
+        datatype:       int
+        uniqname:       resident_population_number
+      - name:           Resident population - Per square mile of land area
+        concepts:       country numberdensity:persons-area
+        units:          persons / mile^2
+        datatype:       float
+        uniqname:       resident_population_per_square_mile_of_land_area
+      - name:           Resident population - Increase over preceding census - Number
+        concepts:       country rate:persons-time
+        units:          persons / year
+        datatype:       int
+        uniqname:       resident_population_increase_over_preceding_census_number
+      - name:           Resident population - Increase over preceding census - Percent
+        concepts:       country rate:pct_persons-time
+        units:          (persons/persons)% / year
+        datatype:       float:2.1
+        uniqname:       resident_population_increase_over_preceding_census_percent
+      - name:           Area - Land
+        concepts:       country area
+        units:          mile^2
+        datatype:       int
+        uniqname:       area_land
+      - name:           Area - Water
+        concepts:       country area
+        units:          mile^2
+        datatype:       int
+        uniqname:       area_water
+        desc:           ''
+          
+    # Information and processing instructions specific to each dataset.
+    datasets:
+      - name:           'Population and Area: 1790 to 2000 (Statistical Abstract 2008 Table 0001)'
+        uniqname:       statab2008_0001_populationandarea1790to2000
+        tags:           'population "population density" area growth'
+        notes:
+            desc:       "For every US census since 1790, the total US population, its population density (population per mile) and their absolute and  percentage change."
+            shape:      "table: [23, 13]"
+            snippet:    "| Census Date | Census data notes | Resident population - Number | Resident population - Number (notes) | Resident population - Per square mile of land area | Resident population - Increase over preceding census - Number | Resident population - Increase over preceding census - Percent | (Resident Population Increase - notes) | Area - Total (square miles) | (Area - Total notes) | Area - Land | (Area - Land notes) | Area - Water |"
+            footnotes_and_symbol_explanations:        h2. Notes (pg 2)
+            statistical_abstract_table_number:        1
+
+      - name:           'Happy #2'
+        uniqname:       happy_2
+        tags:           'population "population density" area growth hi there monkey balls'
+        notes:
+            desc:       "Testy testasdfasd asdf  asdf asdf "
+            shape:      "table: [2, 46]"
+            snippet:    "/snip/"
+            footnotes_and_symbol_explanations:        happy 2 hi
+            statistical_abstract_table_number:        1
+            

@@ -1,0 +1,381 @@
+
+h1. Infinite Monkeywrench
+
+h2. Overview
+
+Exploring rich data is fun, but inding it, formatting it, tagging it with
+metadata is drudge work barely fit for a trained chimp.  We want to build a
+library and a collaborative framework.  Elements:
+
+1. a programming framework to simplify common tasks involved in this work.
+
+2. a way for anyone with an OpenID to easily (and securely) create a versionable
+   project space (like a lightweight sourceforge or CPAN) for scripts that
+   generate datasets.
+   
+3. simple infrastructure to allow sustainable data exchange: a remote site
+   generates or processes information, we create a conduit that allows it to be
+   indexed and hosted or linked to.
+
+h2. Programming Framework
+
+* Datasets, Fields, and other fundamental classes
+
+* Data Types, Tags and Units -- start thinking beyond 'int' and 'string', and
+  build tools that understand 'longitude' and 'Net per-capita income (2004 US
+  dollars)'
+
+* File Munging -- take the monkey work out of parsing flat files, extracting
+  tabular information from HTML or mediawiki or other markup'ed formats, and
+  other silly tasks.
+
+* Simple data transformations -- remap fields, convert between 'object view' and
+  'relational views' of datasets, ...
+  
+* Simple data characterization -- simple inventories like string length
+  frequencies, range/average/std.deviation, ...
+
+* Unified view of standard open file formats -- transparently dump and bind to
+  YAML, JSON, XML and CSV formats
+
+* Schema generation and dataset validation -- produce schemata in popular
+  formats such as RelaxNG, W3CSchema, Kwalify, ...
+
+* Dataset workflow -- provide tools, a file hierarchy, and a data flow strategy
+  to manage the workflow from Screen Scrape/Download, Extract/Transform/Convert,
+  Schema Generate/Validate, Generate Formatted Output File, and finally Package
+  and Load into the infochimps.org website.  The workflow is dependency based
+  (Makefile-like) to keep datasets sustainable.
+
+h2. Community Project Structure
+
+The nature of these monkeywrench scripts is that they 'only need to be run
+thrice' -- once when you test it, once when we load it into the infochimps.org
+website, and once a year from now to figure out why it stopped working.  They
+will by their very nature be small, ugly, stupid and effective (by dint of
+drawing on the capable, beautiful, elegant and effective InfiniteMonkeywrench
+frameworks).
+
+So we need a way for
+
+* Easily set up a hosted project to process a given dataset collection
+
+* Migrate common solutions into the framework
+
+* Identify projects that can be run
+
+h2. Decentralized Data Exchange
+
+* RSS for notification or for transfer
+* scheduled updates (mirroring)
+* Yahoo! pipes, etc.
+* RDF, OAI, etc
+  
+===========================================================================
+=
+= Datasets
+=
+
+A dataset is a
+
+* sizable collection
+* of similar objects
+* having simple structure
+* 
+
+- name
+- unique name (uniqid)
+- collection
+- notes
+  * (desc, usage, rights)
+- rating
+- fields
+
+
+===========================================================================
+=
+= Data types
+=
+
+
+- definition
+
+  * name
+  * desc
+  * datatype
+  * tags
+  * units
+    - BSD units library
+  * characterization (min/max, string length, size, length, distinct values, etc)
+
+---------------------------------------------------------------------------
+- parsing / formatting / validating
+
+This is just brainstorming about the types of data.  I bet someone's thought way
+more deeply than this about 
+
+- date / time / datetime / duration / daterange
+- geolocation / georegion / path:
+  * lat long with (+/-) or (N|S|E|W), D?DDMMSS or decimal degrees
+    (basically strftime for lat/long)
+  * place name
+  * 
+- graph relationships (nodes [labelled], edges [labeled] [directed], ...)
+  - graph 
+  - tree
+  - succession order
+  - ...
+- url, IP, etc
+- entity
+  * person
+  ** identity ('front')
+  ** specific types of people (presidents, saints, mathematicians)
+  * organization (company, etc)
+- xml, json, yaml, csv validation
+
+[ pie in sky ] 
+- free text
+  - story, etc
+  - 
+  - algebraic formula, computer code
+  - language
+  - format
+
+
+* These can live in several data types, explicitly or implicitly
+  (a duration is a type of region; a region's boundary is a type of path;
+  path is a type of graph; ...)
+
+===========================================================================
+=
+= structure manipulation
+=
+
+* rename / remap / process fields
+  :new_field => &block or :old_field
+  [optional: :rest] to pass through fields not touched
+
+* Turn structured objects into 
+
+
+===========================================================================
+=
+= File data extraction
+= 
+
+---------------------------------------------------------------------------
+- flat files
+-
+
+  * scanf of course
+    http://www.ruby-doc.org/stdlib/libdoc/scanf/rdoc/index.html
+
+  * FixedWidth
+  	- internally, just makes an RE
+	
+    Draw a picture of the data
+    #          USAF   NCDC  STATION NAME                  CTRY  ST CALL  LAT    LON     ELEV(.1M)
+    #          010010 99999 JAN MAYEN                     NO JN    ENJA  +70933 -008667 +00090
+    #          123456 12345 12345678901234567890123456789 12 12 12 1234  123123 1234123 123456
+    fmt   =   "i6    |i5   |s29                          |i2|i2|i2|i4  ||@F2.3 |@F3.3  |i6"
+    names = %w{USAF   NCDC  STATION_NAME                  CTRY  ST CALL  LAT    LON     ELEV}
+    [flat_text.parse]
+    [rename fields]
+    [remap fields so
+	
+	| junk			^ typedef defined later		/ regexp defined later
+	-  sign
+	i  integer  	f float		F fixed point	x hexadecimal	o octal		b binary
+	c  byte     	s string	S unicode str
+	@  lat/long		% date
+	[] extra info
+	reserved: *#
+	  
+	whitespace	ignored (have no impact on extraction)
+    |       	junk (discard that many characters)
+	^			see following array for this typedef (useful for keeping strings
+	            in lockstep with sample line)
+	/			interpolated regular expression (given in trailing typedefs)
+	0-9			number of characters in this field
+	----------- NUMBER -------
+    -       	-1 for "-", +1 for " " or "+"
+    i       	single decimal digit
+    i6      	decimal number of up to 6 places (possibly including sign)
+    x,o,b,B		hex, octal, bit string 
+    x6      	hex digit of up to 6 places
+    f5      	floating point of up to 5 places, with "."
+    f5,     	floating point of up to 5 places, with "."
+    f5.3    	float: 5 leading places, 3 following places
+    f5,3        	   (delimiter)
+    F5.3    	fixed point float 5 leading places, 3 following places, no decimal point
+    f5.3e4   	float with exponent (. or ,)
+	----------- STRING -------
+	c			unsigned byte values
+	c8			
+	s			string of one character	
+	s8			string of eight characters
+				(right justified string?)
+    S8      	UTF string of that many characters (!! not bytes !!)
+    S8[enc]		enc encoded unicode string (!! characters not bytes !!)
+	----------- GEO -------
+	@-d3ms-		only one letter means TWO digits: d and d2 both become /\d\d/;
+				you'll have to use d1 to get /\d/ (use a '^' if you want to preserve lockstep)
+				have to explicitly specify sign (is this OK?)
+			    '-' for @ only:
+				    matches [SsNnWwEe \-]
+				    '-SsWw' are negative, ' +NnEe' are positive
+				    it can be leading or trailing (not both)
+				the trailing 's' will be interpreted as seconds;
+				the trailing '-' will be interpreted as sign
+				(if there's no room you can always use '^' and trailing typedef)
+				@dms- @d3ms- @-d3ms @-dm
+				                    -ddmm
+	@f			extract float, convert to lat/long/angle
+	@F			extract fixed width, convert to lat/long/angle
+	----------- DATE -------
+	%...		strftime date or time
+
+
+  * note well that these are **ASCII** strings, not binary strings (as in pack)
+    the syntax is meant to be reminiscent of pack/unpack and printf/scanf
+	but is optimized for conveniently cartooning a flat file.
+	
+  * sources of inspiration:
+	http://perldoc.perl.org/functions/pack.html
+	http://www.ruby-doc.org/core/classes/Array.html#M002245
+	http://www.ruby-doc.org/stdlib/libdoc/scanf/rdoc/index.html
+	http://search.cpan.org/~rgarcia/perl-5.10.0/pod/perlpacktut.pod
+	http://www.perlmonks.org/?node_id=65094
+	http://search.cpan.org/~dionalm/Text-FixedLength-0.12/FixedLength.pm
+	
+---------------------------------------------------------------------------
+- csv / tsv
+
+---------------------------------------------------------------------------
+- [anything]sv:
+
+  * handles anything the MySQL "LOAD DATA INFILE":http://dev.mysql.com/doc/refman/5.0/en/load-data.html
+    command does.
+  **  header
+  ***   from_first_line
+  ***   fields /array_of_header_fields/
+  **  ignore /number/ lines
+  **  character set /charset_name/
+  **  fields
+  ***   terminated by /'string'/
+  ***   [optionally] enclosed by /'char'/
+  ***   escaped by /'char'/
+  **  lines
+  ***   starting by /'string'/
+  ***   terminated by /'string'/
+  * use csv/tsv if you can.
+
+---------------------------------------------------------------------------
+- yaml
+- xml
+- json
+
+---------------------------------------------------------------------------
+- HTML tables
+
+  * hpricot? beautiful/stone soup?
+  * somehow or another, identify the table you want,
+  * then whack it into table form
+  **  handle rowspans, colspans
+  **  handle th, tbody, etc?
+  **  use style or class or regexp to find delimiting rows/columns
+
+---------------------------------------------------------------------------
+- HTML documents
+- textile, mediawiki, markdown
+- KML, ArcView, ...
+- SAS, Excel, ...
+
+
+===========================================================================
+=
+= dataset workflow
+=
+
+- directory tree
+  imwpath(:this, :that, :thother)
+  ics/                                  :imw
+  - code/                               :code_root
+    - munge/                            :munge_root 
+      - cat/subcat/coll/                :munge          code for processing
+        - process_[coll].rb             :proc_rake      
+        - process_[coll].rb             :proc_yaml      
+        - schema_[coll]_template.rb     :coll_schema_in 
+        - schema_[coll]_datasets.rb     :dset_schema_in     
+  - data/                               :data_root
+    - ripd/                             :ripd           screenscraped / downloaded source material
+      - url_domain/dir/dir/file     
+    - rawd/cat/subcat/coll/             :rawd           working copies of source documents
+    - dump/cat/subcat/coll/             :dump           intermediate generated files
+    - fixd/cat/subcat/coll/ds-fmt       :fixd           payload, exactly as delivered to downloader
+    - pkgd/cat/subcat/coll/ds-fmt.ext   :pkgd           payload, bundled and compressed
+
+- examples of things you might do:
+  - Schema information can come from
+    * data extracted in processing files
+	* master template applying to each dataset in the collection
+	* hand-edited schema for each dataset
+  - processing instructions can come from (in order of preference
+    * process_[coll].rb, a rake file (which can trivially call a make or ant
+	  file or whatever your chimpanzee heart desires if you don't like rake)
+	* process_[coll].yaml, a yaml file for super-simple files
+	**  like just insert schema and repackage files, possibly changing names
+
+- file utils
+  * cp, mv, mkdir, mkdir_p, mkdir_tree, ...
+  * make/extract tar_bz2, tar_gz, gzip, zip, ...
+
+
+===========================================================================
+=
+= Ripping
+=
+
+- scrape a website subtree (wget)
+- follow a feed
+
+
+===========================================================================
+=
+= Characterization
+=
+
+- rows / number of objects
+- cols / "simple" complexity (top-level fields in structured records)
+- min, max, avg, stdev, median of numeric field
+- min, max length of strings (or to_s of field)
+- # of distinct values
+- histogram of values (or frequency table)
+- strings: 7bit?  (i.e. no instances contain unicode values)
+
+
+===========================================================================
+=
+= base class extensions:
+=
+
+- hash
+	* Hash.zip()
+	* Hash.deep_merge()
+- 
+	
+
+===========================================================================
+=
+= Utilities
+=
+
+- announce: |
+    logger routines to announce progress
+	* optional :total "total number to process" parameter
+	* kicks out a progress report at the earliest of
+	  :seconds seconds (default 10)
+	  :percent percent complete (default 5); only if :total is set
+	  :num	   number processed (calls to announce), default 1000.
+	* :format format string
+	  progress: number | percent done | seconds elapsed

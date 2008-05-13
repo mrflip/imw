@@ -1,0 +1,100 @@
+--- 
+- infochimps_schema:
+    #
+    # Fundamental description
+    #
+    
+    # Name the larger collection this dataset belongs to.
+    # (Name it the same as the dataset if it's a collection of one)
+    collection:         
+    # collection_unique_name_in_identifier_form
+    coll_uniqid:        
+    # tags for the collection itself
+    coll_tags:          ''
+
+    # each format 
+    formats:            { csv:   {}, yaml:  {}, xls:   {} }
+    
+    #
+    # Contributors
+    #
+    #   People/organizations who created or prepared the dataset. Include links
+    #   and citations wherever possible. This gives credit where it's deserved,
+    #   and allows people to trace the provenance of the data.
+    #
+    contributors:
+      
+      - name:           ''
+        uniqid:         
+        url:            
+        role:           
+        cite:           ''
+        desc:           |
+            (...)
+            
+    #
+    # Free-form descriptive notes
+    #
+
+    notes:
+            
+        # The collection as a whole
+        coll_desc: |-
+              (...)
+      
+        #  
+        # Any technical stuff you'd need to know.  If this is long, break it up
+        # into an overview (here) and other free-form notes; link to each with
+        # "link text":#anchor_tag
+        #
+        usage:          |
+              (...)
+      
+        #
+        # Please be careful to include the exact text of any license or
+        # request for restrictions accompanying this dataset.  If they ask that it
+        # be included as a file please also inject that into the payload.
+        # 
+        # Here's some info about copyright and collections of facts:
+        #   http://blog.infochimps.org/2008/04/02/good-neighbors-and-open-grazing/
+        #
+        rights:         |-
+              (...)
+      
+
+    #
+    # Field listing
+    # 
+    fields:
+      -
+        name:              
+        uniqid:            
+        # Tags: *concept* this field represents
+        tags:              
+        
+        # Units: its *representation*
+        # any "Frink-understandable units":http://futureboy.homeip.net/frinkdata/units.txt
+        units:             
+  
+        # Any "Kwalify simple datatype": http://www.kuwata-lab.com/kwalify/ruby/users-guide.html
+        # (str int float number text bool date time timestamp scalar seq map any)
+        datatype:
+        desc:             |
+            
+        
+      - name:              
+        tags:              
+        units:             
+        datatype:          
+        uniqid:         
+        desc:             |
+               
+
+    #
+    # We don't use these yet, but we will eventually.
+    # "Criteria":http://help.infochimps.org/help/show/HOWTO+Schema
+    ratings:
+        interesting:    {rating: 0, by: 'initial', desc: ''}
+        authoritative:  {rating: 0, by: 'initial', desc: ''}
+        comprehensive:  {rating: 0, by: 'initial', desc: ''}
+        accurate:       {rating: 0, by: 'initial', desc: ''}
