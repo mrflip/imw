@@ -18,7 +18,7 @@ rake_file_flag="-f $IMW_ROOT/imw/Rakefile"
 #    --trace \
     
 rake \
-    --require="$IMW_ROOT"/imw/lib/tasks/boot.rb \
-    --rakelibdir="$IMW_ROOT"/imw/lib/tasks      \
-    -f "$IMW_ROOT"/imw/Rakefile \
+    --require="$IMW_ROOT"/lib/tasks/boot.rb \
+    --rakelibdir="$IMW_ROOT"//lib/tasks      \
+    -f "$IMW_ROOT"/Rakefile \
     -v "$@"
