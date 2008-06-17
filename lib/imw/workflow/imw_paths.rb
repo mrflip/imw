@@ -91,4 +91,4 @@ module IMWPaths
 
 end
 
-# puts "#{File.basename(__FILE__)}" 
+# puts "#{File.basename(__FILE__)}: Your monkeywrench glows alternately dim then bright as you wander, suggesting to you which paths to take." 
