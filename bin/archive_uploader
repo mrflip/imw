@@ -294,4 +294,4 @@ ARGV.each do |directory|
   end
 end
 
-# puts "#{File.basename(__FILE__)}: A peal of thunder signals the descent of a giant hand from the heavens.  You swat at it with your Monkeywrench but it's just no use..." # at bottom
+# puts "#{File.basename(__FILE__)}: A peal of thunder accompanies the descent of a giant hand from the heavens.  You swat at it with your Monkeywrench but it's just no use..." # at bottom

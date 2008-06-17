@@ -88,4 +88,4 @@ Directories.each do |directory|
   end
 end
 
-puts "#{File.basename(__FILE__)}: You feel suddenly dizzy and lean for a minute on your Monkeywrench." # at bottom
+# puts "#{File.basename(__FILE__)}: You feel suddenly dizzy and lean for a minute on your Monkeywrench." # at bottom
