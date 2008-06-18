@@ -1,5 +1,5 @@
 #
-# h2. imw/foo -- desc lib
+# h2. lib/imw/foo -- desc lib
 #
 # action::    desc action     
 #
