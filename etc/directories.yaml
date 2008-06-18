@@ -1,0 +1,49 @@
+#
+# h2. etc/directories.yaml -- specifies directory structure
+#
+# == Overview
+#
+# As data and datasets are being processed, files are created and must
+# be stored in some fixed directory structure. This configuration file
+# describes how internal IMW directory names are mapped to real
+# directories in a local or remote filesystem(s).
+#
+# == Specifying directories
+#
+# Directories can be specified by workflow step (ripd, xtrd, etc.) or
+# by particular category in a taxonomy.
+#
+# A leading '/' in a directory path causes the directory to be resolve
+# relative the root of the local filesystem while the absence of such
+# a leading '/' causes the directory to be resolved relative to the
+# the root of the IMW installation.
+#
+# Directories can be specified with a protocol like
+# "ftp:user@host:dir" or "ssh:user@host:dir" (include the quotation
+# marks around the entry to avoid the colons being interpreted by
+# YAML) if they are on remote machines.
+#
+# To specify that a particular category in a taxonomy (and all its
+# children) be stored in a special directory, use a hash pair under
+# the "taxonomy" heading with a key given in the format
+# "category/subcat/subsubcat/.../" and a path as specified above.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+# 
+
+---
+directories:
+  workflow: 
+    ripd: data/ripd
+    xtrd: data/xtrd
+    mungd: data/mungd
+    fixd: data/fixd
+    pkgd: data/pkgd
+    dump: data/dump # FIXME should be /tmp except my damn /tmp folder is messed up...
+  taxonomy:
+    
+
+# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
