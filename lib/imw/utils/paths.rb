@@ -1,3 +1,68 @@
+#
+# h2. lib/imw/utils/paths.rb -- defines local paths to IMW directories
+#
+# == About
+#
+# IMW uses lots of different directories to keep information on data
+# and datasets separate.  This module interfaces with the
+# configuration files to establish the paths to these IMW directories
+# and provides functions and mixins for IMW objects to use to access
+# these paths.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+# 
+
+require 'imw/utils/misc'
+require 'imw/model'
+
+
+module IMW
+
+  module Paths
+
+    # Return the path to this object's `step' directory.
+    def path_to(step)
+
+      if self.class == IMW::Dataset then
+        taxonomy_path = @category.join('/')
+        case step
+        when :mungd
+          "mungd/#{taxonomy_path}/#{@name}"
+        when :fixd
+          "fixd/#{taxonomy_path}/#{@name}"
+        when :pkgd
+          "pkgd/#{taxonomy_path}/#{@name}"
+        when :dump
+          "dump"
+        else
+          raise ArgumentError.new("The only valid paths for a Dataset are `:mungd', `:fixd', `:pkgd', or `:dump'.")
+        end
+
+      elsif self.class == IMW::DataSource then
+        reversed_domain = reverse_domain(@source)
+        case step
+        when :ripd
+          "ripd/#{reversed_domain}/#{@name}"
+        when :xtrd
+          "xtrd/#{reversed_domain}/#{@name}"
+        when :dump
+          "dump"
+        else
+          raise ArgumentError.new("The only valid paths for a DataSource are `:ripd', `:xtrd', or `:dump'.")
+        end
+      end
+    end
+
+  end
+
+end
+
+
+
+
 module IMWPaths
   DIRS = [
     [:root,      $IMW_ROOT             ],   # set in utils/boot
