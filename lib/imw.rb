@@ -60,13 +60,7 @@ module IMWConfig
 end
 
 # Home base for all activity
-$IMW_ROOT ||= ENV['IMW_ROOT'] || File.expand_path(IMW::Config['imw_root'])
-if !$IMW_ROOT 
-  warn "With no $IMW_ROOT variable your infinite monkeywrench is confused, driftless. Setting an $IMW_ROOT environment variable will give it a firm fulcrum on which to act." 
-end
-if !File.exist? $IMW_ROOT then 
-  warn "The $IMW_ROOT directory '#{$IMW_ROOT}' doesn't exist. This may cause distress and confusion." 
-end
+
 
 require 'imw/model'         # collection, dataset, field, contributor, ...
 require 'imw/workflow/imw_paths'
