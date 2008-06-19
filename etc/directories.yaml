@@ -15,8 +15,8 @@
 #
 # A leading '/' in a directory path causes the directory to be resolve
 # relative the root of the local filesystem while the absence of such
-# a leading '/' causes the directory to be resolved relative to the
-# the root of the IMW installation.
+# a leading '/' causes the directory to be resolved with respect to
+# the $IMW_ROOT.
 #
 # Directories can be specified with a protocol like
 # "ftp:user@host:dir" or "ssh:user@host:dir" (include the quotation
@@ -35,15 +35,15 @@
 # 
 
 ---
-directories:
-  workflow: 
-    ripd: data/ripd
-    xtrd: data/xtrd
-    mungd: data/mungd
-    fixd: data/fixd
-    pkgd: data/pkgd
-    dump: data/dump # FIXME should be /tmp except my damn /tmp folder is messed up...
-  taxonomy:
+root: ~/imw # the $IMW_ROOT environment variable takes precedence over this
+workflow: 
+  ripd: data/ripd
+  xtrd: data/xtrd
+  mungd: data/mungd
+  fixd: data/fixd
+  pkgd: data/pkgd
+  dump: data/dump # FIXME should be /tmp except my damn /tmp folder is messed up...
+taxonomy:
     
 
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
