@@ -17,7 +17,7 @@
 
 require 'imw/utils/misc'
 require 'imw/model'
-
+require 'imw/utils/config'
 
 module IMW
 
@@ -30,13 +30,13 @@ module IMW
         taxonomy_path = @category.join('/')
         case step
         when :mungd
-          "mungd/#{taxonomy_path}/#{@name}"
+          [IMW::Config::Directories[:mungd],taxonomy_path,@name].join('/')
         when :fixd
-          "fixd/#{taxonomy_path}/#{@name}"
+          [IMW::Config::Directories[:fixd],taxonomy_path,@name].join('/')          
         when :pkgd
-          "pkgd/#{taxonomy_path}/#{@name}"
+          [IMW::Config::Directories[:pkgd],taxonomy_path,@name].join('/')          
         when :dump
-          "dump"
+          IMW::Config::Directories[:dump]
         else
           raise ArgumentError.new("The only valid paths for a Dataset are `:mungd', `:fixd', `:pkgd', or `:dump'.")
         end
@@ -45,11 +45,11 @@ module IMW
         reversed_domain = reverse_domain(@source)
         case step
         when :ripd
-          "ripd/#{reversed_domain}/#{@name}"
+          [IMW::Config::Directories[:ripd],reversed_domain,@name].join('/')
         when :xtrd
-          "xtrd/#{reversed_domain}/#{@name}"
+          [IMW::Config::Directories[:xtrd],reversed_domain,@name].join('/')          
         when :dump
-          "dump"
+          IMW::Config::Directories[:dump]
         else
           raise ArgumentError.new("The only valid paths for a DataSource are `:ripd', `:xtrd', or `:dump'.")
         end
