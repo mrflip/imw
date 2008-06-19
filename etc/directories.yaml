@@ -35,7 +35,9 @@
 # 
 
 ---
-root: ~/imw # the $IMW_ROOT environment variable takes precedence over this
+IMW_ROOT: ~/imw # the IMW_ROOT environment variable takes precedence over this
+data: data
+process: process
 workflow: 
   ripd: data/ripd
   xtrd: data/xtrd
@@ -46,4 +48,4 @@ workflow:
 taxonomy:
     
 
-# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+# puts "#{File.basename(__FILE__)}: Afraid of randomness, you build little boxes in which to place your things." # at bottom
