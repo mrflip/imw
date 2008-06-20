@@ -41,7 +41,7 @@ module IMW
           raise ArgumentError.new("The only valid paths for a Dataset are `:mungd', `:fixd', `:pkgd', or `:dump'.")
         end
 
-      elsif self.class == IMW::DataSource then
+      elsif self.class == IMW::Source then
         reversed_domain = reverse_domain(@source)
         case step
         when :ripd
@@ -51,13 +51,13 @@ module IMW
         when :dump
           IMW::Config::Directories[:dump]
         else
-          raise ArgumentError.new("The only valid paths for a DataSource are `:ripd', `:xtrd', or `:dump'.")
+          raise ArgumentError.new("The only valid paths for a Source are `:ripd', `:xtrd', or `:dump'.")
         end
       end
     end
 
   end
-
+xk
 end
 
 

@@ -16,12 +16,15 @@
 # 
 
 require 'imw/utils/paths'
+require 'imw/workflow'
+
 
 module IMW
 
-  class DataSource
+  class Source
 
     include IMW::Paths
+    include IMW::Workflow::Rip
 
     attr_reader :name, :source
 
