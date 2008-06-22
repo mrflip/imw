@@ -30,9 +30,9 @@ module IMW
       @name = name
 
       if sources then
-        @sources = sources.map {|source| DataSource.new(source)}
+        @sources = sources.map {|source| Source.new(source)}
       else
-        @sources = [DataSource.new(@name)]
+        @sources = [Source.new(@name)]
       end
 
       @category = ['category','subcat','subsubcat']

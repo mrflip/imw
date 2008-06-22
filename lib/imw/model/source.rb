@@ -23,16 +23,20 @@ module IMW
 
   class Source
 
-    include IMW::Paths
     include IMW::Workflow::Rip
 
-    attr_reader :name, :source
+    attr_reader :name, :subpath
 
     # this initialize method needs to be rewritten with validation
     # etc.
     def initialize name
       @name = name
-      @source = "http://www.fakedatasource.com/that/needs/to/be/fixed"
+    end
+
+    # Returns the path to this source's `step' directory
+    def path_to step
+      raise ArgumentError("The only valid workflow steps for Sources are `:ripd', `:xtrd', or `:dump'.") if not [:ripd,:xtrd,:dump].include? step
+      if step == :ripd or step == :xtrd then [IMW::Paths.root_of(step),@subpath,@name].join('/') else IMW::Paths.root_of(step) end
     end
 
   end

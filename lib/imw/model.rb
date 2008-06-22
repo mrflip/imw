@@ -12,7 +12,7 @@
 # 
 
 require 'imw/model/dataset'
-require 'imw/model/datasource'
+require 'imw/model/source'
 
 
 # puts "#{File.basename(__FILE__)}: Though powerful, your Monkeywrench is delicate enough to fold origami with." # at bottom

@@ -15,49 +15,34 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/utils/misc'
-require 'imw/model'
 require 'imw/utils/config'
 
 module IMW
 
   module Paths
 
-    # Return the path to this object's `step' directory.
-    def path_to(step)
-
-      if self.class == IMW::Dataset then
-        taxonomy_path = @category.join('/')
-        case step
-        when :mungd
-          [IMW::Config::Directories[:mungd],taxonomy_path,@name].join('/')
-        when :fixd
-          [IMW::Config::Directories[:fixd],taxonomy_path,@name].join('/')          
-        when :pkgd
-          [IMW::Config::Directories[:pkgd],taxonomy_path,@name].join('/')          
-        when :dump
-          IMW::Config::Directories[:dump]
-        else
-          raise ArgumentError.new("The only valid paths for a Dataset are `:mungd', `:fixd', `:pkgd', or `:dump'.")
-        end
-
-      elsif self.class == IMW::Source then
-        reversed_domain = reverse_domain(@source)
-        case step
-        when :ripd
-          [IMW::Config::Directories[:ripd],reversed_domain,@name].join('/')
-        when :xtrd
-          [IMW::Config::Directories[:xtrd],reversed_domain,@name].join('/')          
-        when :dump
-          IMW::Config::Directories[:dump]
-        else
-          raise ArgumentError.new("The only valid paths for a Source are `:ripd', `:xtrd', or `:dump'.")
-        end
+    # Returns the root of workflow `step'
+    def self.root_of(step)
+      case step
+      when :ripd
+        IMW::Config::Directories[:ripd]
+      when :xtrd
+        IMW::Config::Directories[:xtrd]          
+      when :mungd
+        IMW::Config::Directories[:mungd]
+      when :fixd
+        IMW::Config::Directories[:fixd]          
+      when :pkgd
+        IMW::Config::Directories[:pkgd]          
+      when :dump
+        IMW::Config::Directories[:dump]
+      else
+        raise ArgumentError.new("The only valid workflow steps and therefore workflow root directories are `:ripd', `:xtrd', `:mungd', `:fixd', `:pkgd', and `:dump'.")
       end
     end
 
   end
-xk
+
 end
 
 
