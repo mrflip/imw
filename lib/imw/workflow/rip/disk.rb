@@ -13,7 +13,7 @@
 # 
 
 require 'imw/utils/error'
-require 'fileutils'
+require 'imw/utils/stdlib_extensions'
 
 module IMW
   module Workflow
@@ -29,6 +29,7 @@ module IMW
       # the FileUtils methods it calls.
       def rip_from_local_disk(local_data,opts={})
         @subpath = "local_disk"
+        FileUtils.mkdir_p(self.path_to(:ripd)) if not File.exist?(self.path_to(:ripd))
         FileUtils.smart_copy(local_data,self.path_to(:ripd),opts)
       end
 

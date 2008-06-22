@@ -14,8 +14,8 @@
 # 
 
 require 'fileutils'
-require 'config'
-require 'error'
+require 'imw/utils/config'
+require 'imw/utils/error'
 
 module FileUtils
 
