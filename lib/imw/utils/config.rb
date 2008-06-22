@@ -13,6 +13,7 @@
 # 
 
 require 'yaml'
+require 'imw/model/directory'
 
 module IMW
 
@@ -48,30 +49,18 @@ module IMW
       Directories[:imw_root] = imw_root
     end
 
-    # This method interprets the string for each directory path,
-    # implementing the logic outlined above in and
-    # `etc/directories.yaml'.
-    def self.interpret_directory(directory)
-      if directory =~ /^\// then
-        directory
-      elsif directory =~ /^[a-zA-Z]+:/
-        raise NotImplementedError.new("Directories with prefixes like `ssh:' or `ftp:' are not currently implemented in IMW.  Sorry!")
-      else
-        [Directories[:imw_root],directory].join('/')
-      end
-    end
 
     # Start interpreting the directories (this should be written more
     # cleverly to allow for the structure of the directories.yaml file
     # to be changed...)
-    Directories[:ripd] = interpret_directory(raw_directories['workflow']['ripd'])
-    Directories[:xtrd] = interpret_directory(raw_directories['workflow']['xtrd'])
-    Directories[:mungd] = interpret_directory(raw_directories['workflow']['mungd'])
-    Directories[:fixd] = interpret_directory(raw_directories['workflow']['fixd'])
-    Directories[:pkgd] = interpret_directory(raw_directories['workflow']['pkgd'])
-    Directories[:dump] = interpret_directory(raw_directories['workflow']['dump'])
-    Directories[:process] = interpret_directory(raw_directories['process'])
-    Directories[:data] = interpret_directory(raw_directories['data'])
+    Directories[:ripd] = IMW::Directory.new(raw_directories['workflow']['ripd'])
+    Directories[:xtrd] = IMW::Directory.new(raw_directories['workflow']['xtrd'])
+    Directories[:mungd] = IMW::Directory.new(raw_directories['workflow']['mungd'])
+    Directories[:fixd] = IMW::Directory.new(raw_directories['workflow']['fixd'])
+    Directories[:pkgd] = IMW::Directory.new(raw_directories['workflow']['pkgd'])
+    Directories[:dump] = IMW::Directory.new(raw_directories['workflow']['dump'])
+    Directories[:process] = IMW::Directory.new(raw_directories['process'])
+    Directories[:data] = IMW::Directory.new(raw_directories['data'])
 
     # Here there needs to be section which parses the `taxonomy'
     # section of the `etc/directories.yaml' file to deal with

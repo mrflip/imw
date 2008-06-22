@@ -25,17 +25,17 @@ module IMW
     def self.root_of(step)
       case step
       when :ripd
-        IMW::Config::Directories[:ripd]
+        IMW::Config::Directories[:ripd].path
       when :xtrd
-        IMW::Config::Directories[:xtrd]          
+        IMW::Config::Directories[:xtrd].path          
       when :mungd
-        IMW::Config::Directories[:mungd]
+        IMW::Config::Directories[:mungd].path
       when :fixd
-        IMW::Config::Directories[:fixd]          
+        IMW::Config::Directories[:fixd].path          
       when :pkgd
-        IMW::Config::Directories[:pkgd]          
+        IMW::Config::Directories[:pkgd].path          
       when :dump
-        IMW::Config::Directories[:dump]
+        IMW::Config::Directories[:dump].path
       else
         raise ArgumentError.new("The only valid workflow steps and therefore workflow root directories are `:ripd', `:xtrd', `:mungd', `:fixd', `:pkgd', and `:dump'.")
       end

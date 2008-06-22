@@ -36,15 +36,15 @@
 
 ---
 IMW_ROOT: ~/imw # the IMW_ROOT environment variable takes precedence over this
-data: data
-process: process
+data: ~/projects/infochimps/data
+process: ~/projects/infochimps/process
 workflow: 
-  ripd: data/ripd
-  xtrd: data/xtrd
-  mungd: data/mungd
-  fixd: data/fixd
-  pkgd: data/pkgd
-  dump: data/dump # FIXME should be /tmp except my damn /tmp folder is messed up...
+  ripd: ~/projects/infochimps/data/ripd
+  xtrd: ~/projects/infochimps/data/xtrd
+  mungd: ~/projects/infochimps/data/mungd
+  fixd: ~/projects/infochimps/data/fixd
+  pkgd: ~/projects/infochimps/data/pkgd
+  dump: ~/projects/infochimps/data/dump # FIXME should be /tmp except my damn /tmp folder is messed up...
 taxonomy:
     
 
