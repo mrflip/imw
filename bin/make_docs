@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rm -rf ~/projects/infochimps/imw/doc
+rm -rf ~/www/website/imw-docs
+
+cd ~/projects/infochimps/imw
+rdoc --main README --promiscuous lib etc README*
+cp -r doc ~/www/website/imw-docs

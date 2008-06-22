@@ -20,3 +20,4 @@ instiki/*
 \#*
 tmp/*
 *.org
+doc/*
