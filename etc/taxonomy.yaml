@@ -1,7 +1,7 @@
 #
 # h2. etc/taxonomy.yaml -- specifies the taxonomy used to organize datasets
 #
-# == Overview
+# == About
 #
 # Datasets are built around concepts and organized in an hierarchical
 # taxonomy.  The default taxonomy is defined in this configuration
