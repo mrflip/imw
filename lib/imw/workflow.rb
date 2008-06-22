@@ -12,6 +12,6 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'workflow/imw_paths'
+require 'imw/workflow/rip'
 
-puts "#{File.basename(__FILE__)}: You find your flow next to a tall tree.  Ahhhh."
+# puts "#{File.basename(__FILE__)}: You find your flow next to a tall tree.  Ahhhh."

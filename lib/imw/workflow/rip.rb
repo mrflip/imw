@@ -1,15 +1,10 @@
 #
-# h2. imw/rip.rb -- Handles ripping data in various ways from the web.
+# h2. lib/imw/rip.rb -- obtaining data
 #
-# == Accessing Data
+# == About
 # 
-# This module will access data online in a variety of formats
-#
-# * syndicated news feeds (RSS)
-# * web pages and files by following following hyperlinks 
-#   and/or recursively downloading web directories
-#
-# and using a variety of protocalls (HTTP, FTP, SFTP, etc.).
+# This file is just a container for the various methods of obtaining
+# data that live in the lib/imw/rip directory.
 #
 #
 # == Processing Data 
@@ -26,6 +21,6 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
+require 'imw/workflow/rip/disk'
 
-
-puts "#{File.basename(__FILE__)}: Dark branches crack like thunder at dusk as your Infinite Monkeywrench rips through the dense undergrowth." # at bottom
+# puts "#{File.basename(__FILE__)}: Dark branches crack like thunder at dusk as your Infinite Monkeywrench rips through the dense undergrowth." # at bottom
