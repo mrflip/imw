@@ -113,11 +113,11 @@ module FileUtils
             if options[:prompt] then
               # prompt for overwrite if that's an option
               yn = ''
-              until IMW::Config::Yeses.member?(yn) or IMW::Config::Nos.member?(yn) do
+              until IMW::Yeses.member?(yn) or IMW::Nos.member?(yn) do
                 $stdout.puts "overwrite file #{new_file}? "
                 yn = $stdin.gets.chomp!
               end
-              IMW::Config::Yeses.member?(yn) ? write_file = true : write_file = false
+              IMW::Yeses.member?(yn) ? write_file = true : write_file = false
 
             else
               # if not prompting then see if we force overwrite
