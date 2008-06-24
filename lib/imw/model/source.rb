@@ -25,7 +25,7 @@ module IMW
 
     include IMW::Workflow::Rip
 
-    attr_reader :name, :subpath
+    attr_reader :name, :source
 
     # this initialize method needs to be rewritten with validation
     # etc.
@@ -33,10 +33,11 @@ module IMW
       @name = name
     end
 
-    # Returns the path to this source's `step' directory
+    # Returns the path the directory corresponding to the workflow
+    # +step+ for this source.
     def path_to step
       raise ArgumentError("The only valid workflow steps for Sources are `:ripd', `:xtrd', or `:dump'.") if not [:ripd,:xtrd,:dump].include? step
-      if step == :ripd or step == :xtrd then [IMW::Paths.root_of(step),@subpath,@name].join('/') else IMW::Paths.root_of(step) end
+      if step == :ripd or step == :xtrd then [IMW::Paths.root_of(step),@source,@name].join('/') else IMW::Paths.root_of(step) end
     end
 
   end

@@ -28,16 +28,13 @@ module IMW
       # keyword options passed to this method will be passed down to
       # the FileUtils methods it calls.
       def rip_from_local_disk(local_data,opts={})
-        @subpath = "local_disk"
+        @source = "local_disk"
         FileUtils.mkdir_p(self.path_to(:ripd)) if not File.exist?(self.path_to(:ripd))
         FileUtils.smart_copy(local_data,self.path_to(:ripd),opts)
       end
 
     end
-  end  
+  end
 end
-
-
-
 
 # puts "#{File.basename(__FILE__)}: You gingerly dangle your Monkeywrench over the maelstrom of spinning platters and extract precisely the one you were interested in." # at bottom
