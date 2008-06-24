@@ -1,7 +1,7 @@
 #
-# h2. imw/rip/wget.rb -- Interface to 'wget' utility
+# h2. lib/imw/rip/http.rb -- obtaining data from the web through HTTP
 #
-# == Downloading Data
+# == About
 #
 # These functions act as an interface to the popular 'wget' utility
 # for downloading data from Web resources.
@@ -94,86 +94,148 @@
 # 
 
 require 'imw'
-require 'uri'
+require 'imw/utils/config'
+require 'imw/utils/misc'
+require 'fileutils'
 
-$imw = IMW.new_from_env() # should we be doing things this way?
+module IMW
+  module Workflow
+    module Rip
 
-# Download pages using the 'wget' utility.  The optional argument
-# 'wget_path' specifies the path to the wget binary.
-#
-# Optional arguments to 'wget' can be provided through the 'options'
-# hash which should consist of values keyed to the strings below along
-# with the 'wget' flags they correspond to (parenthesis) and the
-# default values (brackets).  See the man pages for 'wget' for more
-# information.
-# 
-#  * :directory (-P) [ripd directory]
-#  * :max_tries (-t) [20]
-#  * :background (-b) [false]
-#  * :recursive (-r) [true]
-#  * :span_hosts (-H) [false]
-#  * :no_directories (-nd) [false]
-#  * :max_depth (-l) [5]
-#  * :no_parent (-np) [true]
-#  * :accept_extensions (-A) [nil]
-#  * :reject_extensions (-R) [nil]
-#  * :no_clobber (-nc) [true]
-#  * :verbosity (-v,-nv,-q) [q]
-#  * :output_file (-O) [nil]
-#  * :log_file (-a) ['url.log' in dump directory]
-#  * :continue (-c) [false]
-#  * :wait (-w) [0.5]
-#  * :random_wait (--random-wait) [true]
-#  * :limit_rate (--limit-rate) [nil]
-#
-# Alternatively, 'options' can just be a string consisting of options
-# to feed to wget directly.
+      #--
+      # FIXME need to add support for authentication, post, ssl, etc.
+      #++
+      #
+      # Download pages from +urls+ using the +wget+ utility into this
+      # source's <tt>:ripd</tt> directory, filed by the first URL in
+      # the list of URLs to download.
+      #
+      # Options (with their default values in parentheses) include:
+      #
+      # <b>Download options</b>
+      #
+      # <tt>:max_tries</tt> (20):: Maximum number of tries before giving up.  Set to 0 for infinite retrying.  Fatal errors like "connection refused" or "not found" (404) are not retried.
+      # <tt>:background</tt> (false):: Go to background immediately.
+      # <tt>:recursive</tt> (true):: Recurse into directories and follow hyperlinks.
+      # <tt>:span_hosts</tt> (false):: Allow downloading from multiple domains.
+      # <tt>:include_domains</tt> ([]):: Limit downloading to the domains listed.
+      # <tt>:exclude_domains</tt> ([]):: Prevent downloading from the domains listed.
+      # <tt>:max_depth</tt> (5):: The maximum depth of directories to recurse to.
+      # <tt>:no_parent</tt> (true):: Do not recurse to directories above those specified explicitly.
+      # <tt>:include_extensions</tt> ([]):: Download only files matching the given extensions.
+      # <tt>:exclude_extensions</tt> ([]):: Do not download files matching the given extensions.
+      # <tt>:continue</tt> (false):: Continue a previously interrupted download.
+      # <tt>:wait</tt> (0.5):: Wait the given number of seconds between retrievals.  Suffixes of +m+, +h+, or +d+ can be appended for minutes, hours, or days, respectively.
+      # <tt>:random_wait</tt> (true):: Randomly vary the waiting interval between retrievals.
+      # <tt>:limit_rate</tt> (nil):: Limit the downloading rate to the given amount, specified with suffixes of +k+ or +m+ to denote kilobytes or megabytes.
+      # <tt>:user</tt> (nil):: Specify a username to use when authenticating.
+      # <tt>:password</tt> (nil):: Specify a password to use when authenticating.
+      # <tt>:only_new</tt> (false):: Download only those files which are new and/or modified from the ones on the local disk.
+      # <tt>:ignore_length</tt> (false):: Prevent a problem with some CGI programs sending bogus <tt>Content-Length</tt> headers which cause +wget+ to die on the same document at the same byte over and over again.
+      # <tt>:include_directories</tt> ([]):: Download only from the given directories.
+      # <tt>:exclude_directories</tt> ([]):: Do not download from the given directories.
+      #
+      # <b>Local options</b>
+      #
+      # <tt>:no_directories</tt> (false):: Do not create a local hierarchy of directories when retrieving recursively (duplicate filenames will have index numbers appended to them).
+      # <tt>:no_clobber</tt> (false):: Do not download files that already exist on disk.
+      # <tt>:force_directories</tt> (false):: Create a directory structure on the local disk even if one doesn't exist on the server.
+      # <tt>:remove_host_prefix</tt> (true):: Remove the hostname prefix from the local directory structure (<tt>http://fly.srk.fer.hr/robots.txt</tt> will be placed into <tt>robots.txt</tt>)
+      # <tt>:cut_directories</tt> (nil):: Remove the given number of directory prefixes (<tt>fftp://ftp.xemacs.org/pub/xemacs/index.html</tt> will download to <tt>pub/xemacs/index.html</tt> with an argument of 1 and to <tt>xemacs/index.html</tt> with an argument of 2, etc.)
+      #
+      # <b>Miscellaneous options</b>
+      #
+      # <tt>:verbose</tt> ('v'):: Control level of verbosity: +v+ - print everything, +nv+ - print basic information and error message, or +q+ - pring nothing.
+      # <tt>:wget_path</tt> ('wget'):: Path to the +wget+ program.
+      #
+      # More information about these options can be found by reading the manual for Wget.
+      def rip_with_wget(urls,user_opts={})
 
-Default_options = {:max_tries=>20,  :recursive=>true,:no_directories=>false,:max_depth=>5,:no_parent=>true,:no_clobber=>false,:verbosity=>'q',:continue=>false,:wait=>0.5,:random_wait=>true,:span_hosts=>false}
+        # process urls and define @source for this source
+        if urls.class == String then urls = [urls] end
+        @source = reverse_domain(urls.first)
+        
+        # default values for options
+        options = {:max_tries => 20, :background => false, :recursive => true, :span_hosts => false,\
+          :include_domains => [], :exclude_domains => [], :max_depth => 5, :no_parent => true,\
+          :include_extensions => [], :exclude_extensions => [], :continue => false, :wait => 0.5,\
+          :random_wait => true, :limit_rate => nil, :user => nil, :password => nil, :only_new => false,\
+          :ignore_length => false, :include_directories => [], :exclude_directories => [],\
+          :no_directories => false, :no_clobber => false, :force_directories => false,\
+          :remove_host_prefix => true, :cut_directories => nil, :verbose => 'v',:wget_path => 'wget'}
+        # update default options with user supplied options
+        options.update(user_opts)
 
-def wget(uri,wget_path='wget',options=nil)
-  # get path to name logfile with
-  uri_object = URI.parse(uri)
-  path = (uri_object.host + uri_object.path).gsub('/','_') + '.' + Time.now.strftime("%Y-%M-%d_%H:%M:%S")
+        # wget long-form flags for each option
+        option_flags = {:max_tries => "tries", :background => "background", :recursive => "recursive",\
+          :span_hosts => "span-hosts", :include_domains => "domains", :exclude_domains => "exclude-domains",\
+          :max_depth => "level", :no_parent => "no-parent", :include_extensions => "accept",\
+          :exclude_extensions => "reject", :continue => "continue", :wait => "wait",\
+          :random_wait => "random-wait", :limit_rate => "limit-rate", :user => "user",\
+          :password => "password", :only_new => "timestamping", :ignore_length => "ignore-length",\
+          :include_directories => "include-directories", :exclude_directories => "exclude-directories",\
+          :no_directories => "no-directories", :no_clobber => "no-clobber",\
+          :force_directories => "force-directories", :remove_host_prefix => "no-host-directories",\
+          :cut_directories => "cut-dirs"}
+        # flags that will actually be passed to wget
+        flags = []
+        
+        # process boolean options
+        [:background, :recursive, :span_hosts, :no_parent, :continue, :random_wait,\
+         :only_new, :ignore_length, :no_directories, :no_clobber, :force_directories,\
+         :remove_host_prefix].each do |opt|
+          if options[opt] then
+            flags << "--#{option_flags[opt]}"
+          end
+        end
+        
+        # process options with argument lists
+        [:include_domains, :exclude_domains, :include_extensions, :exclude_extensions,\
+         :include_directories, :exclude_directories].each do |opt|
+          if options[opt].length > 0 then
+            flags << "--#{option_flags[opt]}=#{options[opt].join(',')}"
+          end
+        end
+        
+        # process other options
+        flags << "--#{option_flags[:max_tries]}=#{options[:max_tries]}"
+        flags << "--#{option_flags[:max_depth]}=#{options[:max_depth]}"
+        flags << "--#{option_flags[:wait]}=#{options[:wait]}"
+        flags << "--#{option_flags[:limit_rate]}=#{options[:limit_rate]}" if options[:limit_rate]
+        flags << "--#{option_flags[:user]}=#{options[:user]}" if options[:user]
+        flags << "--#{option_flags[:password]}=#{options[:password]}" if options[:user]
+        flags << "--#{option_flags[:cut_directories]}=#{options[:cut_directories]}" if options[:cut_directories]
+        case options[:verbose]
+        when 'v' then
+          flags << "--verbose"
+        when 'nv' then
+          flags << "--no-verbose"
+        when 'q' then
+          flags << "--quiet"
+        else
+          flags << "--verbose"
+        end
+        
+        # log file
+        flags << "--append-output=#{self.path_to(:ripd)}/#{Time.now.strftime(IMW::TimestampFormat)}.log"
+        # get directories to dump files in
+        flags << "--directory-prefix=#{self.path_to(:ripd)}"
+        
+        # construct command
+        command = "#{options[:wget_path]} #{flags.join(' ')} #{urls.join(' ')}"
 
-  if not options then options = Default_options end
+        # create the ripd directory to hold the downloaded data only
+        # if it doesn't already exist
+        if not File.exist?(self.path_to(:ripd)) then FileUtils.mkdir_p(self.path_to(:ripd)) end
 
-  # make sure to check that no control characters are passed to wget
-  cc_regex = /(#|;|\$)/
-  mesg = "Control character (`#', `;', `$') found in options."
-  if options.class == String then raise ArgumentError, mesg if options =~ cc_regex
-  elsif options.class == Hash then
-    options.each_value { |option| raise ArgumentError, mesg if option =~ cc_regex }
+        # run command
+        system(command)
+        raise IMW::Error.new("Error in invoking wget (error code: #{$?.exitstatus}).  Command was #{command}") unless $?.success?
+
+      end
+
+    end
   end
-
-  # clean some options
-  options[:verbosity] = options[:verbosity].gsub('-','')
-
-  # assemble command
-  command = "#{wget_path} "
-  if options.class == String then command += options
-  elsif options.class == Hash then
-    command += "-t#{options[:max_tries]} -l#{options[:max_depth]} -#{options[:verbosity]} -w#{options[:wait]} "
-    flags = []
-    if options[:span_hosts] then flags << "-H" end
-    if options[:background] then flags << "-b" end
-    if options[:recursive] then flags << "-r" end
-    if options[:no_directories] then flags << "-nw" end
-    if options[:no_parent] then flags << "-np" end
-    if options[:no_clobber] then flags << "-nc" end
-    if options[:output_file] then flags << "-O#{options[:output_file]}" end
-    if options[:log_file] then flags << "-a#{options[:log_file]}" else flags << "-a#{$imw.path_to(:dump,path + ".log")}" end
-    if options[:continue] then flags << "-c" end
-    if options[:random_wait] then flags << "--random-wait" end
-    if options[:limit_rate] then flags << "--limit-rate=#{options[:limit_rate]}" end
-    if options[:accept_extensions] then flags << "-A#{options[:accept_extensions]}" end
-    if options[:reject_extensions] then flags << "-R#{options[:reject_extensions]}" end
-    if options[:directory] then flags << "-P#{options[:directory]}" else flags << "-P#{$imw.path_to(:ripd)}" end
-    command += flags.join(' ')
-  end
-  puts command
 end
-
-
 
 #puts "#{File.basename(__FILE__)}: You walk through the forest jauntily clubbing trees and bushes with your Monkeywrench." # at bottom

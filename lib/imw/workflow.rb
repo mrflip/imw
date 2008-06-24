@@ -14,4 +14,10 @@
 
 require 'imw/workflow/rip'
 
+module IMW
+  module Workflow
+  end
+end
+
+
 # puts "#{File.basename(__FILE__)}: You find your flow next to a tall tree.  Ahhhh."

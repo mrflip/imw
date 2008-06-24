@@ -22,5 +22,6 @@
 # 
 
 require 'imw/workflow/rip/disk'
+require 'imw/workflow/rip/http'
 
 # puts "#{File.basename(__FILE__)}: Dark branches crack like thunder at dusk as your Infinite Monkeywrench rips through the dense undergrowth." # at bottom
