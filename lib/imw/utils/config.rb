@@ -66,10 +66,6 @@ module IMW
     # section of the `etc/directories.yaml' file to deal with
     # per-category exceptions to the directory rules outlined above.
 
-    # Some aliases for yes/no
-    Yeses = ['Yes','YES','yes','Y','y']
-    Nos = ['No','NO','no','N','n']
-    
   end
 
 end
