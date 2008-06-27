@@ -146,10 +146,11 @@ module IMW
       # <b>Miscellaneous options</b>
       #
       # <tt>:verbose</tt> ('v'):: Control level of verbosity: +v+ - print everything, +nv+ - print basic information and error message, or +q+ - pring nothing.
+      # <tt>:simulate</tt> (false):: Don't actually download anything; just spider the source and print what would be downloaded.
       # <tt>:wget_path</tt> ('wget'):: Path to the +wget+ program.
       #
       # More information about these options can be found by reading the manual for Wget.
-      def rip_with_wget(urls,user_opts={})
+      def rip_from_web(urls,user_opts={})
 
         # process urls and define @source for this source
         if urls.class == String then urls = [urls] end
@@ -162,10 +163,13 @@ module IMW
           :random_wait => true, :limit_rate => nil, :user => nil, :password => nil, :only_new => false,\
           :ignore_length => false, :include_directories => [], :exclude_directories => [],\
           :no_directories => false, :no_clobber => false, :force_directories => false,\
-          :remove_host_prefix => true, :cut_directories => nil, :verbose => 'v',:wget_path => 'wget'}
+          :remove_host_prefix => true, :cut_directories => nil, :verbose => 'v',:simulate => false,:wget_path => 'wget'}
         # update default options with user supplied options
         options.update(user_opts)
 
+        # FIXME need to figure out how to actually get good spidering...
+        raise NotImplementedError.new("Sorry, the :simulate option isn't implemented yet.  Just run this command and see what happens!") if options[:simulate]
+        
         # wget long-form flags for each option
         option_flags = {:max_tries => "tries", :background => "background", :recursive => "recursive",\
           :span_hosts => "span-hosts", :include_domains => "domains", :exclude_domains => "exclude-domains",\

@@ -13,6 +13,21 @@
 
 
 module IMW
+
+  # A generic error class.
   class Error < StandardError
   end
+
+  # An error meant to be used when a system call goes awry.  It reports the exit code of the call as well as the 
+  class SystemCallError < RuntimeError
+
+    attr_reader :command
+    
+    def initialize(command)
+      self.message = "(error code: #{$?.exitstatus}, pid: #{$?.pid}) #{command}"
+    end
+
+  end
+  
+  
 end
