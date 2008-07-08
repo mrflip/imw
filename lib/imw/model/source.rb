@@ -25,7 +25,7 @@ module IMW
 
     include IMW::Workflow::Rip
 
-    attr_reader :name, :source
+    attr_reader :name,:source
 
     # this initialize method needs to be rewritten with validation
     # etc.

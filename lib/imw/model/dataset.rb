@@ -19,13 +19,17 @@ module IMW
 
     include IMW::Paths
 
-    attr_reader :name,:sources, :category
+    attr_reader :name,:sources,:category
 
-
-    # this whole initialize method needs to be rewritten with
-    # validation and with checking against the set of datasets present
-    # locally in the fileystem somehow
-    def initialize name,sources=nil
+    # Create a dataset of the given +name+ built from the given
+    # +sources+ in the given +category+.
+    #
+    # The name of each dataset must be unique in a collection of
+    # datasets.  Each source specified must be the unique name of a
+    # source.  If no sources are specified then this dataset's name is
+    # used as the name of the source as well.  If no category is
+    # specified then the default category +uncategorized+ is used.
+    def initialize(name,sources=nil,category=nil)
 
       @name = name
 
@@ -35,7 +39,7 @@ module IMW
         @sources = [Source.new(@name)]
       end
 
-      @category = ['category','subcat','subsubcat']
+      @category = (category.nil? ? ['uncategorized'] : category)
     end
   end
 end

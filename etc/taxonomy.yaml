@@ -55,6 +55,7 @@ taxonomy:
     calendar:
       holidays
     timezone
+  uncategorized
   weather
 
 # puts "#{File.basename(__FILE__)}: You sit for a spell, leaning your Monkeywrench against a nearby boulder, and organize your thoughts." # at bottom
