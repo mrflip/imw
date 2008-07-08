@@ -18,13 +18,20 @@ module IMW
   class Error < StandardError
   end
 
-  # An error meant to be used when a system call goes awry.  It reports the exit code of the call as well as the 
+  # An error meant to be used when a system call goes awry.  It will
+  # report exit status and the process id of the offending call.
   class SystemCallError < RuntimeError
 
-    attr_reader :command
-    
-    def initialize(command)
-      self.message = "(error code: #{$?.exitstatus}, pid: #{$?.pid}) #{command}"
+    def initialize(message)
+      @message = message
+    end
+
+    def display
+      "(error code: #{$?.exitstatus}, pid: #{$?.pid}) #{@message}"
+    end
+
+    def to_s
+      "(error code: #{$?.exitstatus}, pid: #{$?.pid}) #{@message}"
     end
 
   end

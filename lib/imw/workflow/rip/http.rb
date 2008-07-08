@@ -233,8 +233,7 @@ module IMW
         if not File.exist?(self.path_to(:ripd)) then FileUtils.mkdir_p(self.path_to(:ripd)) end
 
         # run command
-        system(command)
-        raise IMW::Error.new("Error in invoking wget (error code: #{$?.exitstatus}).  Command was #{command}") unless $?.success?
+        raise IMW::SystemCallError.new(command) unless system(command)
 
       end
 
