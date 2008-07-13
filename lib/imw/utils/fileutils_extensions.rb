@@ -21,6 +21,9 @@ require 'imw/utils/error'
 
 module FileUtils
 
+  # default options for smart_copy
+  SMART_COPY_OPT_DEFAULT = {}
+
   # Copies +sources+ to +dest+ with _smart_ default behavior.
   #
   # +sources+ can be a string naming a file or directory or an array
@@ -59,8 +62,10 @@ module FileUtils
   def self.smart_copy(sources,dest,opts={})
 
     # deal with options...how i miss python...
-    options = {}
-    options[:dir_perms] = 0755
+    options = {
+      :dir_params => 0755,
+    }.merge opts
+
     options[:file_perms] = 0755
     options[:force] = false
     options[:ignore_empty] = true
@@ -114,7 +119,7 @@ module FileUtils
             if options[:prompt] then
               # prompt for overwrite if that's an option
               yn = ''
-              until IMW::Yeses.member?(yn) or IMW::Nos.member?(yn) do
+              until IMW::Yeses.member?(yn) || IMW::Nos.member?(yn) do
                 $stdout.puts "overwrite file #{new_file}? "
                 yn = $stdin.gets.chomp!
               end
@@ -143,6 +148,9 @@ module FileUtils
         else
           $stdout.puts "no action taken" if options[:verbose] and not options[:prompt]
         end
+        
+        # case 
+        # when options[:symlinks_only] ...
 
         # permission denied
       rescue Errno::EACCES
@@ -214,7 +222,7 @@ module FileUtils
         flags << 'k' if options[:keep_archives]
         flags << 'f' if options[:force]
         program = options[:bzip2_path]
-      elsif archive =~ /\.tar\.bz2$/ or archive =~ /\.tbz2$/ then
+      elsif archive =~ /\.tar\.bz2$/ || archive =~ /\.tbz2$/ then
         # use `--bzip2' instead of `-j' for backwards compatibility; see
         # tar manual
         flags += ['x','f','-bzip2']
@@ -227,7 +235,7 @@ module FileUtils
         # make a temporary copy under a different name so as to keep the
         # original archive (gzip lacks bzip2's `-k' option)
         FileUtils.cp(archive,archive+'copy',:verbose => options[:verbose]) if options[:keep_archives]
-      elsif archive =~ /\.tar\.gz$/ or archive =~ /\.tgz$/ then
+      elsif archive =~ /\.tar\.gz$/ || archive =~ /\.tgz$/ then
         flags += ['x','f','z']
         program = options[:tar_path]
       elsif archive =~ /\.rar$/ then
@@ -251,36 +259,25 @@ module FileUtils
       
       # manually delete tar and zip archives
       unless options[:keep_archives] then
-        if archive =~ /\.tar$/ or archive =~ /\.zip$/ then
-          unless options[:simulate] then
-            FileUtils.rm(archive,:verbose => options[:verbose],:noop => false)
-          else
-            FileUtils.rm(archive,:verbose => options[:verbose],:noop => true)
-          end
+        if archive =~ /\.(tar|zip)$/ then
+          FileUtils.rm archive,:verbose => options[:verbose],:noop => options[:simulate]
         end
       end
 
       # manually delete tar.bz2 and tar.gz archives
       unless options[:keep_archives] then
-        if archive =~ /\.tar\.bz2$/ or archive =~ /\.tar\.gz$/ then
-          if archive =~ /\.tar\.bz2$/ then unzipped_name = archive[0,archive.size - ".bz2".size] end          
-          if archive =~ /\.tar\.gz$/ then unzipped_name = archive[0,archive.size - ".gz".size] end
-          unless options[:simulate] then
-            FileUtils.rm(unzipped_name,:verbose => options[:verbose],:noop => false)
-          else
-            FileUtils.rm(unzipped_name,:verbose => options[:verbose],:noop => true)
-          end
+        if archive =~ /(.*)\.(?:tar\.bz2|tar\.gz)$/ then
+          unzipped_name = $1
+        elsif archive =~ /(.*)\.(?tbz2|tgz)$/ then
+          unzipped_name = $1 + '.tar'
         end
+        FileUtils.rm(unzipped_name,:verbose => options[:verbose],:noop => options[:simulate])
       end
 
       # manually rename temporary copy back to original archive name for
       # the gzip case
       if options[:keep_archives] and archive =~ /\.gz$/
-        unless options[:simulate] then
-          FileUtils.mv(archive + 'copy',archive,:verbose => options[:verbose])
-        else
-          FileUtils.mv(archive + 'copy',archive,:verbose => options[:verbose],:noop => true)
-        end
+          FileUtils.mv archive + 'copy',archive,:verbose => options[:verbose], :noop => options[:simulate]
       end
 
     end

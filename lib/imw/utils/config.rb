@@ -6,6 +6,10 @@
 # This Config module defined here is responsible for parsing
 # configuration files into useful data structures.
 #
+# Right now, it is a shambles: some of the config files are read,
+# others aren't.  Some constants are just inserted here instead of
+# being parsed from files.  Whatever.  We'll figure it out later.
+#
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
@@ -16,6 +20,16 @@ require 'yaml'
 require 'imw/model/directory'
 
 module IMW
+
+  # Paths to external utilities
+  EXTERNAL_PROGRAMS = {
+    :tar => "tar",
+    :rar => "rar",
+    :zip => "zip",
+    :unzip => "unzip",
+    :gzip => "gzip",
+    :bzip2 => "bzip2"
+  }
 
   module Config
     # The `etc/directories.yaml' file contains path information for

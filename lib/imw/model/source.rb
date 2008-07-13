@@ -37,7 +37,7 @@ module IMW
     # +step+ for this source.
     def path_to step
       raise ArgumentError("The only valid workflow steps for Sources are `:ripd', `:xtrd', or `:dump'.") if not [:ripd,:xtrd,:dump].include? step
-      if step == :ripd or step == :xtrd then [IMW::Paths.root_of(step),@source,@name].join('/') else IMW::Paths.root_of(step) end
+      if step == :ripd || step == :xtrd then [IMW::Paths.root_of(step),@source,@name].join('/') else IMW::Paths.root_of(step) end
     end
 
     # Create a 
