@@ -13,7 +13,7 @@
 # 
 
 require 'imw/utils/error'
-require 'imw/utils/stdlib_extensions'
+require 'imw/utils/fileutils_extensions'
 
 module IMW
   module Workflow
