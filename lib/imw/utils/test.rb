@@ -152,6 +152,11 @@ module IMW
       f.close
     end
 
+    # Create an archive at the given +filename+.  The type of the
+    # archive and compression are guessed from the filename.
+    def self.random_archive(
+      {'tar' => 'tar','tar.bz2
+
     # Create a tar archive at the given +filename+ containing random
     # files.
     def self.random_tar(filename)
@@ -178,6 +183,16 @@ module IMW
       filename = filename[0,filename.length - '.bz2'.length]      
       random_tar(filename)
       system("bzip2 #{filename}")
+    end
+
+    # Create a rar archive at the given +filename+ containing random
+    # files
+    def self.random_rar(filename)
+      tmpd = filename + '.dir'
+      random_data_in_directory(tmpd)
+      Dir.chdir(tmpd)
+      system(" -cf #{filename} *")
+      FileUtils.rm_rf(tmpd)
     end
 
   end
