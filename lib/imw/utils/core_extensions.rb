@@ -1,14 +1,21 @@
 #
-# Useful class extensions
+# h2. lib/imw/utils/core_extensions.rb -- extensions to the Ruby core
 #
+# == About
+#
+# Some useful extensions to basic Ruby objects.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+# 
 
 require "ostruct"
 
 
-#
 class Hash
 
-  #
   # Create a hash from an array of keys and corresponding values.
   def self.zip(keys, values, default=nil, &block)
     hash = block_given? ? Hash.new(&block) : Hash.new(default)
@@ -16,7 +23,6 @@ class Hash
     hash
   end
 
-  #
   # Turns a collection of pairs into a hash.  The first of each pair make the
   # keys and the second the values. Elements with length longer than two will
   # lose those values.
@@ -166,6 +172,13 @@ class Array
     end
     vslices
   end
+
+  # Return a random element of this array.
+  def random_element
+    self[rand(self.length) - 1]
+  end
+  
+    
 end
 
 #
