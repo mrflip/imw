@@ -35,6 +35,9 @@ module IMW
     end
 
   end
-  
+
+  # A error for improperly specified, inappropriate, or broken paths.
+  class PathError
+  end
   
 end

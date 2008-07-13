@@ -211,5 +211,22 @@ module YAML
   end
 end
 
+class Class
+
+  # Return an ordered list of this class's superclasses.
+  def superclasses
+    s = self.superclass
+    supers = []
+    while s
+      supers << s
+      s = s.superclass
+    end
+    supers
+  end
+
+end
+
+      
+    
 
 # puts "Your monkeywrench does a complicated series of core-burning exercises and emerges with ripped, powerful-looking abs."
