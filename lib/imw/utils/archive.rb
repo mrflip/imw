@@ -85,11 +85,15 @@ module IMW
   module Archiver
 
 
-    # Push this dataset to the Infochimps collection at archive.org.
-    # If called with a step in the workflow then use that step else
-    # choose the furthest step with any progress.
-    def push_to_archive_org(step = nil)
+    # Push this 
+    def push_files_to_archive_org(step = nil)
+    end
+
+    # Push an archive of files for this dataset at 
+    def push_archive_to_archive_org(step = nil)
       
+    end
+    
 
     
   end

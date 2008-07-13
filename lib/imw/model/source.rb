@@ -3,8 +3,8 @@
 #
 # == About
 #
-# Data comes into IMW from a data source and this "Data" class models
-# such a source.
+# Data comes into IMW from a data source and this class models such a
+# source.
 #
 # It wraps the functions used to rip and extract data so that they are
 # customized for a particular data source.
@@ -39,6 +39,8 @@ module IMW
       raise ArgumentError("The only valid workflow steps for Sources are `:ripd', `:xtrd', or `:dump'.") if not [:ripd,:xtrd,:dump].include? step
       if step == :ripd or step == :xtrd then [IMW::Paths.root_of(step),@source,@name].join('/') else IMW::Paths.root_of(step) end
     end
+
+    # Create a 
 
   end
 

@@ -176,11 +176,13 @@ module FileUtils
   # Finds all archives in the given directory and extracts them.
   #
   # Supported archive types include <tt>tar</tt>, <tt>bz2</tt>,
-  # <tt>gz</tt>, <tt>rar</tt> and <tt>zip</tt>.
+  # <tt>gz</tt>, <tt>tar.gz</tt>, <tt>tgz</tt>, <tt>tar.bz2</tt>,
+  # <tt>tbz2</tt>, <tt<tt>rar</tt> and <tt>zip</tt>.
   #
   # Options (with their default values in parentheses) include:
   # <tt>:simulate</tt> (false):: Show what would be done without doing it.
   # <tt>:keep_archives</tt> (false):: Keep archives after extracting files from them.
+  # <tt>:force</tt> (true):: Rewrite already extracted files.
   # <tt>:verbose</tt> (false):: Print output.
   # <tt>:tar_path</tt> ('tar'):: Path to the tar program.
   # <tt>:bzip2_path</tt> ('bzip2'):: Path to the bzip2 program.
@@ -190,13 +192,13 @@ module FileUtils
   def self.decompress_directory(directory,user_opts={})
 
     # set default options and update with user options
-    options = {:simulate => false, :keep_archives => false, :verbose => false, :tar_path => 'tar', :bzip2_path => 'bzip2', :gzip_path => 'gzip', :unrar_path => 'unrar', :unzip_path => 'unzip'}
+    options = {:simulate => false, :keep_archives => false, :verbose => false, :tar_path => 'tar', :bzip2_path => 'bzip2', :gzip_path => 'gzip', :unrar_path => 'unrar', :unzip_path => 'unzip',:force => true}
     options.update(user_opts)
     
     # find archives
     archives = []
     Find.find(File.expand_path(directory)) do |path|
-      archives << File.expand_path(path) if File.file?(path) and path =~ /(\.tar$|\.bz2$|\.tar\.bz2$|\.gz$|\.tar\.gz$|\.rar$|\.zip$)/
+      archives << File.expand_path(path) if File.file?(path) and path =~ /(\.tar$|\.bz2$|\.tar\.bz2$|\.tbz2$\|\.gz$|\.tar\.gz$|\.tgz$\|\.rar$|\.zip$)/
     end
 
     # figure out program and flags
@@ -210,8 +212,9 @@ module FileUtils
       elsif archive =~ /\.bz2$/ then
         flags << 'd'
         flags << 'k' if options[:keep_archives]
+        flags << 'f' if options[:force]
         program = options[:bzip2_path]
-      elsif archive =~ /\.tar\.bz2$/ then
+      elsif archive =~ /\.tar\.bz2$/ or archive =~ /\.tbz2$/ then
         # use `--bzip2' instead of `-j' for backwards compatibility; see
         # tar manual
         flags += ['x','f','-bzip2']
@@ -219,11 +222,12 @@ module FileUtils
       elsif archive =~ /\.gz$/ then
         # use 'r' for recursive unzipping
         flags += ['d','r']
-        program = option[:gzip_path]
+        flags << 'f' if options[:force]
+        program = options[:gzip_path]
         # make a temporary copy under a different name so as to keep the
         # original archive (gzip lacks bzip2's `-k' option)
-        FileUtils.cp(archive,archive+'copy') if options[:keep_archives]
-      elsif archive =~ /\.tar\.gz$/ then
+        FileUtils.cp(archive,archive+'copy',:verbose => options[:verbose]) if options[:keep_archives]
+      elsif archive =~ /\.tar\.gz$/ or archive =~ /\.tgz$/ then
         flags += ['x','f','z']
         program = options[:tar_path]
       elsif archive =~ /\.rar$/ then
@@ -232,13 +236,15 @@ module FileUtils
       elsif archive =~ /\.zip$/ then
         program = options[:unzip_path]
       end
-      flags << 'v' if options[:verbose]
+      flags = ['v'] + flags if options[:verbose] # tar needs 'v' at
+                                                 # the beginning of
+                                                 # the list of options
       
       # construct command and decompress archive
-      flags.map! {|flag| '-#{flag}'}
-      command = "#{program} #{flags.join('')} #{archive}"
+      flags.map! {|flag| "-#{flag}"}
+      command = "#{program} #{flags.join(' ')} #{archive}"
       unless options[:simulate] then
-        raise IMW::SystemCallError.new("Couldn't extract #{archive} using #{program}") unless system(command)
+        raise IMW::SystemCallError.new("Couldn't extract #{archive} using #{program} (#{command})") unless system(command)
       else
         STDOUT.puts command
       end
@@ -247,22 +253,36 @@ module FileUtils
       unless options[:keep_archives] then
         if archive =~ /\.tar$/ or archive =~ /\.zip$/ then
           unless options[:simulate] then
-            FileUtils.rm(archive,:verbose => options[:verbose],:noop => true)
+            FileUtils.rm(archive,:verbose => options[:verbose],:noop => false)
           else
             FileUtils.rm(archive,:verbose => options[:verbose],:noop => true)
           end
         end
       end
-      
+
+      # manually delete tar.bz2 and tar.gz archives
+      unless options[:keep_archives] then
+        if archive =~ /\.tar\.bz2$/ or archive =~ /\.tar\.gz$/ then
+          if archive =~ /\.tar\.bz2$/ then unzipped_name = archive[0,archive.size - ".bz2".size] end          
+          if archive =~ /\.tar\.gz$/ then unzipped_name = archive[0,archive.size - ".gz".size] end
+          unless options[:simulate] then
+            FileUtils.rm(unzipped_name,:verbose => options[:verbose],:noop => false)
+          else
+            FileUtils.rm(unzipped_name,:verbose => options[:verbose],:noop => true)
+          end
+        end
+      end
+
       # manually rename temporary copy back to original archive name for
       # the gzip case
       if options[:keep_archives] and archive =~ /\.gz$/
         unless options[:simulate] then
-          FileUtils.cp(archive + 'copy',archive,:verbose => options[:verbose])
+          FileUtils.mv(archive + 'copy',archive,:verbose => options[:verbose])
         else
-          FileUtils.cp(archive + 'copy',archive,:verbose => options[:verbose],:noop => true)
+          FileUtils.mv(archive + 'copy',archive,:verbose => options[:verbose],:noop => true)
         end
       end
+
     end
   end
 
