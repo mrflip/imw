@@ -10,17 +10,19 @@
 # 
 
 require 'imw/utils/error'
+require 'imw/utils/config'
 
 module IMW
 
   # A replacement for the standard system call which raises an
   # IMW::SystemCallError if the command fails as well as printing the
   # command appended to the end of <tt>error_message</tt>.
-  def self.system command, error_message = nil
-    system(command)
-    raise IMW::SystemCallError.new("#{error_message} (command)") if $?.success?
+  def self.system(command, error_message = nil)
+    Kernel.system(command)
+    message = error_message ? "#{error_message} (#{command})" : command
+    raise IMW::SystemCallError.new(message) unless $?.success?
   end
-  
-    
 
-# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+end
+
+# puts "#{File.basename(__FILE__)}: Early economists thought they would measure the utility of an action in units of `utils'.  Really." # at bottom

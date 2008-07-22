@@ -62,10 +62,7 @@ module FileUtils
   def self.smart_copy(sources,dest,opts={})
 
     # deal with options...how i miss python...
-    options = {
-      :dir_params => 0755,
-    }.merge opts
-
+    options[:dir_params] = 0755
     options[:file_perms] = 0755
     options[:force] = false
     options[:ignore_empty] = true
@@ -268,7 +265,7 @@ module FileUtils
       unless options[:keep_archives] then
         if archive =~ /(.*)\.(?:tar\.bz2|tar\.gz)$/ then
           unzipped_name = $1
-        elsif archive =~ /(.*)\.(?tbz2|tgz)$/ then
+        elsif archive =~ /(.*)\.(?:tbz2|tgz)$/ then
           unzipped_name = $1 + '.tar'
         end
         FileUtils.rm(unzipped_name,:verbose => options[:verbose],:noop => options[:simulate])
