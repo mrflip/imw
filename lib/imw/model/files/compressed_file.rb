@@ -16,7 +16,7 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-requrie 'imw/model/files/file'
+require 'imw/model/files/file'
 
 require 'imw/utils'
 
@@ -24,7 +24,7 @@ module IMW
 
   module Files
 
-    module CompressedFile < IMW::Files::File
+    class CompressedFile < IMW::Files::File
 
       attr_reader :program
       
@@ -36,10 +36,10 @@ module IMW
           /\.bz2$/ => :bzip2,
           /\.gz$/ => :gzip
         }
-        @program = extensions.find {|regex,program| program if regex.match(@path)}
+        @program = extensions.find {|regex,program| regex.match(@path)}.last
       end
 
-      private
+      protected
       # Construct the command passed to the shell to decompress this
       # file.
       #
@@ -52,7 +52,7 @@ module IMW
         # between them when constructing this command.
         flags = opts[:verbose] ? "-fvd" : "-fd" # `f' to force overwriting
 
-        IMW::EXTERNAL_PROGRAMS[@program] + ' ' + flags + @path
+        [IMW::EXTERNAL_PROGRAMS[@program],flags,@path].join ' '
       end
 
       public

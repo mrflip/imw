@@ -12,7 +12,6 @@
 #
 
 require 'imw/model/files/compressible'
-require 'imw/model/files/archive'
 
 require 'imw/utils'
 
@@ -23,26 +22,25 @@ module IMW
     class File
 
       include IMW::Files::Compressible
-
-      attr_reader :path, :dirname, :basename, :extension
+      
+      attr_reader :path, :dirname, :basename, :extname
 
       def initialize path
         set_path path
       end
 
       def set_path(path)
-        path = File.expand_path path
-        raise IMW::PathError.new("#{path} is a directory") if File.directory? path
+        path = Kernel::File.expand_path path
+        raise IMW::PathError.new("#{path} is a directory") if Kernel::File.directory? path
         @path = path      
-        @dirname = File.dirname @path
-        @basename = File.basename @path
-        @extname = File.extname @path
-        @filename = @basename + '.' + @extname
+        @dirname = Kernel::File.dirname @path
+        @basename = Kernel::File.basename @path
+        @extname = Kernel::File.extname @path
       end
 
       # Is there a real file at the path of this File?
       def exist?
-        File.exist? @path ? true : false
+        Kernel::File.exist?(@path) ? true : false
       end
 
     end

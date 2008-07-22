@@ -33,13 +33,13 @@ module IMW
 
     module Compressible
 
-      private
+      protected
       # Construct the command passed to the shell to compress this
       # file using the given +program+.
       #
       # Options:
       # <tt>:verbose</tt> (false):: print output
-      def self.compression_command program, opts = {}
+      def compression_command program, opts = {}
         opts.reverse_merge!({:verbose => false})
 
         raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless [:bzip2,:gzip].include? program
@@ -48,12 +48,12 @@ module IMW
         # between them when constructing this command.
         flags = opts[:verbose] ? "-fv" : "-f" # `f' to force overwriting
 
-        IMW::EXTERNAL_PROGRAMS[program] + ' ' + flags + self.path
+        [IMW::EXTERNAL_PROGRAMS[program],flags,self.path].join ' '
       end
 
       # Return the object representing this file comprssed with
       # +program+.
-      def self.compressed_file program
+      def compressed_file program
         raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless [:bzip2,:gzip].include? program        
         case program
         when :bzip2
@@ -73,7 +73,7 @@ module IMW
       #
       # Options:
       # <tt>:verbose</tt> (false):: print output
-      def self.compress! program = :bzip2, opts = {}
+      def compress! program = :bzip2, opts = {}
         IMW.system(self.compression_command(program, opts))
         self.compressed_file program
       end
@@ -86,7 +86,7 @@ module IMW
       # Options:
       # <tt>:program</tt> (<tt>:bzip2</tt>):: names the compression program from the choices in <tt>IMW::EXTERNAL_PROGRAMS</tt>.
       # <tt>:verbose</tt> (false):: print output
-      def self.compress opts = {}
+      def compress program = :bzip2, opts = {}
         FileUtils.cp(self.path,self.path + 'copy')
         IMW.system(self.compression_command(program, opts))
         FileUtils.mv(self.path + 'copy',self.path)
