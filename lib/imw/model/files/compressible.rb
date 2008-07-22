@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/filetypes/compressible.rb -- compression module
+# h2. lib/imw/model/files//compressible.rb -- compression module
 #
 # == About
 #
@@ -39,7 +39,7 @@ module IMW
       #
       # Options:
       # <tt>:verbose</tt> (false):: print output
-      def compression_command program, opts = {}
+      def self.compression_command program, opts = {}
         opts.reverse_merge!({:verbose => false})
 
         raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless [:bzip2,:gzip].include? program
@@ -53,7 +53,7 @@ module IMW
 
       # Return the object representing this file comprssed with
       # +program+.
-      def compressed_file program
+      def self.compressed_file program
         raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless [:bzip2,:gzip].include? program        
         case program
         when :bzip2
@@ -67,7 +67,9 @@ module IMW
       public
       # Compress this file in its present directory using +program+,
       # overwriting any existing compressed files and without saving
-      # the original file.
+      # the original file.  Returns an
+      # <tt>IMW::Files::CompressedFile</tt> object corresponding to
+      # the compressed file.
       #
       # Options:
       # <tt>:verbose</tt> (false):: print output
@@ -78,6 +80,8 @@ module IMW
 
       # Compress this file in its present directory, overwriting any
       # existing compressed files while saving the original file.
+      # Returns an <tt>IMW::Files::CompressedFile</tt> object
+      # corresponding to the compressed file.
       #
       # Options:
       # <tt>:program</tt> (<tt>:bzip2</tt>):: names the compression program from the choices in <tt>IMW::EXTERNAL_PROGRAMS</tt>.

@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/archive.rb -- classes for manipulating various archive formats
+# h2. lib/imw/model/files/archive.rb -- classes for manipulating various archive formats
 #
 # == About
 #

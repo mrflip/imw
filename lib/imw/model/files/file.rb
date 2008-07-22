@@ -11,14 +11,10 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'imw/utils'
-require 'imw/utils/error'
-require 'imw/utils/core_extensions'
-require 'imw/utils/fileutils_extensions'
-require 'imw/utils/config'
+require 'imw/model/files/compressible'
+require 'imw/model/files/archive'
 
-require 'imw/files/compressible'
-require 'imw/files/archive'
+require 'imw/utils'
 
 module IMW
 
@@ -30,8 +26,8 @@ module IMW
 
       attr_reader :path, :dirname, :basename, :extension
 
-      def initialize(path = nil)
-        set_path if path
+      def initialize path
+        set_path path
       end
 
       def set_path(path)
