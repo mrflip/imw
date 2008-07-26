@@ -31,6 +31,11 @@ module IMW
     :bzip2 => "bzip2"
   }
 
+  # Directories
+  DIRECTORIES = {
+    :tmp => "/home/dhruv/projects/infochimps/imw/tmp"
+  }
+
   module Config
     # The `etc/directories.yaml' file contains path information for
     # IMW directories in a format that needs to be interpreted here.
