@@ -16,6 +16,17 @@ require "ostruct"
 
 class Hash
 
+  # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge
+  def reverse_merge(other_hash)
+    other_hash.merge(self)
+  end
+
+  # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge
+  def reverse_merge!(other_hash)
+    replace(reverse_merge(other_hash))
+  end
+
+
   # Create a hash from an array of keys and corresponding values.
   def self.zip(keys, values, default=nil, &block)
     hash = block_given? ? Hash.new(&block) : Hash.new(default)
@@ -226,6 +237,18 @@ class Class
 
 end
 
+module IMW
+
+  # A replacement for the standard system call which raises an
+  # IMW::SystemCallError if the command fails as well as printing the
+  # command appended to the end of <tt>error_message</tt>.
+  def self.system(command, error_message = nil)
+    Kernel.system(command)
+    message = error_message ? "#{error_message} (#{command})" : command
+    raise IMW::SystemCallError.new(message) unless $?.success?
+  end
+
+end
       
     
 
