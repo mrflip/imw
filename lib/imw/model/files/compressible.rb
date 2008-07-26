@@ -8,8 +8,9 @@
 # <tt>compress!</tt> methods.
 #
 # By default, bzip2 is used for compression though gzip can also be
-# specified.  Zip and Rar compression are handled by the
-# <tt>IMW::Files::Archive</tt> module.
+# specified (the full list of known compression programs is in
+# <tt>IMW::Files::Compressible::COMPRESSION_PROGS</tt>).  Zip and Rar
+# compression are handled by the <tt>IMW::Files::Archive</tt> module.
 #
 # Decompression should be handled via the
 # <tt>IMW::Files::CompressedFile</tt> class.
@@ -22,9 +23,6 @@
 
 require 'fileutils'
 
-require 'rubygems'
-require 'activesupport'
-
 require 'imw/utils'
 
 module IMW
@@ -32,6 +30,21 @@ module IMW
   module Files
 
     module Compressible
+
+      # Known compression programs.
+      COMPRESSION_PROGS = [:bzip2, :gzip]
+
+      # Extensions that are appended by each compression program.
+      COMPRESSION_EXTS = {
+        :bzip2 => '.bz2',
+        :gzip => '.gz'
+      }
+
+      # Compression flags for each program
+      COMPRESSION_FLAGS = {
+        :bzip2 => "-f",
+        :gzip => "-f"
+      }
 
       protected
       # Construct the command passed to the shell to compress this
@@ -42,26 +55,16 @@ module IMW
       def compression_command program, opts = {}
         opts.reverse_merge!({:verbose => false})
 
-        raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless [:bzip2,:gzip].include? program
+        raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless COMPRESSION_PROGS.include? program
 
-        # bzip2 and gzip share many options so no need to distinguish
-        # between them when constructing this command.
-        flags = opts[:verbose] ? "-fv" : "-f" # `f' to force overwriting
-
-        [IMW::EXTERNAL_PROGRAMS[program],flags,self.path].join ' '
+        [IMW::EXTERNAL_PROGRAMS[program],COMPRESSION_FLAGS[program],self.path].join ' '
       end
 
       # Return the object representing this file comprssed with
       # +program+.
       def compressed_file program
-        raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless [:bzip2,:gzip].include? program        
-        case program
-        when :bzip2
-          ext = 'bz2'
-        when :gzip
-          ext = 'gz'
-        end
-        IMW::Files::CompressedFile.new(self.dirname + '/' + self.basename + '.' + ext)
+        raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless COMPRESSION_PROGS.include? program        
+        IMW::Files::CompressedFile.new(self.dirname + '/' + self.basename + COMPRESSION_EXTS[program])
       end
       
       public
@@ -87,6 +90,10 @@ module IMW
       # <tt>:program</tt> (<tt>:bzip2</tt>):: names the compression program from the choices in <tt>IMW::EXTERNAL_PROGRAMS</tt>.
       # <tt>:verbose</tt> (false):: print output
       def compress program = :bzip2, opts = {}
+        # for bzip2 this can be done by adding the `-k' option but
+        # it's easier to pretend that, like gzip, it doesn't have this
+        # option and to thus treat both compression programs
+        # identically in this method.
         FileUtils.cp(self.path,self.path + 'copy')
         IMW.system(self.compression_command(program, opts))
         FileUtils.mv(self.path + 'copy',self.path)

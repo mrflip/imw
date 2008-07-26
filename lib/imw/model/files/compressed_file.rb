@@ -10,6 +10,16 @@
 # <tt>IMW::Files::CompressedFile</tt> object which has methods for
 # decompression.
 #
+# A subclass of this class must define a +compression+ instance
+# variable which is a hash with the following keys:
+#
+# <tt>:program</tt>:: a symbol naming the program used for
+# compression/decompression which must be one of the symbols in
+# <tt>IMW::EXTERNAL_PROGRAMS</tt>
+#
+# <tt>:decompression_flags</tt>:: a string of flags to pass to the
+# compression program when decompressing the file.
+#
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
@@ -26,55 +36,34 @@ module IMW
 
     class CompressedFile < IMW::Files::File
 
-      attr_reader :program
+      attr_reader :compression
       
-      def initialize path
-        super
-
-        # figure out compression program
-        extensions = {
-          /\.bz2$/ => :bzip2,
-          /\.gz$/ => :gzip
-        }
-        @program = extensions.find {|regex,program| regex.match(@path)}.last
-      end
-
-      protected
+      private
       # Construct the command passed to the shell to decompress this
       # file.
-      #
-      # Options:
-      # <tt>:verbose</tt> (false):: print output
-      def decompression_command opts = {}
-        opts.reverse_merge!({:verbose => false})
-
-        # bzip2 and gzip share many options so no need to distinguish
-        # between them when constructing this command.
-        flags = opts[:verbose] ? "-fvd" : "-fd" # `f' to force overwriting
-
-        [IMW::EXTERNAL_PROGRAMS[@program],flags,@path].join ' '
+      def decompression_command
+        [IMW::EXTERNAL_PROGRAMS[@compression[:program]],@compression[:decompression_flags],@path].join ' '
       end
-
-      public
+        
+      protected
       # Decompress this file in its present directory overwriting any
       # existing files and without saving the original compressed
       # file.
-      #
-      # Options:
-      # <tt>:verbose</tt> (false):: print output
-      def decompress! opts = {}
-        IMW.system(self.decompression_command(opts))
+      def decompress!
+        IMW.system decompression_command
+        decompressed_file
       end
 
       # Decompress this file in its present directory, overwriting any
       # existing files while keeping the original compressed file.
       #
-      # Options:
-      # <tt>:verbose</tt> (false):: print output
-      def decompress opts = {}
+      # The implementation is a little stupid, as the file is
+      # needlessly copied.
+      def decompress
         FileUtils.cp(@path,@path + 'copy')
-        IMW.system(self.decompression_command(opts))
+        decompress!
         FileUtils.mv(@path + 'copy',@path)
+        decompressed_file
       end
 
     end
