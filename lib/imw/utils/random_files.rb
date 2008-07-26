@@ -53,14 +53,14 @@ module IMW
     # Return a random string of text up to the maximum +length+.
     def self.random_text_string length
       string = ""
-      rand(length).times { string << STRING_CHARS.random_element }
+      rand(length).times { string += STRING_CHARS.random_element }
       string
     end
 
     # Return a random paragraph of text up to the maximum +length+.
     def self.random_text_para length
       text = ""
-      rand(length).times { text << TEXT_CHARS.random_element }
+      rand(length).times { text += TEXT_CHARS.random_element }
       text
     end
 
