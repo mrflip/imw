@@ -54,6 +54,7 @@ module IMW
       def create files, opts = {}
         opts.reverse_merge!({:force => false})
         raise IMW::Error.new("An archive already exists at #{@path}.") if exist? and not opts[:force]
+        raise IMW::Error.new("Cannot create an archive of this type.") unless @archive[:create_flags]
 
         files = [files] if files.class == String
 
@@ -64,6 +65,8 @@ module IMW
 
       # Append to this archive the given +files+.
       def append files
+        raise IMW::Error.new("Cannot append to an archive of this type.") unless @archive[:append_flags]
+        
         files = [files] if files.class == String
         
         FileUtils.cd(@dirname)
