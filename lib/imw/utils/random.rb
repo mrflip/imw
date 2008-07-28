@@ -1,10 +1,11 @@
 #
-# h2. lib/imw/utils/test.rb -- routines useful for testing
+# h2. lib/imw/utils/random.rb -- creation of random objects
 #
 # == About
 #
-# Testing requires setting up environments and these functions ease
-# that process.
+# This module has methods for creating random strings of text and
+# random files in particular formats as well as random directories
+# with random content.  These methods are most useful for testing.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -14,31 +15,29 @@
 
 require 'fileutils'
 
-require 'imw/utils/error'
-require 'imw/utils/core_extensions'
-require 'imw/utils/config'
+require 'imw/utils'
 
 module IMW
 
-  module Test
+  module Random
 
     STRING_CHARS = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ']
     TEXT_CHARS = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ',"\n"]
     FILENAME_CHARS = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + ["-","_"]
     EXTENSIONS = {
-      /\.csv$/ => :random_csv,
-      /\.xml$/ => :random_xml,
-      /\.html$/ => :random_html,
-      /\.tar$/ => :random_tar,
-      /\.tar\.gz$/ => :random_targz,
-      /\.tar\.bz2$/ => :random_tarbz2,
-      /\.rar$/ => :random_rar,
-      /\.zip$/ => :random_zip
+      /\.csv$/ => :csv_file,
+      /\.xml$/ => :xml_file,
+      /\.html$/ => :html_file,
+      /\.tar$/ => :tar_file,
+      /\.tar\.gz$/ => :targz_file,
+      /\.tar\.bz2$/ => :tarbz2_file,
+      /\.rar$/ => :rar_file,
+      /\.zip$/ => :zip_file
     }
 
     private
     # Return a random filename of the given maximum +length+.
-    def self.random_filename_without_extension(length = 9)
+    def self.filename_without_extension(length = 9)
       # filenames shouldn't begin with a hyphen
       first_char = FILENAME_CHARS.random_element
       while first_char == '-' do
@@ -51,14 +50,14 @@ module IMW
     end
 
     # Return a random string of text up to the maximum +length+.
-    def self.random_text_string length
+    def self.text_string length
       string = ""
       rand(length).times { string += STRING_CHARS.random_element }
       string
     end
 
     # Return a random paragraph of text up to the maximum +length+.
-    def self.random_text_para length
+    def self.text_para length
       text = ""
       rand(length).times { text += TEXT_CHARS.random_element }
       text
@@ -67,30 +66,30 @@ module IMW
     public
     # Create a random file by matching the extension of the given
     # +filename+ or a text file if no match is found.
-    def self.random_file filename
+    def self.file filename
       match = EXTENSIONS.find { |regex,func| regex.match filename }
-      match ? self.send(match.last,filename) : self.random_text(filename)
+      match ? self.send(match.last,filename) : self.text_file(filename)
     end        
 
     # Create a random text file at +filename+ containing a maximum of
     # +length+ characters.
-    def self.random_text(filename, length = 5000)
+    def self.text_file(filename, length = 5000)
       f = File.open(filename,'w')
-      f.write(random_text_para(length))
+      f.write(text_para(length))
       f.close
     end
 
     # Create a comma-separated value file containing random text at
     # +filename+ with the maximum +num_rows+, the given +num_columns+,
     # and the maximum +entry_length+.
-    def self.random_csv(filename,num_rows = 500, num_columns = 9, entry_length = 9)
+    def self.csv_file(filename,num_rows = 500, num_columns = 9, entry_length = 9)
       f = File.open(filename,'w')
       rand(num_rows).times do # rows
         num_columns.times do # columns
-          f.write(random_text_string(entry_length)) # entry
+          f.write(text_string(entry_length)) # entry
           f.write ','
         end
-        f.write(random_text_string(entry_length)) # last entry
+        f.write(text_string(entry_length)) # last entry
         f.write("\n")
       end
       f.close
@@ -101,9 +100,9 @@ module IMW
     # At the present moment, this file contains random text in a very
     # boring single-element XML tree.  Randomizing the tree has not
     # been implemented.
-    def self.random_xml(filename, length = 5000)
+    def self.xml_file(filename, length = 5000)
       f = File.open(filename,'w')
-      f.write "<xml>" + random_text_string(length) + "</xml>"
+      f.write "<xml>" + text_string(length) + "</xml>"
       f.close
     end
 
@@ -112,17 +111,17 @@ module IMW
     # At the present moment, this file contains random text in a very
     # boring bare-bones HTML with a single element body.  Randomizing
     # the tree has not been implemented.
-    def self.random_html(filename, title_length = 100, body_length = 5000)
+    def self.html_file(filename, title_length = 100, body_length = 5000)
       f = File.open(filename,'w')
-      f.write "<html><head><title>" + random_text_string(title_length) + "</title></head><body>" + random_text_string(body_length) + "</body></html>"
+      f.write "<html><head><title>" + text_string(title_length) + "</title></head><body>" + text_string(body_length) + "</body></html>"
       f.close
     end
 
     # Create a tar archive at the given +filename+ containing random
     # files.
-    def self.random_tar filename
+    def self.tar_file filename
       tmpd = File.dirname(filename) + '/dir'
-      random_directory(tmpd)
+      directory_with_files(tmpd)
       FileUtils.cd(tmpd) {|dir| IMW.system("#{IMW::EXTERNAL_PROGRAMS[:tar]} -cf file.tar *") }
       FileUtils.cp(tmpd + "/file.tar",filename)
       FileUtils.rm_rf(tmpd)
@@ -130,10 +129,10 @@ module IMW
 
     # Create a tar.gz archive at the given +filename+ containing
     # random files.
-    def self.random_targz filename
+    def self.targz_file filename
       tar = File.dirname(filename) + "/file.tar"
       targz = tar + ".gz"
-      random_tar tar
+      tar_file tar
       IMW.system("#{IMW::EXTERNAL_PROGRAMS[:gzip]} #{tar}")
       FileUtils.cp(targz,filename)
       FileUtils.rm(targz)
@@ -141,10 +140,10 @@ module IMW
 
     # Create a tar.bz2 archive at the given +filename+ containing
     # random files.
-    def self.random_tarbz2 filename
+    def self.tarbz2_file filename
       tar = File.dirname(filename) + "/file.tar"
       tarbz2 = tar + ".bz2"
-      random_tar tar
+      tar_file tar
       IMW.system("#{IMW::EXTERNAL_PROGRAMS[:bzip2]} #{tar}")
       FileUtils.cp(tarbz2,filename)
       FileUtils.rm(tarbz2)
@@ -152,9 +151,9 @@ module IMW
 
     # Create a compressed rar archive at the given +filename+
     # containing random files.
-    def self.random_rar filename
+    def self.rar_file filename
       tmpd = File.dirname(filename) + '/dir'
-      random_directory(tmpd)
+      directory_with_files(tmpd)
       FileUtils.cd(tmpd) {|dir| IMW.system("#{IMW::EXTERNAL_PROGRAMS[:rar]} a -r -o+ file.rar *") }
       FileUtils.cp(tmpd + "/file.rar",filename)
       FileUtils.rm_rf(tmpd)
@@ -162,9 +161,9 @@ module IMW
 
     # Create a compressed zip archive at the given +filename+
     # containing random files.
-    def self.random_zip filename
+    def self.zip_file filename
       tmpd = File.dirname(filename) + '/dir'
-      random_directory(tmpd)
+      directory_with_files(tmpd)
       FileUtils.cd(tmpd) {|dir| IMW.system("#{IMW::EXTERNAL_PROGRAMS[:zip]} -r file.zip *") }
       FileUtils.cp(tmpd + "/file.zip",filename)
       FileUtils.rm_rf(tmpd)
@@ -180,41 +179,39 @@ module IMW
     # <tt>:starting_depth</tt> (1):: the default depth the parent directory is assumed to have
     # <tt>:num_files</tt> (10):: the maximum number of files per directory
     # <tt>:force</tt> (false):: force overwriting of existing directories
-    def self.random_directory(directory,options = {})
-      options.reverse_merge!({:extensions => ['txt','csv','dat','xml'],:max_depth => 3,:force => false,:starting_depth => 1, :num_files => 10})
+    def self.directory_with_files(directory,options = {})
+      options.reverse_merge!({:extensions => ['txt','csv','dat','xml'],:max_depth => 3,:force => false,:starting_depth => 1, :num_files => 3})
       depth = options[:starting_depth]
 
-      begin
-        FileUtils.mkdir(directory)
-      rescue Errno::EEXIST
+      if File.exist?(directory) then
         if options[:force] then
           FileUtils.rm_rf(directory)
-          FileUtils.mkdir(directory)
         else
-          raise IMW::Error.new("#{directory} already exists")
+          IMW::Error.new("#{directory} already exists")
         end
       end
+      FileUtils.mkdir_p(directory)
       
       (rand(options[:num_files]) + 2).times do
         ext = options[:extensions].random_element
-        name = random_filename_without_extension
+        name = filename_without_extension
         if ext == 'dir' then
           if depth <= options[:max_depth] then
             newd = directory + '/' + name
             FileUtils.mkdir(newd)
-            random_directory(newd,options.merge({:starting_depth => (depth + 1)}))
+            directory_with_files(newd,options.merge({:starting_depth => (depth + 1)}))
           else
             next
           end
         else
-          random_file(directory + '/' + name + '.' + ext)
+          file(directory + '/' + name + '.' + ext)
         end
       end
     end
 
 
   end
-
 end
-      
+
+
 # puts "#{File.basename(__FILE__)}: You hurl your Monkeywrench at a passerby to test whether he'll flinch.  He doesn't.  You'd better run..." # at bottom
