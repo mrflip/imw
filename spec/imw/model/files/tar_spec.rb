@@ -25,7 +25,9 @@ require 'imw/model/directory_spec'
 
 describe IMW::Files::Tar do
 
+  include ARCHIVE_COMMON_SPEC
   include Spec::Matchers::IMW
+
 
   def create_random_files
     IMW::Random.directory_with_files(@initial_directory)

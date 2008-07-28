@@ -23,6 +23,20 @@ require 'set'
 require 'imw/utils'
 require 'imw/utils/extensions/find'
 
+require 'rubygems'
+require 'spec'
+
+
+share_as :ARCHIVE_COMMON_SPEC do
+
+  it "should try to use a shared example" do
+    puts @archive.path
+    @archive.path.class.should eql(String)
+  end
+  end
+
+
+
 module Spec
   module Matchers
     module IMW
