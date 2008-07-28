@@ -65,7 +65,7 @@ module IMW
           # with a space again in case of a filename with a space
           row.split(' ')[3,row.size].join(' ')
         end
-        file_rows.sort
+        file_rows
       end
         
     end
