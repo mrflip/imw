@@ -11,8 +11,9 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'imw/model/files/compressible'
+require 'fileutils'
 
+require 'imw/model/files/compressible'
 require 'imw/utils'
 
 module IMW
@@ -25,22 +26,69 @@ module IMW
       
       attr_reader :path, :dirname, :basename, :extname
 
+      private 
       def initialize path
         set_path path
       end
 
       def set_path(path)
-        path = Kernel::File.expand_path path
-        raise IMW::PathError.new("#{path} is a directory") if Kernel::File.directory? path
+        path = ::File.expand_path path
+        raise IMW::PathError.new("#{path} is a directory") if ::File.directory? path
         @path = path      
-        @dirname = Kernel::File.dirname @path
-        @basename = Kernel::File.basename @path
-        @extname = Kernel::File.extname @path
+        @dirname = ::File.dirname @path
+        @basename = ::File.basename @path
+        @extname = find_extname @path
       end
 
+      # Some files (like <tt>.tar.gz</tt>) have an extension which is
+      # not what <tt>File.extname</tt> will provide so this method is
+      # used instead.  It can be overridden by a subclass.
+      def find_extname path
+        ::File.extname path
+      end
+
+      public
       # Is there a real file at the path of this File?
       def exist?
-        Kernel::File.exist?(@path) ? true : false
+        ::File.exist?(@path) ? true : false
+      end
+
+      # Delete this file.
+      def rm
+        raise IMW::Error.new("cannot delete #{@path}, doesn't exist!") unless exist?
+        FileUtils.rm @path
+      end
+
+      # Copy this file to +path+.
+      #
+      # Options include
+      #
+      # <tt>:force</tt> (false):: raise an error if the new extension
+      # isn't the same as the old extension unless <tt>:force</tt> is
+      # true.
+      def cp path, opts = {}
+        opts.reverse_merge!({:force => false})
+        raise IMW::Error.new("cannot copy from #{@path}, doesn't exist!") unless exist?
+        new_extname = find_extname path
+        raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") unless new_extname == @extname and not opts[:force]
+        FileUtils.cp @path,path
+        self.class.new(path)
+      end
+
+      # Move this file to +path+.
+      #
+      # Options include
+      #
+      # <tt>:force</tt> (false):: raise an error if the new extension
+      # isn't the same as the old extension unless <tt>:force</tt> is
+      # true.
+      def mv path, opts = {}
+        opts.reverse_merge!({:force => false})        
+        raise IMW::Error.new("cannot move from #{@path}, doesn't exist!") unless exist?
+        new_extname = find_extname path
+        raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") if new_extname == @extname and not opts[:force]
+        FileUtils.mv @path,path
+        self.initialize(path)
       end
 
     end
