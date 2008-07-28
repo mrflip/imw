@@ -14,6 +14,23 @@
 require "ostruct"
 
 
+class String
+
+  # Does the string end with the specified +suffix+ (stolen from
+  # <tt>ActiveSupport::CoreExtensions::String::StartsEndsWith</tt>)?
+  def ends_with?(suffix)
+    suffix = suffix.to_s
+    self[-suffix.length, suffix.length] == suffix      
+  end
+
+  # Does the string start with the specified +prefix+ (stolen from
+  # <tt>ActiveSupport::CoreExtensions::String::StartsEndsWith</tt>)?
+  def starts_with?(prefix)
+    prefix = prefix.to_s
+    self[0, prefix.length] == prefix
+  end
+end
+
 class Hash
 
   # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge
@@ -163,7 +180,7 @@ class Array
   # Return all but the first element.
   # This will be nil for an empty array and [] for a length-1 array
   def rest() self[1..-1] end 
-    
+  
   # 'Un'-zip()s an array.  Returns an array of arrays: the first array has the
   # first element of each member, the second array has the second element of
   # each member, and so on.  Returns as many arrays as the first element in self
@@ -189,7 +206,7 @@ class Array
     self[rand(self.length) - 1]
   end
   
-    
+  
 end
 
 #
@@ -249,7 +266,7 @@ module IMW
   end
 
 end
-      
-    
+
+
 
 # puts "Your monkeywrench does a complicated series of core-burning exercises and emerges with ripped, powerful-looking abs."
