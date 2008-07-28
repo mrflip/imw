@@ -20,6 +20,9 @@
 # <tt>:decompression_flags</tt>:: a string of flags to pass to the
 # compression program when decompressing the file.
 #
+# A subclass must also define the method +decompressed_file+ which
+# returns the path of the file post-decompression.
+#
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
