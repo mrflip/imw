@@ -27,10 +27,10 @@ module IMW
       # The default flags used creating, appending to, listing, and
       # extracting a zip archive.
       DEFAULT_FLAGS = {
-        :create => "-r",
-        :append => "-g",
+        :create => "-r -q",
+        :append => "-g -q",
         :list => "-l",
-        :extract => "-o",
+        :extract => "-o -q",
         :unarchiving_program => :unzip
       }
 
@@ -49,20 +49,33 @@ module IMW
         }
       end
 
+      # The `unzip' program outputs data in a very annoying format:
+      #
+      #     Archive:  data.zip
+      #       Length     Date   Time    Name
+      #      --------    ----   ----    ----
+      #         18510  07-28-08 15:58   data/4d7Qrgz7.csv
+      #          3418  07-28-08 15:41   data/7S.csv
+      #         23353  07-28-08 15:41   data/g.csv
+      #           711  07-28-08 15:58   data/g.xml
+      #          1095  07-28-08 15:41   data/L.xml
+      #          2399  07-28-08 15:58   data/mTAu9H3.xml
+      #           152  07-28-08 15:58   data/vaHBS2t5R.dat
+      #      --------                   -------
+      #         49638                   7 files
+      #
+      # which is parsed by this method.
       def archive_contents_string_to_array string
-        # file information starts on fourth line of shell output and
-        # there are two trailing lines which are useless
-        file_rows = string.split("\n").slice(3,(output.size - 5)]
+        rows = string.split("\n")
+        # ignore the first 3 lines of the output and also discared the
+        # last 2 (5 = 2 + 3)
+        file_rows = rows[3,(rows.length - 5)]
         file_rows.map! do |row|
-          # the format is
-          # 
-          # 3  07-25-08 12:37   data/nested/awefawe.csv
-          # 1002  07-25-08 12:12   data/nLbce.txt
-          # 9  07-25-08 12:34   data/space file.txt
-          #
-          # and so we split each row at the space...columns beyond
-          # the third are part of the filename and should be joined
-          # with a space again in case of a filename with a space
+          # discard extra whitespace before after main text
+          row.lstrip!.rstrip!
+          # split the remainig text at spaces...columns beyond the third
+          # are part of the filename and should be joined with a space
+          # again in case of a filename with a space
           row.split(' ')[3,row.size].join(' ')
         end
         file_rows
