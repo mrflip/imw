@@ -25,10 +25,10 @@ module IMW
       # The default flags used creating, appending to, listing, and
       # extracting a rar archive.
       DEFAULT_FLAGS = {
-        :create => "a -r -o+",
-        :append => "a -r -o+",
+        :create => "a -r -o+ -inul",
+        :append => "a -r -o+ -inul",
         :list => "vb",
-        :extract => "x -o+"
+        :extract => "x -o+ -inul"
       }
 
       include IMW::Files::Archive
