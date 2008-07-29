@@ -18,24 +18,97 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
+require 'fileutils'
 require 'set'
 
 require 'imw/utils'
+require 'imw/utils/random'
 require 'imw/utils/extensions/find'
 
 require 'rubygems'
 require 'spec'
 
+require 'imw/model/directory_spec'
 
 share_as :ARCHIVE_COMMON_SPEC do
 
-  it "should try to use a shared example" do
-    puts @archive.path
-    @archive.path.class.should eql(String)
-  end
+  include Spec::Matchers::IMW
+
+  def create_random_files
+    IMW::Random.directory_with_files(@initial_directory)
+    IMW::Random.directory_with_files(@appending_directory)
+    FileUtils.mkdir(@extraction_directory)
   end
 
+  def delete_random_files
+    FileUtils.rm_rf [@root_directory,@extraction_directory]
+  end
 
+  before(:each) do
+    create_random_files    
+  end
+
+  after(:each) do
+    delete_random_files
+    FileUtils.rm(@archive.path) if @archive.exist?
+  end
+
+  describe "(listing)" do
+    it "should raise an error when listing a non-existent archive" do
+      lambda { @archive.contents }.should raise_error(IMW::Error)
+    end
+  end
+  
+  describe "(creation)" do
+    
+    it "should be able to create archives which match a directory's structure" do
+      @archive.create(@initial_directory + "/*")
+      @archive.should contain_paths_like(@initial_directory, :relative_to => @root_directory)
+    end
+
+    it "should raise an error if trying to overwrite an archive without the :force option" do
+      @archive.create(@initial_directory + "/*")
+      lambda { @archive.create(@initial_directory + "/*") }.should raise_error(IMW::Error)
+    end
+
+    it "should overwrite an archive if the :force option is given" do
+      @archive.create(@initial_directory + "/*")
+      @archive.create(@initial_directory + "/*", :force => true)      
+      @archive.should contain_paths_like(@initial_directory, :relative_to => @root_directory)
+    end
+  end
+  
+  describe "(appending)" do
+
+    it "should append to an archive which already exists" do
+      @archive.create(@initial_directory + "/*")
+      @archive.append(@appending_directory + "/*")
+      @archive.should contain_paths_like([@initial_directory,@appending_directory], :relative_to => @root_directory)
+    end
+
+    it "should append to an archive which doesn't already exist" do
+      @archive.append(@appending_directory + "/*")
+      @archive.should contain_paths_like(@appending_directory, :relative_to => @root_directory)
+    end
+
+  end
+
+  describe "(extracting)" do
+
+    it "should raise an error when trying to extract from a non-existing archive" do
+      lambda { @archive.extract }.should raise_error(IMW::Error)
+    end
+
+    it "should extract files which match the original ones it archived" do
+      @archive.create(@initial_directory + "/*")
+      @archive.append(@appending_directory + "/*")      
+      new_archive = @archive.cp(@extraction_directory + '/' + @archive.basename)
+      new_archive.extract
+      @extraction_directory.should contain_files_matching_directory(@root_directory)
+    end
+      
+  end
+end
 
 module Spec
   module Matchers
