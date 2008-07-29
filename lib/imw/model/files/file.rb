@@ -55,7 +55,7 @@ module IMW
 
       # Delete this file.
       def rm
-        raise IMW::Error.new("cannot delete #{@path}, doesn't exist!") unless exist?
+        raise IMW::PathError.new("cannot delete #{@path}, doesn't exist!") unless exist?
         FileUtils.rm @path
       end
 
@@ -68,9 +68,11 @@ module IMW
       # true.
       def cp path, opts = {}
         opts.reverse_merge!({:force => false})
-        raise IMW::Error.new("cannot copy from #{@path}, doesn't exist!") unless exist?
+        raise IMW::PathError.new("cannot copy from #{@path}, doesn't exist!") unless exist?
         new_extname = find_extname path
-        raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") unless new_extname == @extname and not opts[:force]
+        unless new_extname == @extname
+          raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") unless opts[:force]
+        end
         FileUtils.cp @path,path
         self.class.new(path)
       end
@@ -84,11 +86,13 @@ module IMW
       # true.
       def mv path, opts = {}
         opts.reverse_merge!({:force => false})        
-        raise IMW::Error.new("cannot move from #{@path}, doesn't exist!") unless exist?
+        raise IMW::PathError.new("cannot move from #{@path}, doesn't exist!") unless exist?
         new_extname = find_extname path
-        raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") if new_extname == @extname and not opts[:force]
+        unless new_extname == @extname
+          raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") unless opts[:force]
+        end
         FileUtils.mv @path,path
-        self.initialize(path)
+        self.class.new(path)
       end
 
     end
