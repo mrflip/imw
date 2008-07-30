@@ -21,7 +21,7 @@ require 'imw/model/files/compressed_file_spec'
 describe IMW::Files::Gz do
 
   before(:all) do
-    @root_directory = IMW::DIRECTORIES[:tmp] + "/gz_spec"
+    @root_directory = IMW::DIRECTORIES[:dump] + "/gz_spec"
 
     @path = @root_directory + "/file.txt.gz"
     @file = IMW::Files::Gz.new(@path)

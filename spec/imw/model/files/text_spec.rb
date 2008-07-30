@@ -28,7 +28,7 @@ describe IMW::Files::Text do
   end
   
   before(:each) do
-    @root_directory = IMW::DIRECTORIES[:tmp] + "/text_spec"
+    @root_directory = IMW::DIRECTORIES[:dump] + "/text_spec"
     FileUtils.mkdir @root_directory
 
     @path = @root_directory + "/file.txt"

@@ -22,10 +22,10 @@ require 'imw/model/files/archive_spec'
 describe IMW::Files::Tar do
 
   before(:all) do
-    @root_directory = ::IMW::DIRECTORIES[:tmp] + "/archive_test"
+    @root_directory = ::IMW::DIRECTORIES[:dump] + "/archive_test"
     @initial_directory = @root_directory + "/create_and_append/initial"
     @appending_directory = @root_directory + "/create_and_append/appending"
-    @extraction_directory = ::IMW::DIRECTORIES[:tmp] + "/extract"
+    @extraction_directory = ::IMW::DIRECTORIES[:dump] + "/extract"
     @archive = IMW::Files::Tar.new(@root_directory + "/test.tar")
   end
   

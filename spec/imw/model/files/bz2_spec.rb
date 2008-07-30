@@ -21,7 +21,7 @@ require 'imw/model/files/compressed_file_spec'
 describe IMW::Files::Bz2 do
 
   before(:all) do
-    @root_directory = IMW::DIRECTORIES[:tmp] + "/bz2_spec"
+    @root_directory = IMW::DIRECTORIES[:dump] + "/bz2_spec"
 
     @path = @root_directory + "/file.txt.bz2"
     @file = IMW::Files::Bz2.new(@path)

@@ -31,7 +31,7 @@ describe IMW::Files::File do
   end
 
   before(:all) do
-    @root_directory = IMW::DIRECTORIES[:tmp] + "/file_spec"
+    @root_directory = IMW::DIRECTORIES[:dump] + "/file_spec"
     FileUtils.mkdir @root_directory
     
     @path = @root_directory + "/file.ext"
