@@ -1,8 +1,8 @@
 #!/bin/bash
 
-rm -rf ~/projects/infochimps/imw/doc
-rm -rf ~/www/website/imw-docs
+IMW_DIR=/home/dhruv/projects/infochimps/imw
+IMW_DOCS_DIR=/home/dhruv/www/website/imw-docs
 
-cd ~/projects/infochimps/imw
-rdoc --main README --promiscuous lib etc README*
-cp -r doc ~/www/website/imw-docs
+rm -rf $IMW_DOCS_DIR
+cd $IMW_DIR
+rdoc --main README --all --inline-source --line-numbers --merge --op $IMW_DOCS_DIR --promiscuous lib etc README*
