@@ -2,7 +2,8 @@
 
 IMW_DIR=/home/dhruv/projects/infochimps/imw
 IMW_DOCS_DIR=/home/dhruv/www/website/imw-docs
+PATHS_TO_DOC="lib etc spec README*"
 
 rm -rf $IMW_DOCS_DIR
 cd $IMW_DIR
-rdoc --main README --all --inline-source --line-numbers --merge --op $IMW_DOCS_DIR --promiscuous lib etc README*
+rdoc --main README --all --inline-source --line-numbers --merge --op $IMW_DOCS_DIR --promiscuous $PATHS_TO_DOC
