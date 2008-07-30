@@ -32,8 +32,8 @@ module IMW
       end
 
       # Returns the path of the file after decompression.
-      def decompressed_file
-        @path.gsub /\.bz2$/ ""
+      def decompressed_path
+        @path.gsub /\.bz2$/, ""
       end
       
     end

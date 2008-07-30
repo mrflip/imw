@@ -13,7 +13,7 @@
 # 
 
 require 'imw/model/files/compressed_file'
-
+require 'imw/model/files/archive'
 require 'imw/utils'
 
 module IMW
@@ -21,6 +21,8 @@ module IMW
   module Files
 
     class TarBz2 < IMW::Files::CompressedFile
+
+      include IMW::Files::Archive
 
       DEFAULT_FLAGS = {
         :decompression => '-fd',
@@ -44,11 +46,11 @@ module IMW
       end
 
       # Returns the path of the file after decompression.
-      def decompressed_file
+      def decompressed_path
         if /\.tar\.bz2$/.match @path then
-          @path.gsub /\.tar\.bz2$/ ".tar"
+          @path.gsub /\.tar\.bz2$/, ".tar"
         elsif /\.tbz2$/.match @path then
-          @path.gsub /\.tbz2$/ ".tar"
+          @path.gsub /\.tbz2$/, ".tar"
         end
       end
 

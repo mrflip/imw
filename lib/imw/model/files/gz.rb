@@ -31,10 +31,12 @@ module IMW
         }
       end
 
+      def decompressed_path
+        @path.gsub /\.gz$/, ""
+      end
+
     end
-
   end
-
 end
 
 # puts "#{File.basename(__FILE__)}: I've always thought that G-Zip would be great name for a rapper." # at bottom
