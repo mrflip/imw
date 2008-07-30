@@ -24,6 +24,8 @@
 require 'fileutils'
 
 require 'imw/utils'
+require 'imw/model/files/bz2'
+require 'imw/model/files/gz'
 
 module IMW
 
@@ -40,6 +42,12 @@ module IMW
         :gzip => '.gz'
       }
 
+      # Classes corresponding to each compression program.
+      COMPRESSION_FILE_CLASSES = {
+        :bzip2 => IMW::Files::Bz2,
+        :gzip => IMW::Files::Gz
+      }
+
       # Compression flags for each program
       COMPRESSION_FLAGS = {
         :bzip2 => "-f",
@@ -47,24 +55,24 @@ module IMW
       }
 
       protected
+      # Check that +program+ is a valid compression program.
+      def ensure_valid_compression_program program
+        raise IMW::Error.new("#{program} is not a valid compression program (#{COMPRESSION_PROGS.join(' ,')}).") unless COMPRESSION_PROGS.include? program
+      end
+      
       # Construct the command passed to the shell to compress this
       # file using the given +program+.
-      #
-      # Options:
-      # <tt>:verbose</tt> (false):: print output
-      def compression_command program, opts = {}
-        opts.reverse_merge!({:verbose => false})
-
-        raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless COMPRESSION_PROGS.include? program
-
+      def compression_command program
+        ensure_valid_compression_program program
         [IMW::EXTERNAL_PROGRAMS[program],COMPRESSION_FLAGS[program],self.path].join ' '
       end
 
-      # Return the object representing this file comprssed with
+      # Return the object representing this file compressed with
       # +program+.
       def compressed_file program
-        raise IMW::Error.new("The only valid compression programs are bzip2 and gzip.") unless COMPRESSION_PROGS.include? program        
-        IMW::Files::CompressedFile.new(self.dirname + '/' + self.basename + COMPRESSION_EXTS[program])
+        ensure_valid_compression_program program
+        path = self.dirname + '/' + self.basename + COMPRESSION_EXTS[program]
+        COMPRESSION_FILE_CLASSES[program].new(path)
       end
       
       public
@@ -73,36 +81,38 @@ module IMW
       # the original file.  Returns an
       # <tt>IMW::Files::CompressedFile</tt> object corresponding to
       # the compressed file.
-      #
+      # 
       # Options:
-      # <tt>:verbose</tt> (false):: print output
-      def compress! program = :bzip2, opts = {}
-        IMW.system(self.compression_command(program, opts))
+      # 
+      # <tt>:program</tt> (<tt>:bzip2</tt>):: names the compression
+      # program from the choices in <tt>IMW::EXTERNAL_PROGRAMS</tt>.
+      def compress! program = :bzip2
+        raise IMW::PathError.new("cannot compress #{@path}, doesn't exist!") unless exist?
+        FileUtils.cd(@dirname) { IMW.system(self.compression_command(program)) }
         self.compressed_file program
       end
 
       # Compress this file in its present directory, overwriting any
-      # existing compressed files while saving the original file.
+      # existing compressed files while keeping the original file.
       # Returns an <tt>IMW::Files::CompressedFile</tt> object
       # corresponding to the compressed file.
       #
       # Options:
-      # <tt>:program</tt> (<tt>:bzip2</tt>):: names the compression program from the choices in <tt>IMW::EXTERNAL_PROGRAMS</tt>.
-      # <tt>:verbose</tt> (false):: print output
-      def compress program = :bzip2, opts = {}
-        # for bzip2 this can be done by adding the `-k' option but
-        # it's easier to pretend that, like gzip, it doesn't have this
-        # option and to thus treat both compression programs
-        # identically in this method.
-        FileUtils.cp(self.path,self.path + 'copy')
-        IMW.system(self.compression_command(program, opts))
-        FileUtils.mv(self.path + 'copy',self.path)
-        self.compressed_file program
+      # 
+      # <tt>:program</tt> (<tt>:bzip2</tt>):: names the compression
+      # program from the choices in <tt>IMW::EXTERNAL_PROGRAMS</tt>.
+      def compress program = :bzip2
+        raise IMW::PathError.new("cannot compress #{@path}, doesn't exist!") unless exist?        
+        begin
+          FileUtils.cp(self.path,self.path + 'copy')
+          compress! program
+        ensure
+          FileUtils.mv(self.path + 'copy',self.path)
+        end
+        self.compressed_file program        
       end
-
+      
     end
-    
   end
-
 end
 # puts "#{File.basename(__FILE__)}: Why is it that when you squeeze a lemon you get lemonade but when you squeeze a banana you just get a mess?" # at bottom

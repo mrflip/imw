@@ -20,7 +20,7 @@
 # <tt>:decompression_flags</tt>:: a string of flags to pass to the
 # compression program when decompressing the file.
 #
-# A subclass must also define the method +decompressed_file+ which
+# A subclass must also define the method +decompressed_path+ which
 # returns the path of the file post-decompression.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
@@ -29,7 +29,10 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
+require 'fileutils'
+
 require 'imw/model/files/file'
+require 'imw/model/files/identify'
 
 require 'imw/utils'
 
@@ -48,13 +51,14 @@ module IMW
         [IMW::EXTERNAL_PROGRAMS[@compression[:program]],@compression[:decompression_flags],@path].join ' '
       end
         
-      protected
+      public
       # Decompress this file in its present directory overwriting any
       # existing files and without saving the original compressed
       # file.
       def decompress!
-        IMW.system decompression_command
-        decompressed_file
+        raise IMW::PathError.new("cannot decompress #{@path}, doesn't exist!") unless exist?
+        FileUtils.cd(@dirname) { IMW.system decompression_command }
+        IMW::Files.identify(decompressed_path)
       end
 
       # Decompress this file in its present directory, overwriting any
@@ -63,10 +67,14 @@ module IMW
       # The implementation is a little stupid, as the file is
       # needlessly copied.
       def decompress
-        FileUtils.cp(@path,@path + 'copy')
-        decompress!
-        FileUtils.mv(@path + 'copy',@path)
-        decompressed_file
+        raise IMW::PathError.new("cannot decompress #{@path}, doesn't exist!") unless exist?        
+        begin
+          FileUtils.cp(@path,@path + 'copy')
+          decompress!
+        ensure
+          FileUtils.mv(@path + 'copy',@path)
+        end
+        IMW::Files.identify(decompressed_path)
       end
 
     end

@@ -13,7 +13,6 @@
 
 require 'fileutils'
 
-require 'imw/model/files/compressible'
 require 'imw/utils'
 
 module IMW
@@ -22,8 +21,6 @@ module IMW
 
     class File
 
-      include IMW::Files::Compressible
-      
       attr_reader :path, :dirname, :basename, :extname
 
       private 
