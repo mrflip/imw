@@ -29,7 +29,7 @@ describe IMW::Files::Tar do
     @archive = IMW::Files::Tar.new(@root_directory + "/test.tar")
   end
   
-  include ARCHIVE_COMMON_SPEC
+  include IMW_FILES_ARCHIVE_SHARED_SPEC
 
 end
 

@@ -20,7 +20,11 @@ require 'imw/utils/random'
 require 'rubygems'
 require 'spec'
 
+require 'imw/matchers/file_contents_matcher'
+
 describe IMW::Files::File do
+
+  include Spec::Matchers::IMW
 
   def create_file
     IMW::Random.file @path
@@ -29,19 +33,18 @@ describe IMW::Files::File do
   before(:all) do
     @root_directory = IMW::DIRECTORIES[:tmp] + "/file_spec"
     FileUtils.mkdir @root_directory
+    
     @path = @root_directory + "/file.ext"
-    @new_path_good = @root_directory + "/file_new.ext"
-    @new_path_bad = @root_directory + "/file2_new.next"
-  end
-
-  before(:each) do
-    @file = IMW::Files::File.new(@path)
+    @copy_of_original_path = @root_directory + "/file_copy.ext"
+    
+    @file = IMW::Files::File.new(@path)    
+    
+    @new_path_same_extension = @root_directory + "/file_new.ext"
+    @new_path_different_extension = @root_directory + "/file_new.next"
   end
   
   after(:each) do
-    FileUtils.rm @path if File.exist? @path
-    FileUtils.rm @new_path_good if File.exist? @new_path_good
-    FileUtils.rm @new_path_bad if File.exist? @new_path_bad    
+    FileUtils.rm Dir.glob(@root_directory + "/*")
   end
 
   after(:all) do
@@ -79,13 +82,7 @@ describe IMW::Files::File do
 
   describe "(deletion)" do
     it "should raise an error if it tries to delete itself but it doesn't exist" do
-      begin
-        @file.rm
-      rescue IMW::PathError
-        puts "we all float on"
-      end
-      1.should eql(1)
-      #lambda { @file.rm }.should raise_error(IMW::PathError)
+      lambda { @file.rm }.should raise_error(IMW::PathError)
     end
 
     it "should delete itself if it it exists on disk" do
@@ -97,50 +94,51 @@ describe IMW::Files::File do
 
   describe "(copying)" do
     it "should raise an error if it tries to copy itself but it doesn't exist" do
-      lambda { @file.cp @new_path_good }.should raise_error(IMW::PathError)
+      lambda { @file.cp @new_path_same_extension }.should raise_error(IMW::PathError)
     end
 
     it "should copy itself with the same extension" do
       create_file
-      new_file = @file.cp @new_path_good
-      new_file.exist?.should eql(true)
+      new_file = @file.cp @new_path_same_extension
+      new_file.path.should have_contents_matching_those_of(@file.path)
     end
 
     it "should raise an error if it tries to copy itself with a differing extension without :force" do
       create_file
-      lambda { @file.cp @new_path_bad }.should raise_error(IMW::Error)
+      lambda { @file.cp @new_path_different_extension }.should raise_error(IMW::Error)
     end
 
     it "should copy itself with a differing extension with :force" do
       create_file
-      new_file = @file.cp @new_path_bad, :force => true
-      new_file.exist?.should eql(true)
+      new_file = @file.cp @new_path_different_extension, :force => true
+      new_file.path.should have_contents_matching_those_of(@file.path)
     end
   end
 
   describe "(moving)" do
     it "should raise an error if it tries to move itself but it doesn't exist" do
-      lambda { @file.mv @new_path_good }.should raise_error(IMW::PathError)
+      lambda { @file.mv @new_path_same_extension }.should raise_error(IMW::PathError)
     end
 
     it "should move itself with the same extension" do
       create_file
-      new_file = @file.mv @new_path_good
-      new_file.exist?.should eql(true)
+      old_file = @file.cp @copy_of_original_path
+      new_file = @file.mv @new_path_same_extension
+      new_file.path.should have_contents_matching_those_of(old_file.path)
     end
 
     it "should raise an error if it tries to move itself with a differing extension without :force" do
       create_file
-      lambda { @file.mv @new_path_bad }.should raise_error(IMW::Error)
+      lambda { @file.mv @new_path_different_extension }.should raise_error(IMW::Error)
     end
 
     it "should move itself with a differing extension with :force" do
       create_file
-      new_file = @file.mv @new_path_bad, :force => true
-      new_file.exist?.should eql(true)
+      old_file = @file.cp @copy_of_original_path
+      new_file = @file.mv @new_path_different_extension, :force => true
+      new_file.path.should have_contents_matching_those_of(old_file.path)
     end
-  end  
-      
+  end
 end
 
 

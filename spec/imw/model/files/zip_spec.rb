@@ -29,8 +29,8 @@ describe IMW::Files::Zip do
     @archive = IMW::Files::Zip.new(@root_directory + "/test.zip")
   end
   
-  include ARCHIVE_COMMON_SPEC
+  include IMW_FILES_ARCHIVE_SHARED_SPEC
 
 end
 
-# puts "#{File.basename(__FILE__)}: No matter how many times you test the integrity of a zipper at the store before you buy something it /will/ break when you take it home.!" # at bottom
+# puts "#{File.basename(__FILE__)}: No matter how many times you test the integrity of a zipper at the store before you buy something it /will/ break when you take it home!" # at bottom

@@ -29,7 +29,7 @@ describe IMW::Files::Rar do
     @archive = IMW::Files::Rar.new(@root_directory + "/test.rar")
   end
   
-  include ARCHIVE_COMMON_SPEC
+  include IMW_FILES_ARCHIVE_SHARED_SPEC
 
 end
 

@@ -3,14 +3,27 @@
 #
 # == About
 #
-# The IMW::Files::Archive module doesn't implement any functionality
-# of its own but merely adds methods to an including class.
-# Appropriately, this spec file implements a collection of functions
-# useful for testing archive types but doesn't actually implement any
-# tests.  An including spec must define the +archive+ instance
-# variable and gains the +create_random_files+ and
-# +delete_random_files+ methods which should be used in +before+ and
-# +after+ blocks, respectively.
+# The <tt>IMW::Files::Archive</tt> module doesn't implement any
+# functionality of its own but merely adds methods to an including
+# class.  Appropriately, this spec file implements a shared example
+# group <tt>IMW_FILES_ARCHIVE_COMMON_SPEC</tt> which can be including
+# by the spec of an archive class.  This spec must also define the
+# following instance variables:
+#
+# <tt>@archive</tt>:: a subclass of <tt>IMW::Files::File</tt> which
+# has the <tt>IMW::Files::Archive</tt> module mixed in.
+#
+# <tt>@root_directory</tt>: a string specifying the path where all the
+# files will be created
+#
+# <tt>@initial_directory</tt>: a string specifying the path where some
+# files for the initial creation of the archive will be created.
+# 
+# <tt>@appending_directory</tt>: a string specifying the path where
+# all some files for appending to the archive will be created.
+# 
+# <tt>@extraction_directory</tt>: a string specifying the path where
+# the archive's files will be extracted.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -28,9 +41,10 @@ require 'imw/utils/extensions/find'
 require 'rubygems'
 require 'spec'
 
-require 'imw/model/directory_spec'
+require 'imw/matchers/directory_contents_matcher'
+require 'imw/matchers/archive_contents_matcher'
 
-share_as :ARCHIVE_COMMON_SPEC do
+share_as :IMW_FILES_ARCHIVE_SHARED_SPEC do
 
   include Spec::Matchers::IMW
 
@@ -107,82 +121,6 @@ share_as :ARCHIVE_COMMON_SPEC do
       @extraction_directory.should contain_files_matching_directory(@root_directory)
     end
       
-  end
-end
-
-module Spec
-  module Matchers
-    module IMW
-
-      # Match the contents of the archive against files or directories
-      # in +paths+.
-      #
-      # Options include:
-      # 
-      # <tt>:relative_to</tt>:: a leading path which will be stripped
-      # from all +paths+ before comparison with the contents of the
-      # directory.
-      class ArchiveContentsMatchPaths
-
-        private
-        def initialize paths,opts = {}
-          opts.reverse_merge!({:relative_to => nil})
-          paths = [paths] if paths.class == String
-          @paths = paths
-          @relative_to = opts[:relative_to]
-          find_paths_contents
-        end
-
-        def find_paths_contents
-          # find all the files
-          contents = []
-          @paths.each do |path|
-            path = File.expand_path path
-            if File.file? path then
-              contents << path
-            elsif File.directory? path then
-              contents += Find.files_in_directory(path)
-            end
-          end
-
-          # strip leading path
-          contents.map! do |path|
-            # the +1 is because we want a relative path
-            path = path[@relative_to.length + 1,path.size]
-          end
-
-          @paths_contents = contents.to_set
-        end
-
-        def pretty_print set
-          set.to_a.join("\n\t")
-        end
-        
-        public
-        def matches? archive
-          @archive = archive
-          @archive_contents = @archive.contents.to_set
-          @archive_contents == @paths_contents
-        end
-
-        def failure_message
-          missing_from_archive = "missing from archive:\n\t#{pretty_print(@paths_contents - @archive_contents)}\n"
-          missing_from_paths = "missing from paths:\n\t#{pretty_print(@archive_contents - @paths_contents)}\n"
-          common = "common to both:\n\t#{pretty_print(@archive_contents & @paths_contents)}\n"
-          "expected contents of archive (#{@archive.path}) and paths (#{@paths.join(", ")}) to be identical.\n#{missing_from_archive}\n#{missing_from_paths}\n#{common}"
-        end
-
-        def negative_failure_message
-          "expected contents of archive (#{@archive.path}) and paths (#{@paths.join(", ")}) to differ."
-        end
-        
-      end
-
-      # Invokes the matcher <tt>Spec::Matchers::IMW::ArchiveContentsMatchPaths
-      def contain_paths_like paths, opts = {}
-        ArchiveContentsMatchPaths.new(paths,opts)
-      end
-    end
   end
 end
 
