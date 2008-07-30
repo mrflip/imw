@@ -15,34 +15,37 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
+require 'imw/utils'
 require 'imw/utils/paths'
 require 'imw/workflow'
-
 
 module IMW
 
   class Source
 
-    include IMW::Workflow::Rip
-
     attr_reader :name,:source
 
-    # this initialize method needs to be rewritten with validation
-    # etc.
-    def initialize name
+    private
+    def initialize name, source = nil
       @name = name
+      @source = source if source
     end
 
+    # Does this source meet the minimum standards set for an IMW data
+    # source?
+    def meets_minimum_standard?
+      true
+    end
+
+    public
     # Returns the path the directory corresponding to the workflow
     # +step+ for this source.
     def path_to step
-      raise ArgumentError("The only valid workflow steps for Sources are `:ripd', `:xtrd', or `:dump'.") if not [:ripd,:xtrd,:dump].include? step
-      if step == :ripd || step == :xtrd then [IMW::Paths.root_of(step),@source,@name].join('/') else IMW::Paths.root_of(step) end
+      valid_steps = IMW::Workflow::SOURCE_STEPS + [:dump]
+      raise IMW::ArgumentError.new("invalid workflow step `#{step}', try #{valid_steps.quote_items 'or'}") unless valid_steps.include? step
+      [IMW::DIRECTORIES[step],@source,@name].join '/'
     end
-
-    # Create a 
-
   end
-
 end
+
 # puts "#{File.basename(__FILE__)}: You use your Monkeywrench to rake deep and straight furrows in the earth for your orchard." # at bottom
