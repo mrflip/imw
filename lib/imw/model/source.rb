@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/datasource.rb -- class to describe a data source
+# h2. lib/imw/model/source.rb -- class to describe a data source
 #
 # == About
 #
