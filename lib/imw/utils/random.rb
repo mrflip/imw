@@ -117,6 +117,7 @@ module IMW
       f.close
     end
 
+
     # Create a tar archive at the given +filename+ containing random
     # files.
     def self.tar_file filename
