@@ -36,6 +36,7 @@ module IMW
     :root => "/home/dhruv/projects/infochimps/imw",
     :ripd => "/home/dhruv/projects/infochimps/data/ripd",
     :xtrd => "/home/dhruv/projects/infochimps/data/xtrd",
+    :prsd => "/home/dhruv/projects/infochimps/data/prsd",
     :mungd => "/home/dhruv/projects/infochimps/data/mungd",
     :fixd => "/home/dhruv/projects/infochimps/data/fixd",
     :pkgd => "/home/dhruv/projects/infochimps/data/pkgd",
@@ -64,7 +65,9 @@ module IMW
       ".ascii" => "Text",
       ".csv" => "Csv",
       ".xml" => "Xml",
-      ".html" => "Html"
+      ".html" => "Html",
+      ".yaml" => "Yaml",
+      ".yml" => "Yaml"
     }
   end
 
