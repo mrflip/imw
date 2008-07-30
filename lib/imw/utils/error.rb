@@ -24,6 +24,9 @@ module IMW
   class ArgumentError < ArgumentError
   end
 
+  class NotImplementedError < NotImplementedError
+  end
+  
   # An error meant to be used when a system call goes awry.  It will
   # report exit status and the process id of the offending call.
   class SystemCallError < IMW::Error
