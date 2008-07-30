@@ -80,10 +80,10 @@ Directories.each do |directory|
     if FileTest.directory?(directory + '/' + dir) then
       old_dir = directory + '/' + dir
       new_dir = directory + '/' + reverse_domain(dir)
-      if verbose or test then puts "#{old_dir} ==> #{new_dir}" end
+      if verbose || test then puts "#{old_dir} ==> #{new_dir}" end
       if not test then File.rename(old_dir,new_dir) end
     else
-      if verbose or test then puts "(#{directory}/#{dir})" end
+      if verbose || test then puts "(#{directory}/#{dir})" end
     end
   end
 end
