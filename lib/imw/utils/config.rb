@@ -16,9 +16,36 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
+
+require 'rubygems'
+require 'YAML'
 
 module IMW
+  attr_reader :cfg
+
+  #
+  def self.imw_root_dir
+    File.join(File.dirname(__FILE__), '../../..')
+  end
+
+  # User configuration filename
+  def self.config_file
+    ENV['IMWRC'] || File.join(ENV['HOME'], '.imwrc')
+  end
+
+  # Default configuration filename
+  def self.config_base
+    File.join(imw_root_dir, 'etc', 'imwrc.rb')
+  end
+
+  # Source the config files
+  def self.load_config
+    require config_base
+    require config_file if File.exist? config_file
+
+  end
+
 
   # Paths to external programs.
   EXTERNAL_PROGRAMS = {
@@ -29,7 +56,7 @@ module IMW
     :gzip => "gzip",
     :bzip2 => "bzip2",
     :wget => "wget"
-  }
+  } unless defined? EXTERNAL_PROGRAMS
 
   # Directories where IMW will write files.
   DIRECTORIES = {
@@ -41,7 +68,8 @@ module IMW
     :fixd => "/home/dhruv/projects/infochimps/data/fixd",
     :pkgd => "/home/dhruv/projects/infochimps/data/pkgd",
     :dump => "/tmp/imw"
-  }
+  } unless defined? DIRECTORIES
+
 
   module Files
     # Correspondence between extensions and file types.  Used by
@@ -68,9 +96,10 @@ module IMW
       ".html" => "Html",
       ".yaml" => "Yaml",
       ".yml" => "Yaml"
-    }
+    } unless defined? EXTENSIONS
   end
-
 end
+
+IMW.load_config
 
 # puts "#{File.basename(__FILE__)}: You carefully adjust the settings on your Monkeywrench.  Beware, glob-monsters!" # at bottom
