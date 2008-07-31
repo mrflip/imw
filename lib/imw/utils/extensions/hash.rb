@@ -28,19 +28,19 @@ class Hash
   def reverse_merge(other_hash)
     other_hash.merge(self)
   end
-
+  
   # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
   def reverse_merge!(other_hash)
     replace(reverse_merge(other_hash))
   end
-
+  
   # Create a hash from an array of keys and corresponding values.
   def self.zip(keys, values, default=nil, &block)
     hash = block_given? ? Hash.new(&block) : Hash.new(default)
     keys.zip(values) { |k,v| hash[k]=v }
     hash
   end
-
+  
   # Turns a collection of pairs into a hash.  The first of each pair
   # make the keys and the second the values. Elements with length
   # longer than two will lose those values.
@@ -52,7 +52,7 @@ class Hash
     self.each{ |k,v| hsh[k] = v }
     hsh
   end
-
+  
   # Merges self with another hash, recursively.
   # 
   # first  = {
@@ -71,7 +71,7 @@ class Hash
   def deep_merge(second)
     target = dup
     second.keys.each do |key|
-      if second[key].is_a? Hash && self[key].is_a? Hash
+      if second[key].is_a?(Hash) && self[key].is_a?(Hash)
         target[key] = target[key].deep_merge(second[key])
       else
         target[key] = second[key]
@@ -106,7 +106,7 @@ class Hash
     end
     self
   end
-
+  
   # Merge another array with this one, accumulating values that appear in both
   # into arrays.
   #
@@ -128,7 +128,7 @@ class Hash
   def keep_merge(second)
     target = dup
     second.each do |key, val2|
-      if second[key].is_a? Hash && self[key].is_a? Hash
+      if second[key].is_a?(Hash) && self[key].is_a?(Hash)
         target[key] = target[key].keep_merge(val2)
       else
         target[key] = target.include?(key) ? [target[key], val2].flatten.uniq : val2
@@ -152,7 +152,7 @@ class Hash
   def rassoc(key)
     self.has_value?(key) ? [key, self[key]] : nil
   end
-
+  
   # Allows loading ostruct directly from YAML
   def to_openstruct
     map{ |el| el.to_openstruct }
