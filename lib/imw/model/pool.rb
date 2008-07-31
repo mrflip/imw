@@ -15,8 +15,10 @@
 
 require 'singleton'
 
+require 'imw/model/files/file'
 require 'imw/model/source'
 require 'imw/model/dataset'
+require 'imw/utils'
 
 module IMW
 
@@ -26,6 +28,26 @@ module IMW
 
     attr_reader :sources, :datasets
 
+    private
+    def initialize
+      find_sources
+    end
+
+    # Scan the pool directory and add all sources which meet the
+    # minimum standard.
+    def find_sources
+      contents = Dir.new(IMW::DIRECTORIES[:sources]).abs_contents.map
+      names = []
+      contents.uniq.each {|thing| names << IMW::Files::File.new(thing).name if File.file? thing }
+      sources = []
+      names.uniq.each do |name|
+        source = IMW::Source.new(name)
+        sources << source if source.meets_minimum_standard?
+      end
+      @sources = sources
+    end
+
+    public
     # Add an <tt>IMW::Source</tt> object +source+ to the pool.
     def add_source source
       source = IMW::Source(source) unless source.is_a? IMW::Source
@@ -33,12 +55,11 @@ module IMW
       @sources.append source
     end
 
-    # Add an <tt>IMW::Dataset</tt> object +dataset+ to the pool.
-    def add_dataset dataset
-      raise IMW::ArgumentError.new("not a valid dataset") unless dataset.is_a? IMW::Dataset
-      @datasets.append dataset
-    end
-    
+    # Check whether +source+ is in the pool.
+    def has_source? source
+      source = source.name if source.respond_to? :name
+      @sources.map {|s| s.name}.include? source
+     end
 
   end
 end
