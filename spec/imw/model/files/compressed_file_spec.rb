@@ -25,18 +25,12 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
-
-require 'fileutils'
-
-require 'rubygems'
-require 'spec'
+#
+require File.join(File.dirname(__FILE__),'../../../spec_helper')
+require IMW_SPEC_DIR+'/imw/matchers/file_contents_matcher'
 
 require 'imw/utils/random'
 require 'imw/model/files/text'
-
-require 'imw/matchers/file_contents_matcher'
-
 share_as :IMW_FILES_COMPRESSEDFILE_SHARED_SPEC do
 
   include Spec::Matchers::IMW
@@ -98,6 +92,6 @@ share_as :IMW_FILES_COMPRESSEDFILE_SHARED_SPEC do
       end
     end
   end
-end
+end  unless defined? IMW_FILES_COMPRESSEDFILE_SHARED_SPEC
 
 # puts "#{File.basename(__FILE__)}: You whack the cabinet with your Monkeywrench sending files and papers everywhere.  You smile." # at bottom

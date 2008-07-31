@@ -9,19 +9,11 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
-
-require 'fileutils'
+#
+require File.join(File.dirname(__FILE__),'../../../spec_helper')
+require IMW_SPEC_DIR+'/imw/model/files/compressible_spec'
 
 require 'imw/model/files/file'
-require 'imw/utils'
-require 'imw/utils/random'
-
-require 'rubygems'
-require 'spec'
-
-require 'imw/matchers/file_contents_matcher'
-
 describe IMW::Files::File do
 
   include Spec::Matchers::IMW
@@ -33,16 +25,16 @@ describe IMW::Files::File do
   before(:all) do
     @root_directory = IMW::DIRECTORIES[:dump] + "/file_spec"
     FileUtils.mkdir @root_directory
-    
+
     @path = @root_directory + "/file.ext"
     @copy_of_original_path = @root_directory + "/file_copy.ext"
-    
-    @file = IMW::Files::File.new(@path)    
-    
+
+    @file = IMW::Files::File.new(@path)
+
     @new_path_same_extension = @root_directory + "/file_new.ext"
     @new_path_different_extension = @root_directory + "/file_new.next"
   end
-  
+
   after(:each) do
     FileUtils.rm Dir.glob(@root_directory + "/*")
   end
@@ -50,7 +42,7 @@ describe IMW::Files::File do
   after(:all) do
     FileUtils.rm_rf @root_directory
   end
-  
+
   describe "(attributes)" do
     it "should have the correct path" do
       @file.path.should eql(@path)
