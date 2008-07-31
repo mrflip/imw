@@ -67,6 +67,11 @@ describe IMW::Files::File do
     it "should have the correct extension" do
       @file.extname.should eql(".ext")
     end
+
+    it "should have the correct name" do
+      @file.name.should eql("file")
+    end
+    
   end
 
   describe "(existence)" do
