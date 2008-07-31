@@ -41,6 +41,14 @@ module IMW
 
       @category = (category.nil? ? ['uncategorized'] : category)
     end
+
+
+    # Check whether this dataset meets the minimum standards for
+    # inclusion in the pool.
+    def meets_minimum_standard?
+      true
+    end
+    
   end
 end
 
