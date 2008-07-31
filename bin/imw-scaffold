@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby
+$: << File.join(File.dirname(__FILE__), '../lib/')
+require 'imw/utils'
+require 'imw/workflow/scaffold'
+# require 'fileutils'; include FileUtils::DryRun
+include IMW
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'imw', 'utils')
-
-# puts IMW.paths.to_yaml
-puts IMW.path_to(:log), IMW.path_to(:foo)
-puts Dir[IMW.path_to(:log)+'/*']
-
-
-IMW.add_path :mlb_08, 'gd2.mlb.com/components/game/mlb/year_2008'
-puts IMW.path_to :ripd, :mlb_08, 'month_06', 'day_08', 'miniscoreboard.xml'
+scaffold_dataset ARGV if ARGV.length >= 1
