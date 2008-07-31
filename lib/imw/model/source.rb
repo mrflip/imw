@@ -13,7 +13,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require 'imw/utils'
 require 'imw/utils/paths'
@@ -22,7 +22,6 @@ require 'imw/workflow'
 module IMW
 
   class Source
-
     attr_reader :name,:source
 
     private
@@ -43,9 +42,10 @@ module IMW
     def path_to step
       valid_steps = IMW::Workflow::SOURCE_STEPS + [:dump]
       raise IMW::ArgumentError.new("invalid workflow step `#{step}', try #{valid_steps.quote_items 'or'}") unless valid_steps.include? step
-      [IMW::DIRECTORIES[step],@source,@name].join '/'
+      File.join(IMW::DIRECTORIES[step], @source, @name)
     end
   end
+
 end
 
 # puts "#{File.basename(__FILE__)}: You use your Monkeywrench to rake deep and straight furrows in the earth for your orchard." # at bottom
