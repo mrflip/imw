@@ -31,15 +31,22 @@ module IMW
     :wget => "wget"
   }
 
-  # Directories where IMW will write files.
+  # Directories where IMW will write and look for files.
   DIRECTORIES = {
     :root => "/home/dhruv/projects/infochimps/imw",
+
+    :pool => "/home/dhruv/projects/infochimps/pool",
+    :sources => "/home/dhruv/projects/infochimps/pool/sources",
+    :datasets => "/home/dhruv/projects/infochimps/pool/datasets",
+    
+    :data => "/home/dhruv/projects/infochimps/data",
     :ripd => "/home/dhruv/projects/infochimps/data/ripd",
     :xtrd => "/home/dhruv/projects/infochimps/data/xtrd",
     :prsd => "/home/dhruv/projects/infochimps/data/prsd",
     :mungd => "/home/dhruv/projects/infochimps/data/mungd",
     :fixd => "/home/dhruv/projects/infochimps/data/fixd",
     :pkgd => "/home/dhruv/projects/infochimps/data/pkgd",
+
     :dump => "/tmp/imw"
   }
 
