@@ -7,7 +7,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require 'test/unit'
 require 'imw/utils/validate'
@@ -16,11 +16,11 @@ class ValidateTest < Test::Unit::TestCase
 
   def test_is_domain()
     valid_domains = ['GOOGLE.com','www.google.com','maths.ox.ac.uk','infochimps.org','DHRUVBANSAL.com','everything2.com','zic.bc','psp-spot.com','www-3.psp-spot.com']
-    invalid_domains = ['@me.com','silly_buckets.foolishness.com','wefw=230=','']
+    invalid_domains = ['@me.com','silly_buckets.foolishness.com','wefw=230=','', 'com']
 
-    # FIXME are 'com' or 'oneword' sufficient as domain names?
+    # FIXME are 'com' or 'oneword' sufficient as domain names? (No -- flip)
 
-    valid_domains.each { |domain| assert is_domain?(domain), "Failed to accept valid domain: #{domain}" }
+    valid_domains.each   { |domain| assert is_domain?(domain), "Failed to accept valid domain: #{domain}" }
     invalid_domains.each { |domain| assert !is_domain?(domain), "Failed to reject invaild domain: #{domain}" }
   end
 

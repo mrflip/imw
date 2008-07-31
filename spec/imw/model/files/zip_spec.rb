@@ -1,6 +1,6 @@
 #
 # h2. test/imw/model/files/zip_spec.rb -- tests of zip file
-# 
+#
 # == About
 #
 # RSpec tests for <tt>IMW::Files::Zip</tt> class.
@@ -9,26 +9,21 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
-
-require 'rubygems'
-require 'spec'
+#
+require File.join(File.dirname(__FILE__),'../../../spec_helper')
+require IMW_SPEC_DIR+'/imw/model/files/archive_shared'
 
 require 'imw/model/files/zip'
-require 'imw/utils'
-
-require 'imw/model/files/archive_spec'
-
 describe IMW::Files::Zip do
 
   before(:all) do
-    @root_directory = ::IMW::DIRECTORIES[:dump] + "/archive_test"
-    @initial_directory = @root_directory + "/create_and_append/initial"
-    @appending_directory = @root_directory + "/create_and_append/appending"
+    @root_directory       = ::IMW::DIRECTORIES[:dump] + "/archive_test"
+    @initial_directory    = @root_directory + "/create_and_append/initial"
+    @appending_directory  = @root_directory + "/create_and_append/appending"
     @extraction_directory = ::IMW::DIRECTORIES[:dump] + "/extract"
     @archive = IMW::Files::Zip.new(@root_directory + "/test.zip")
   end
-  
+
   include IMW_FILES_ARCHIVE_SHARED_SPEC
 
 end

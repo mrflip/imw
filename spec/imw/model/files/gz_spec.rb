@@ -9,15 +9,11 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
-
-require 'rubygems'
-require 'spec'
+#
+require File.join(File.dirname(__FILE__),'../../../spec_helper')
+require IMW_SPEC_DIR+'/imw/model/files/compressed_file_spec'
 
 require 'imw/model/files/gz'
-
-require 'imw/model/files/compressed_file_spec'
-
 describe IMW::Files::Gz do
 
   before(:all) do

@@ -9,15 +9,12 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
-
-require 'rubygems'
-require 'spec'
+#
+require File.join(File.dirname(__FILE__),'../../../spec_helper')
+require IMW_SPEC_DIR+'/imw/model/files/archive_shared'
+require IMW_SPEC_DIR+'/imw/model/files/compressed_file_spec'
 
 require 'imw/model/files/bz2'
-
-require 'imw/model/files/compressed_file_spec'
-
 describe IMW::Files::Bz2 do
 
   before(:all) do
@@ -33,3 +30,4 @@ describe IMW::Files::Bz2 do
 end
 
 # puts "#{File.basename(__FILE__)}: You squeeze yourself and your Monkeywrench through a narrow opening, twice." # at bottom
+

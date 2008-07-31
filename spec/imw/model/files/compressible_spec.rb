@@ -26,12 +26,11 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
-
-require 'rubygems'
-require 'spec'
-
-require 'imw/matchers/file_contents_matcher'
+#
+require File.join(File.dirname(__FILE__),'../../../spec_helper')
+require IMW_SPEC_DIR+'/imw/matchers/directory_contents_matcher'
+require IMW_SPEC_DIR+'/imw/matchers/file_contents_matcher'
+require 'imw/utils/random'
 
 share_as :IMW_FILES_COMPRESSIBLE_BZIP2_SHARED_SPEC do
 
@@ -39,20 +38,20 @@ share_as :IMW_FILES_COMPRESSIBLE_BZIP2_SHARED_SPEC do
     before(:each) do
       @program = :bzip2
     end
-    
+
     include IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC
   end
-end
+end unless defined? IMW_FILES_COMPRESSIBLE_BZIP2_SHARED_SPEC
 
 share_as :IMW_FILES_COMPRESSIBLE_GZIP_SHARED_SPEC do
   describe "when compressing with gzip" do
     before(:each) do
       @program = :gzip
     end
-    
+
     include IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC
   end
-end
+end unless defined? IMW_FILES_COMPRESSIBLE_GZIP_SHARED_SPEC
 
 share_as :IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC do
 
@@ -95,6 +94,6 @@ share_as :IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC do
       @file.path.should have_contents_matching_those_of(@copy_of_original_path)
     end
   end
-end
+end  unless defined? IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC
 
 # puts "#{File.basename(__FILE__)}: Is it squishy?  Give it a squeeze and see!" # at bottom

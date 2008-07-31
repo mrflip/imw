@@ -13,22 +13,52 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require 'imw/utils'
 
 module IMW
 
   module Paths
-
     # Returns the root of workflow `step'
     def self.root_of(step)
-      raise IMW::ArgumentError.new("No such IMW directory, `#{step}'.  Choose from #{IMW::DIRECTORIES.keys.map do |key| '`' + key.to_s + '\'' end.join ', '}") unless IMW::DIRECTORIES.has_key? step
+      unless IMW::DIRECTORIES.has_key? step
+        raise IMW::ArgumentError.new("No such IMW directory, `#{step}'.  Choose from #{IMW::DIRECTORIES.keys.map do |key| '`' + key.to_s + '\'' end.join ', '}")
+      end
       IMW::DIRECTORIES[step]
     end
-
   end
+
+  # expands a shorthand workflow path specification to an
+  # actual file path.
+  #
+  # Ex:
+  #
+  # Dir[IMW.path_to(:temp, 'foo', '*')]
+  #
+  # IMW.add_path :mlb_08, 'gd2.mlb.com/components/game/mlb/year_2008'
+  # IMW.path_to :ripd, :mlb_08, 'month_06', 'day_08', 'miniscoreboard.xml'
+  # => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
+  #
+  def path_to *dir_specs
+    # recursively expand
+    expanded = dir_specs.flatten.map do |dir_spec|
+      dir_spec.is_a?(Symbol) ? path_to(paths[dir_spec]) : dir_spec
+    end
+    joined = File.join(*expanded)
+    # memoize
+    # @@paths[dir_specs[0]] = joined if (dir_specs.length==1 && dir_specs[0].is_a?(Symbol))
+    joined
+  end
+
+  #
+  # Adds a symbolic path for expansion by path_to
+  #
+  def add_path sym, *dirs
+    @@paths[sym] = dirs.flatten
+  end
+  def paths() @@paths  end
 
 end
 
-# puts "#{File.basename(__FILE__)}: Your monkeywrench glows alternately dim then bright as you wander, suggesting to you which paths to take." 
+# puts "#{File.basename(__FILE__)}: Your monkeywrench glows alternately dim then bright as you wander, suggesting to you which paths to take."

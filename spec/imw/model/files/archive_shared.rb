@@ -18,10 +18,10 @@
 #
 # <tt>@initial_directory</tt>: a string specifying the path where some
 # files for the initial creation of the archive will be created.
-# 
+#
 # <tt>@appending_directory</tt>: a string specifying the path where
 # all some files for appending to the archive will be created.
-# 
+#
 # <tt>@extraction_directory</tt>: a string specifying the path where
 # the archive's files will be extracted.
 #
@@ -29,23 +29,14 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
+require File.join(File.dirname(__FILE__),'../../../spec_helper')
+require IMW_SPEC_DIR+'/imw/matchers/archive_contents_matcher'
+require IMW_SPEC_DIR+'/imw/matchers/directory_contents_matcher'
 
-require 'fileutils'
-require 'set'
-
-require 'imw/utils'
 require 'imw/utils/random'
 require 'imw/utils/extensions/find'
-
-require 'rubygems'
-require 'spec'
-
-require 'imw/matchers/directory_contents_matcher'
-require 'imw/matchers/archive_contents_matcher'
-
 share_as :IMW_FILES_ARCHIVE_SHARED_SPEC do
-
   include Spec::Matchers::IMW
 
   def create_random_files
@@ -59,7 +50,7 @@ share_as :IMW_FILES_ARCHIVE_SHARED_SPEC do
   end
 
   before(:each) do
-    create_random_files    
+    create_random_files
   end
 
   after(:each) do
@@ -72,9 +63,9 @@ share_as :IMW_FILES_ARCHIVE_SHARED_SPEC do
       lambda { @archive.contents }.should raise_error(IMW::Error)
     end
   end
-  
+
   describe "(creation)" do
-    
+
     it "should be able to create archives which match a directory's structure" do
       @archive.create(@initial_directory + "/*")
       @archive.should contain_paths_like(@initial_directory, :relative_to => @root_directory)
@@ -87,11 +78,11 @@ share_as :IMW_FILES_ARCHIVE_SHARED_SPEC do
 
     it "should overwrite an archive if the :force option is given" do
       @archive.create(@initial_directory + "/*")
-      @archive.create(@initial_directory + "/*", :force => true)      
+      @archive.create(@initial_directory + "/*", :force => true)
       @archive.should contain_paths_like(@initial_directory, :relative_to => @root_directory)
     end
   end
-  
+
   describe "(appending)" do
 
     it "should append to an archive which already exists" do
@@ -115,13 +106,13 @@ share_as :IMW_FILES_ARCHIVE_SHARED_SPEC do
 
     it "should extract files which match the original ones it archived" do
       @archive.create(@initial_directory + "/*")
-      @archive.append(@appending_directory + "/*")      
+      @archive.append(@appending_directory + "/*")
       new_archive = @archive.cp(@extraction_directory + '/' + @archive.basename)
       new_archive.extract
       @extraction_directory.should contain_files_matching_directory(@root_directory)
     end
-      
+
   end
-end
+end unless defined? IMW_FILES_ARCHIVE_SHARED_SPEC
 
 # puts "#{File.basename(__FILE__)}: How many drunken frat boys can fit in an Internet kiosk?" # at bottom
