@@ -21,7 +21,7 @@ module IMW
 
     class File
 
-      attr_reader :path, :dirname, :basename, :extname
+      attr_reader :path, :dirname, :basename, :extname, :name
 
       private 
       def initialize path
@@ -35,6 +35,7 @@ module IMW
         @dirname = ::File.dirname @path
         @basename = ::File.basename @path
         @extname = find_extname @path
+        @name = @basename[0,@basename.length - @extname.length]
       end
 
       # Some files (like <tt>.tar.gz</tt>) have an extension which is
