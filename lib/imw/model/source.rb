@@ -28,16 +28,16 @@ module IMW
     private
     def initialize name, source = nil
       @name = name
-      @source = source if source
+      @source = source if source # needs to be removed in favor of reading it from a configuration file.
     end
 
+    public
     # Does this source meet the minimum standards set for an IMW data
     # source?
     def meets_minimum_standard?
       true
     end
 
-    public
     # Returns the path the directory corresponding to the workflow
     # +step+ for this source.
     def path_to step
