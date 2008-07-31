@@ -102,7 +102,7 @@ module FileUtils
       begin
 
         # ignore empty files
-        if options[:ignore_empty] and File.stat(file).size == 0 then
+        if options[:ignore_empty] && File.stat(file).size == 0 then
           $stderr.puts "skipping empty #{file}" if options[:verbose]
           next
         end
@@ -143,7 +143,7 @@ module FileUtils
           end
           FileUtils.chmod(options[:file_perms],new_file) unless options[:simulate]
         else
-          $stdout.puts "no action taken" if options[:verbose] and not options[:prompt]
+          $stdout.puts "no action taken" if options[:verbose] && not options[:prompt]
         end
         
         # case 
@@ -203,7 +203,7 @@ module FileUtils
     # find archives
     archives = []
     Find.find(File.expand_path(directory)) do |path|
-      archives << File.expand_path(path) if File.file?(path) and path =~ /(\.tar$|\.bz2$|\.tar\.bz2$|\.tbz2$\|\.gz$|\.tar\.gz$|\.tgz$\|\.rar$|\.zip$)/
+      archives << File.expand_path(path) if File.file?(path) && path =~ /(\.tar$|\.bz2$|\.tar\.bz2$|\.tbz2$\|\.gz$|\.tar\.gz$|\.tgz$\|\.rar$|\.zip$)/
     end
 
     # figure out program and flags
@@ -273,7 +273,7 @@ module FileUtils
 
       # manually rename temporary copy back to original archive name for
       # the gzip case
-      if options[:keep_archives] and archive =~ /\.gz$/
+      if options[:keep_archives] && archive =~ /\.gz$/
           FileUtils.mv archive + 'copy',archive,:verbose => options[:verbose], :noop => options[:simulate]
       end
 

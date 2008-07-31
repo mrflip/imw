@@ -48,7 +48,7 @@ Directories = []
 if ARGV.size == 0 then puts Usage ; exit() end
 
 ARGV.each do |arg|
-  if arg[0,1] == '-' and arg[0,2] != '--' then # short form options
+  if arg[0,1] == '-' && arg[0,2] != '--' then # short form options
     options_string = arg[1...arg.size]
     options = options_string.split('')
     options.each do |option| 

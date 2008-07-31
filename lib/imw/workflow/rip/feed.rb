@@ -47,7 +47,7 @@ def rss_download(uri,download_all=false)
     old_rss = RSS::Parser.parse(filepath,do_validate=false)
     new_items = []
 
-    if rss.items.size == rss.items.find_all {|item| item.guid}.size and 
+    if rss.items.size == rss.items.find_all {|item| item.guid}.size && 
         old_rss.items.size == old_rss.items.find_all {|item| item.guid}.size then
       # if all items have a guid then use it to find the new ones
       old_guids = old_rss.items.map {|item| item.guid.content }

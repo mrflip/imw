@@ -71,7 +71,7 @@ class Hash
   def deep_merge(second)
     target = dup
     second.keys.each do |key|
-      if second[key].is_a? Hash and self[key].is_a? Hash
+      if second[key].is_a? Hash && self[key].is_a? Hash
         target[key] = target[key].deep_merge(second[key])
       else
         target[key] = second[key]
@@ -98,7 +98,7 @@ class Hash
   # File lib/cerberus/utils.rb, line 42
   def deep_merge!(second)
     second.keys.each do |key|
-      if second[key].is_a?(Hash) and self[key].is_a?(Hash)
+      if second[key].is_a?(Hash) && self[key].is_a?(Hash)
         self[key].deep_merge!(second[key])
       else
         self[key] = second[key]
@@ -128,7 +128,7 @@ class Hash
   def keep_merge(second)
     target = dup
     second.each do |key, val2|
-      if second[key].is_a? Hash and self[key].is_a? Hash
+      if second[key].is_a? Hash && self[key].is_a? Hash
         target[key] = target[key].keep_merge(val2)
       else
         target[key] = target.include?(key) ? [target[key], val2].flatten.uniq : val2
