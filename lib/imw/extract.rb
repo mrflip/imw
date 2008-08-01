@@ -2,8 +2,8 @@
 module IMW
 
   class LineOrientedFile
-    attr_accessor :fields
-    attr_accessor :file, :filepath
+    attr_accessor :fields, :struct
+    attr_accessor :file
 
     def skip_lines n_lines
       return unless self.file
@@ -25,16 +25,15 @@ module IMW
 
   end
 
-
   class FlatFile < LineOrientedFile
     attr_accessor :cartoon, :cartoon_re
 
     def initialize(options)
-      [:filepath, :cartoon, :fields].each do |field|
+      [:file, :cartoon, :fields].each do |field|
         self.send("#{field}=", options[field])
       end
       self.fields.map!{ |f| f.to_sym }
-      self.file = File.open(path_to(self.filepath))
+      self.struct = Struct.new(*fields)
     end
 
     def decode_line line

@@ -52,7 +52,7 @@ module IMW
     #
     # dispatch to DataSet.dump
     def dump *args
-      self.class.dump self, *args
+      self.class.dump self.data, *args
     end
 
   end

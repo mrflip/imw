@@ -22,4 +22,11 @@ module IMW
     return unless IMW.verbose
     puts "#{Time.now}\t" + str.to_s
   end
+  def banner str
+    return unless IMW.verbose
+    puts "*"*75
+    announce str
+    puts "*"*75
+  end
+
 end
