@@ -9,7 +9,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require 'imw/utils/error'
 
@@ -25,6 +25,12 @@ module IMW
     Kernel.system(command)
     message = error_message ? "#{error_message} (#{command})" : command
     raise IMW::SystemCallError.new(message) unless $?.success?
+  end
+end
+
+class Symbol
+  def to_proc
+    Proc.new { |*args| args.shift.__send__(self, *args) }
   end
 end
 

@@ -17,7 +17,9 @@ require 'imw/utils/extensions/core'
 # puts "#{File.basename(__FILE__)}: Early economists thought they would measure the utility of an action in units of `utils'.  Really." # at bottom
 
 module IMW
+  class << self; attr_accessor :verbose end
   def announce str
+    return unless IMW.verbose
     puts "#{Time.now}\t" + str.to_s
   end
 end

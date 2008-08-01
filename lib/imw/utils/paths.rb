@@ -40,24 +40,58 @@ module IMW
   # IMW.path_to :ripd, :mlb_08, 'month_06', 'day_08', 'miniscoreboard.xml'
   # => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
   #
-  def path_to *dir_specs
+  def path_to *pathsegs
     # recursively expand
-    expanded = dir_specs.flatten.map do |dir_spec|
-      dir_spec.is_a?(Symbol) ? path_to(paths[dir_spec]) : dir_spec
+    require 'JSON'
+    expanded = pathsegs.flatten.map do |pathseg|
+      pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
     end
-    joined = File.join(*expanded)
+    begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}'"); end
     # memoize
-    # @@paths[dir_specs[0]] = joined if (dir_specs.length==1 && dir_specs[0].is_a?(Symbol))
+    # @@paths[pathsegs[0]] = joined if (pathsegs.length==1 && pathsegs[0].is_a?(Symbol))
     joined
   end
 
   #
   # Adds a symbolic path for expansion by path_to
   #
-  def add_path sym, *dirs
-    @@paths[sym] = dirs.flatten
+  def add_path sym, *pathsegs
+    @@paths[sym] = pathsegs.flatten
   end
   def paths() @@paths  end
+
+
+  #
+  #
+  #
+  def as_dset_paths dset_path, cut_dirs
+    if dset_path.is_a?(String)
+      require 'pathname'
+      dset_path = Pathname.new(dset_path).realpath.to_s
+      dset_path = dset_path.chomp('/').split('/')[-(cut_dirs+2)..-cut_dirs]
+    end
+    add_path :dset, dset_path
+    add_path :me,   [:scripts_root, :dset]
+    [:rawd, :temp, :fixd, :log, :ripd].each do |seg|
+      add_path seg, [:me, seg.to_s]
+    end
+  end
+
+  def as_dset dset_path, opts={}
+    opts = { :cut_dirs => 2, :scaffold => false }.merge opts
+    as_dset_paths dset_path, opts[:cut_dirs]
+    if opts[:scaffold]
+      require 'imw/workflow/scaffold'
+      scaffold_dset
+    end
+  end
+
+  protected
+  #
+  #   :fixd # => :fixd_root
+  def pathseg_root pathseg
+    (pathseg.to_s + '_root').to_sym
+  end
 
 end
 
