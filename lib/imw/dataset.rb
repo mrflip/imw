@@ -1,18 +1,17 @@
-
-require 'YAML'
+require 'imw/dataset/stats'
+require 'imw/dataset/loaddump'
 
 module IMW
   class DataSet
-    attr_accessor :data
+    include Enumerable
 
+    attr_accessor :data
     def initialize data
       self.data = data
     end
 
-    def self.from_yaml_file file_name, &block
-      data = YAML.load(File.open(file_name))
-      data = block.call data
-      self.new(data)
+    def method_missing(method, *args, &block)
+      data.send(method, *args, &block)
     end
 
   end
