@@ -5,4 +5,5 @@ require 'imw/workflow/scaffold'
 # require 'fileutils'; include FileUtils::DryRun
 include IMW
 
-scaffold_dataset ARGV if ARGV.length >= 1
+
+as_dset ARGV[0], :scaffold => true, :cut_dirs=>1 if ARGV.length >= 1
