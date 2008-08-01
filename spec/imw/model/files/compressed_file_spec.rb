@@ -46,7 +46,7 @@ share_as :IMW_FILES_COMPRESSEDFILE_SHARED_SPEC do
   describe "when decompressing" do
 
     before(:each) do
-      FileUtils.mkdir @root_directory
+      FileUtils.mkdir_p @root_directory
     end
 
     after(:each) do
