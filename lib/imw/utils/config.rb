@@ -19,7 +19,7 @@
 #
 
 require 'rubygems'
-require 'YAML'
+require 'yaml'
 
 module IMW
   attr_reader :cfg
