@@ -17,11 +17,8 @@ class Dir
   # Return the absolute paths of files and directories in the
   # directory, leaving out `.' and `..' entries.
   def abs_contents
-    contents = []
-    self.entries.each {|entry| contents << self.path + '/' + entry unless entry == '.' || entry == '..'}
-    contents
+    self.entries.map {|entry| File.join(self.path,entry) unless entry == '.' || entry == '..'}.compact
   end
 end
-
 
 # puts "#{File.basename(__FILE__)}: You open the folder and see along list of names.  Some have been crossed out -- ominously..." # at bottom
