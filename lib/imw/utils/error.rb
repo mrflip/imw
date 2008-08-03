@@ -11,7 +11,6 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-
 module IMW
 
   # A generic error class.
