@@ -3,9 +3,6 @@
 #
 # == About
 #
-# All the datasets and data sources at this IMW installation are
-# collectively referred to as the "pool".  Names of data sources or
-# datasets should be unique in the pool.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -13,55 +10,51 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'singleton'
-
-require 'imw/model/files/file'
-require 'imw/model/source'
-require 'imw/model/dataset'
 require 'imw/utils'
+require 'imw/utils/extensions/find'
 
 module IMW
 
+  # A collection of data sources or datasets is referred to as a
+  # "pool" and this is a container class with useful methods for
+  # operating on such collections.  See also <tt>IMW::POOL</tt>.
   class Pool
 
-    include Singleton
+    attr_reader :sources
 
-    attr_reader :sources, :datasets
-
+    include Enumerable
+    
     private
-    def initialize
-      find_sources
+    # Initialize this pool by recursively scanning +dir+ and adding
+    # (unique) items based on the filenames found.
+    def initialize dir
+      @items = Find.files_in_directory(dir).map {|path| File.name(path) }.uniq.map {|item| item.to_sym}
     end
 
-    # Scan the pool directory and add all sources which meet the
-    # minimum standard.
-    def find_sources
-      contents = Dir.new(IMW::DIRECTORIES[:sources]).abs_contents.map
-      names = []
-      contents.uniq.each {|thing| names << IMW::Files::File.new(thing).name if File.file? thing }
-      sources = []
-      names.uniq.each do |name|
-        source = IMW::Source.new(name)
-        sources << source if source.meets_minimum_standard?
-      end
-      @sources = sources
+    # Return the uniqname of +object+, whatever it is.
+    def uniqname_of object
+      object.respond_to? :uniqname ? object.uniqname : object.to_sym
     end
 
     public
-    # Add an <tt>IMW::Source</tt> object +source+ to the pool.
-    def add_source source
-      source = IMW::Source(source) unless source.is_a? IMW::Source
-      raise IMW::Error.new("#{source.name} does not meet the minimum standards to enter the pool") unless source.meets_minimum_standard?
-      @sources.append source
+    # Iterate over the items in this pool.
+    def each
+      @items.each {|item| yield item}
     end
 
-    # Check whether +source+ is in the pool.
-    def has_source? source
-      source = source.name if source.respond_to? :name
-      @sources.map {|s| s.name}.include? source
-     end
+    # Add an item to the pool.
+    def add item
+      item = uniqname_of(item)
+      raise IMW::Error.new("#{item} already included") if include? item
+      @items << item
+    end
 
+    # Delete a +source+ from the pool.
+    def delete item
+      @items.delete(uniqname_of(item))
+    end
   end
+  
 end
 
 # puts "#{File.basename(__FILE__)}: You dip your Monkeywrench into the whirling maelstrom of Charybdis and pull out...a carton of tube socks! " # at bottom
