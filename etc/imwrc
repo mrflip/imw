@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+module IMW
+  @@paths = {
+    :home      => ENV['HOME'],
+    :imw_root  => File.join(File.dirname(__FILE__), '..'),
+
+    # Data processing scripts
+    :scripts_root => [:home, 'imw', 'pool'],
+
+    # the imw library
+    :imw_bin   => [:imw_root, 'bin'],
+    :imw_etc   => [:imw_root, 'etc'],
+    :imw_lib   => [:imw_root, 'lib'],
+
+    # Data
+    :data_root => [:home,      'imw',  'data'],
+    :ripd_root => [:data_root, 'ripd'],
+    :rawd_root => [:data_root, 'rawd'],
+    :temp_root => [:data_root, 'temp'],
+    :fixd_root => [:data_root, 'fixd'],
+    :pkgd_root => [:data_root, 'pkgd'],
+    :log_root  => [:data_root, 'log'],
+  }
+
+  # Paths to external programs.
+  IMW::EXTERNAL_PROGRAMS = {
+    :tar => "tar",
+    :rar => "rar",
+    :zip => "zip",
+    :unzip => "unzip",
+    :gzip => "gzip",
+    :bzip2 => "bzip2",
+    :wget => "wget"
+  }
+
+  # Directories where IMW will write and look for files.
+  IMW::DIRECTORIES = {
+    :sources => File.expand_path("~/imw/pool/sources"),
+    :datasets => File.expand_path("~/imw/pool/datasets"),
+    
+    :data => File.expand_path("~/imw/data"),
+    :ripd => File.expand_path("~/imw/data/ripd"),
+    :xtrd => File.expand_path("~/imw/data/xtrd"),
+    :prsd => File.expand_path("~/imw/data/prsd"),
+    :mungd => File.expand_path("~/imw/data/mungd"),
+    :fixd => File.expand_path("~/imw/data/fixd"),
+    :pkgd => File.expand_path("~/imw/data/pkgd"),
+
+    :dump => "/tmp/imw"
+  }
+end
