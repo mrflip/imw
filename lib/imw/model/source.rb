@@ -3,11 +3,7 @@
 #
 # == About
 #
-# Data comes into IMW from a data source and this class models such a
-# source.
-#
-# It wraps the functions used to rip and extract data so that they are
-# customized for a particular data source.
+# The <tt>IMW::Source</tt> class.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -21,28 +17,33 @@ require 'imw/workflow'
 
 module IMW
 
+  # Data comes into IMW from various sources and must be pre-processed
+  # before it can be assembled into datasets (see
+  # <tt>IMW::Dataset</tt>).  The <tt>IMW::Source</tt> class provides
+  # an interface for dealing with messy data sources.
   class Source
-    attr_reader :name,:source
+
+    # The default source for an <tt>IMW::Source</tt> object if no
+    # other source is specified.
+    DEFAULT_SOURCE = "unknown"
+    
+    attr_reader :uniqname,:source
 
     private
-    def initialize name, source = nil
-      @name = name
-      @source = source if source # needs to be removed in favor of reading it from a configuration file.
+    # Create a new source with the given +uniqname+ which should be a
+    # symbol unique to this source for this IMW installation.
+    def initialize uniqname
+      @uniqname = uniqname.to_sym
+      @source = DEFAULT_SOURCE
     end
 
     public
-    # Does this source meet the minimum standards set for an IMW data
-    # source?
-    def meets_minimum_standard?
-      true
-    end
-
     # Returns the path the directory corresponding to the workflow
     # +step+ for this source.
     def path_to step
       valid_steps = IMW::Workflow::SOURCE_STEPS + [:dump]
       raise IMW::ArgumentError.new("invalid workflow step `#{step}', try #{valid_steps.quote_items 'or'}") unless valid_steps.include? step
-      File.join(IMW::DIRECTORIES[step], @source, @name)
+      File.join(IMW::DIRECTORIES[step], @source, @uniqname)
     end
   end
 
