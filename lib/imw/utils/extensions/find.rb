@@ -37,16 +37,16 @@ module Find
         # the +1 is there because we want a relative path
         rel_path = abs_path.slice(directory.length + 1,abs_path.length)
         # FIXME this is a stupid way of testing both regexen
-        if opts[:include] then
-          matches = opts[:include].match(rel_path)
-        elsif opts[:exclude] then
-          matches = opts[:exclude].match(rel_path)
+        if opts[:include] && !opts[:exclude] then
+          should_be_returned = opts[:include].match(rel_path)
+        elsif !opts[:include] && opts[:exclude] then
+          should_be_returned = !opts[:exclude].match(rel_path)
         elsif opts[:include] && opts[:exclude] then
-          matches = opts[:include].match(rel_path) && opts[:exclude].match(rel_path)
+          should_be_returned = opts[:include].match(rel_path) && (!opts[:exclude].match(rel_path))
         else
-          matches = true
+          should_be_returned = true
         end
-        files << rel_path if matches
+        files << rel_path if should_be_returned
       end
       files
     end
@@ -70,16 +70,16 @@ module Find
     Find.find(directory) do |path|
       unless File.directory?(path)
         # FIXME this is a stupid way of testing both regexen
-        if opts[:include] then
-          matches = opts[:include].match(path)
-        elsif opts[:exclude] then
-          matches = opts[:exclude].match(path)
+        if opts[:include] && !opts[:exclude] then
+          should_be_returned = opts[:include].match(path)
+        elsif !opts[:include] && opts[:exclude] then
+          should_be_returned = !opts[:exclude].match(path)
         elsif opts[:include] && opts[:exclude] then
-          matches = opts[:include].match(path) && opts[:exclude].match(path)
+          should_be_returned = opts[:include].match(path) && !opts[:exclude].match(path)
         else
-          matches = true
+          should_be_returned = true
         end
-        files << path if matches
+        files << path if should_be_returned
       end
     end
     files
