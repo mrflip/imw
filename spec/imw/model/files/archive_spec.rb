@@ -6,7 +6,7 @@
 # The <tt>IMW::Files::Archive</tt> module doesn't implement any
 # functionality of its own but merely adds methods to an including
 # class.  Appropriately, this spec file implements a shared example
-# group <tt>IMW_FILES_ARCHIVE_COMMON_SPEC</tt> which can be including
+# group ("an archive of files")  which can be including
 # by the spec of an archive class.  This spec must also define the
 # following instance variables:
 #
@@ -36,7 +36,7 @@ require IMW_SPEC_DIR+'/imw/matchers/directory_contents_matcher'
 
 require 'imw/utils/random'
 require 'imw/utils/extensions/find'
-share_as :IMW_FILES_ARCHIVE_SHARED_SPEC do
+share_examples_for "an archive of files" do
   include Spec::Matchers::IMW
 
   def create_random_files
