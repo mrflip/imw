@@ -118,34 +118,34 @@ module IMW
       :dump => "/tmp/imw"
     } unless defined? IMW::DIRECTORIES
 
-
-    module Files
-      # Correspondence between extensions and file types.  Used by
-      # <tt>IMW::Files.identify</tt> to identify files based on known
-      # extensions.
-      #
-      # File type strings should be stripped of the leading
-      # <tt>IMW::Files</tt> prefix, i.e. - the file object
-      # <tt>IMW::Files::Bz2</tt> should be referenced by the string
-      # <tt>"Bz2"</tt>.
-      EXTENSIONS = {
-        ".bz2" => "Bz2",
-        ".gz" => "Gz",
-        ".tar.bz2" => "TarBz2",
-        ".tbz2" => "TarBz2",
-        ".tar.gz" => "TarGz",
-        ".tgz" => "TarGz",
-        ".rar" => "Rar",
-        ".zip" => "Zip",
-        ".txt" => "Text",
-        ".ascii" => "Text",
-        ".csv" => "Csv",
-        ".xml" => "Xml",
-        ".html" => "Html",
-        ".yaml" => "Yaml",
-        ".yml" => "Yaml"
-      } unless defined? IMW::Files::EXTENSIONS
-    end
+  end
+  
+  module Files
+    # Correspondence between extensions and file types.  Used by
+    # <tt>IMW::Files.identify</tt> to identify files based on known
+    # extensions.
+    #
+    # File type strings should be stripped of the leading
+    # <tt>IMW::Files</tt> prefix, i.e. - the file object
+    # <tt>IMW::Files::Bz2</tt> should be referenced by the string
+    # <tt>"Bz2"</tt>.
+    EXTENSIONS = {
+      ".bz2" => "Bz2",
+      ".gz" => "Gz",
+      ".tar.bz2" => "TarBz2",
+      ".tbz2" => "TarBz2",
+      ".tar.gz" => "TarGz",
+      ".tgz" => "TarGz",
+      ".rar" => "Rar",
+      ".zip" => "Zip",
+      ".txt" => "Text",
+      ".ascii" => "Text",
+      ".csv" => "Csv",
+      ".xml" => "Xml",
+      ".html" => "Html",
+      ".yaml" => "Yaml",
+      ".yml" => "Yaml"
+    } unless defined? IMW::Files::EXTENSIONS
   end
 end
 
