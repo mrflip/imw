@@ -21,9 +21,10 @@ module IMW
     #
     #
     def self.load filename, &block
+      filename = path_to(filename)
       announce "Loading #{filename}"
       format ||= file_format(filename)
-      file     = File.open(path_to(filename))
+      file     = File.open(filename)
       data = case format
       when :yaml
         YAML.load file
@@ -39,9 +40,10 @@ module IMW
     # guessing the format and all that stupid crap.
     #
     def self.dump data, filename, format = nil
+      filename = path_to(filename)
       announce "Dumping #{filename}"
       format ||= DataSet.file_format(filename)
-      file     = File.open(path_to(filename), 'w')
+      file     = File.open(filename, 'w')
       case format
       when :yaml
         YAML.dump(data, file)
