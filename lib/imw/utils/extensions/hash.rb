@@ -17,11 +17,11 @@ class Hash
   # Return the elements of this hash in a pretty-printed string,
   # inserting +final_string+ between the last two items.
   # 
-  #   >> {:one => 1, :two => 2, :three => 3}.quote_keys "or"
+  #   >> {:one => 1, :two => 2, :three => 3}.quote_keys_with "or"
   #   `one', `two', or `three'
   #   
-  def quote_keys final_string = nil
-    self.keys.quote_items final_string
+  def quote_keys_with final_string = nil
+    self.keys.quote_items_with final_string
   end
   
   # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.

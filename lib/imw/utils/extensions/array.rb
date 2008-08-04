@@ -57,10 +57,10 @@ class Array
   # Return the elements of this array in a pretty-printed string,
   # inserting +final_string+ between the last two items.
   # 
-  #   >> [:one, :two, :three].quote_keys "or"
+  #   >> [:one, :two, :three].quote_items_with "or"
   #   `one', `two', or `three'
   #   
-  def quote_items final_string = nil
+  def quote_items_with final_string = nil
     string_items = self.map { |item| "`" + item.to_s + "'" }
     case string_items.length
     when 0

@@ -42,7 +42,7 @@ module IMW
     # +step+ for this source.
     def path_to step
       valid_steps = IMW::Workflow::SOURCE_STEPS + [:dump]
-      raise IMW::ArgumentError.new("invalid workflow step `#{step}', try #{valid_steps.quote_items 'or'}") unless valid_steps.include? step
+      raise IMW::ArgumentError.new("invalid workflow step `#{step}', try #{valid_steps.quote_items_with 'or'}") unless valid_steps.include? step
       File.join(IMW::DIRECTORIES[step], @source, @uniqname)
     end
   end
