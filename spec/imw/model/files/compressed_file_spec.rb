@@ -3,9 +3,8 @@
 #
 # == About
 #
-# Defines a shared spec +IMW_FILES_COMPRESSEDFILE_SHARED_SPEC+ for
-# inclusion in specs for classes which subclass
-# <tt>IMW::Files::CompressedFile</tt>.
+# Defines a shared spec ("a compressed file") for inclusion in specs
+# for classes which subclass <tt>IMW::Files::CompressedFile</tt>.
 #
 # An including spec must define the following instance variables:
 #
@@ -31,7 +30,7 @@ require IMW_SPEC_DIR+'/imw/matchers/file_contents_matcher'
 
 require 'imw/utils/random'
 require 'imw/model/files/text'
-share_as :IMW_FILES_COMPRESSEDFILE_SHARED_SPEC do
+share_examples_for "a compressed file" do
 
   include Spec::Matchers::IMW
 

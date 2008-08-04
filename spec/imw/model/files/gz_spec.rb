@@ -13,6 +13,7 @@
 require File.join(File.dirname(__FILE__),'../../../spec_helper')
 require IMW_SPEC_DIR+'/imw/model/files/compressed_file_spec'
 
+require 'imw/utils'
 require 'imw/model/files/gz'
 describe IMW::Files::Gz do
 
@@ -25,7 +26,7 @@ describe IMW::Files::Gz do
     @copy_of_original_path = @root_directory + "/file_copy.txt.gz"
   end
 
-  include IMW_FILES_COMPRESSEDFILE_SHARED_SPEC
+  it_should_behave_like "a compressed file"
 end
 
 # puts "#{File.basename(__FILE__)}: You squeeze yourself and your Monkeywrench through a narrow opening." # at bottom

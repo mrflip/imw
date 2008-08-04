@@ -11,7 +11,7 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 require File.join(File.dirname(__FILE__),'../../../spec_helper')
-require IMW_SPEC_DIR+'/imw/model/files/archive_shared'
+require IMW_SPEC_DIR+'/imw/model/files/archive_spec'
 
 require 'imw/model/files/zip'
 describe IMW::Files::Zip do
@@ -24,7 +24,7 @@ describe IMW::Files::Zip do
     @archive = IMW::Files::Zip.new(@root_directory + "/test.zip")
   end
 
-  include IMW_FILES_ARCHIVE_SHARED_SPEC
+  it_should_behave_like "an archive of files"
 
 end
 

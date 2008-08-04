@@ -13,7 +13,9 @@
 require File.join(File.dirname(__FILE__),'../../../spec_helper')
 require IMW_SPEC_DIR+'/imw/model/files/compressible_spec'
 
+require 'imw/utils/random'
 require 'imw/model/files/text'
+
 describe IMW::Files::Text do
 
   def create_file
@@ -34,8 +36,9 @@ describe IMW::Files::Text do
     FileUtils.rm_rf @root_directory
   end
 
-  include IMW_FILES_COMPRESSIBLE_GZIP_SHARED_SPEC
-  include IMW_FILES_COMPRESSIBLE_BZIP2_SHARED_SPEC
+  it_should_behave_like "a file compressible by gzip"
+  it_should_behave_like "a file compressible by bzip2"  
+
 end
 
 # puts "#{File.basename(__FILE__)}: You'll never learn to read if you don't try." # at bottom

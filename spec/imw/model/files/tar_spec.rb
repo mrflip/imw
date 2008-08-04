@@ -11,8 +11,7 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 require File.join(File.dirname(__FILE__),'../../../spec_helper')
-require IMW_SPEC_DIR+'/imw/model/files/compressible_spec'
-require IMW_SPEC_DIR+'/imw/model/files/archive_shared'
+require IMW_SPEC_DIR+'/imw/model/files/archive_spec'
 
 require 'imw/model/files/tar'
 describe IMW::Files::Tar do
@@ -25,7 +24,7 @@ describe IMW::Files::Tar do
     @archive = IMW::Files::Tar.new(@root_directory + "/test.tar")
   end
 
-  include IMW_FILES_ARCHIVE_SHARED_SPEC
+  it_should_behave_like "an archive of files"
 
 end
 

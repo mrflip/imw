@@ -11,7 +11,7 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 require File.join(File.dirname(__FILE__),'../../../spec_helper')
-require IMW_SPEC_DIR+'/imw/model/files/compressed_file_spec'
+require IMW_SPEC_DIR+'/imw/model/files/archive_spec'
 
 unless IMW::SpecConfig::SKIP_ARCHIVE_FORMATS.include? :rar
   require 'imw/model/files/rar'
@@ -25,7 +25,7 @@ unless IMW::SpecConfig::SKIP_ARCHIVE_FORMATS.include? :rar
       @archive = IMW::Files::Rar.new(@root_directory + "/test.rar")
     end
 
-    include IMW_FILES_ARCHIVE_SHARED_SPEC
+    it_should_behave_like "an archive of files"
 
   end
 end

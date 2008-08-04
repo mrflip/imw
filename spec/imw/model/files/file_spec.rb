@@ -11,9 +11,11 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 require File.join(File.dirname(__FILE__),'../../../spec_helper')
-require IMW_SPEC_DIR+'/imw/model/files/compressible_spec'
+require IMW_SPEC_DIR+'/imw/matchers/file_contents_matcher'
 
+require 'imw/utils/random'
 require 'imw/model/files/file'
+
 describe IMW::Files::File do
 
   include Spec::Matchers::IMW

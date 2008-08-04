@@ -3,11 +3,12 @@
 #
 # == About
 #
-# Defines a shared example group +IMW_FILES_COMPRESSIBLE_COMMON_SPEC+
-# for the <tt>IMW::Files::Compressible</tt> module to be included in
-# specs for classes which mixin the <tt>IMW::Files::Compressible</tt>
-# module.  The specs for these classes should define, for each
-# example, the following instance variables:
+# Defines shared example groups ("a file compressible by bzip2", "a
+# file compressible by gzip") for the
+# <tt>IMW::Files::Compressible</tt> module to be included in specs for
+# classes which mixin the <tt>IMW::Files::Compressible</tt> module.
+# The specs for these classes should define, for each example, the
+# following instance variables:
 #
 # <tt>@file</tt>:: an object to be compressed which is a subclass of
 # <tt>IMW::Files::File</tt>.
@@ -32,28 +33,28 @@ require IMW_SPEC_DIR+'/imw/matchers/directory_contents_matcher'
 require IMW_SPEC_DIR+'/imw/matchers/file_contents_matcher'
 require 'imw/utils/random'
 
-share_as :IMW_FILES_COMPRESSIBLE_BZIP2_SHARED_SPEC do
+share_examples_for "a file compressible by bzip2" do
 
   describe "when compressing with bzip2" do
     before(:each) do
       @program = :bzip2
     end
 
-    include IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC
+    it_should_behave_like "a file compressible by a given program"
   end
-end unless defined? IMW_FILES_COMPRESSIBLE_BZIP2_SHARED_SPEC
+end
 
-share_as :IMW_FILES_COMPRESSIBLE_GZIP_SHARED_SPEC do
+share_examples_for "a file compressible by gzip" do
   describe "when compressing with gzip" do
     before(:each) do
       @program = :gzip
     end
 
-    include IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC
+    it_should_behave_like "a file compressible by a given program"
   end
-end unless defined? IMW_FILES_COMPRESSIBLE_GZIP_SHARED_SPEC
+end
 
-share_as :IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC do
+share_examples_for "a file compressible by a given program" do
 
   include Spec::Matchers::IMW
 
@@ -94,6 +95,6 @@ share_as :IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC do
       @file.path.should have_contents_matching_those_of(@copy_of_original_path)
     end
   end
-end  unless defined? IMW_FILES_COMPRESSIBLE_PER_PROGRAM_SHARED_SPEC
+end
 
 # puts "#{File.basename(__FILE__)}: Is it squishy?  Give it a squeeze and see!" # at bottom
