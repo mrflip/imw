@@ -47,8 +47,6 @@ module IMW
       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
     end
     begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}'"); end
-    # memoize
-    # @@paths[pathsegs[0]] = joined if (pathsegs.length==1 && pathsegs[0].is_a?(Symbol))
     joined
   end
 

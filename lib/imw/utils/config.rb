@@ -18,9 +18,6 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'rubygems'
-require 'YAML'
-
 module IMW
   attr_reader :cfg
 
