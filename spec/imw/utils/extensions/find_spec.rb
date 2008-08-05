@@ -32,6 +32,7 @@ describe Find do
     @root_directory = IMW::DIRECTORIES[:dump] + "/find_extension_spec"
     @subdirectory = @root_directory + "/subdir"
     @subsubdirectory = @subdirectory + "/subsubdir"
+    @fake_directory = @root_directory + "/notreal"
     @file1 = @root_directory + "/my_file1.txt"
     @file2 = @root_directory + "/my_file2.csv"
     @file3 = @root_directory + "/my_file3.dat"
@@ -49,6 +50,10 @@ describe Find do
   end
 
   describe "when listing files with absolute paths contained in a directory" do
+
+    it "should raise an error when listing a non-exsiting directory" do
+      lambda {Find.files_in_directory(@fake_directory) }.should raise_error(IMW::PathError)
+    end
 
     it "should find every file by default" do
       Find.files_in_directory(@root_directory).should match_without_regard_to_order([@file1,@file2,@file3,@file4,@file5,@file6])
@@ -71,6 +76,10 @@ describe Find do
 
     def strip_root_directory array
       array.map {|item| item[@root_directory.length + 1,item.size]}
+    end
+
+    it "should raise an error when listing a non-exsiting directory" do
+      lambda {Find.files_in_directory(@fake_directory) }.should raise_error(IMW::PathError)
     end
 
     it "should find every file by default" do

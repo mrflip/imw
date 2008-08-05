@@ -30,9 +30,10 @@ module Find
   def self.files_relative_to_directory directory, opts = {}
     opts.reverse_merge!({:include => nil, :exclude => nil})
     directory = File.expand_path directory
+    raise IMW::PathError.new("#{directory} is not a valid directory") unless File.directory? directory
     files = []
     Find.find(directory) do |path|
-      unless File.directory?(path)
+      if File.exist?(path) && File.file?(path)
         abs_path = File.expand_path(path)
         # the +1 is there because we want a relative path
         rel_path = abs_path.slice(directory.length + 1,abs_path.length)
@@ -66,9 +67,10 @@ module Find
   def self.files_in_directory directory, opts = {}
     opts.reverse_merge!({:include => nil, :exclude => nil})
     directory = File.expand_path directory
+    raise IMW::PathError.new("#{directory} is not a valid directory") unless File.directory? directory    
     files = []
     Find.find(directory) do |path|
-      unless File.directory?(path)
+      if File.exist?(path) && File.file?(path)
         # FIXME this is a stupid way of testing both regexen
         if opts[:include] && !opts[:exclude] then
           should_be_returned = opts[:include].match(path)
