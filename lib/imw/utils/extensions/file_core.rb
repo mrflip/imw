@@ -13,8 +13,8 @@ class File
 
   # Returns the name of the path given:
   # 
-  #   File.name("/path/to/somefile.txt") => "somefile".
-  def name path
+  #   File.name_of_file("/path/to/somefile.txt") => "somefile".
+  def self.name_of_file path
     basename(path)[0,basename(path).length - extname(path).length]
   end
 
