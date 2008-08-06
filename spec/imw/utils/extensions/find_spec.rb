@@ -38,7 +38,7 @@ describe Find do
     @file3 = @root_directory + "/my_file3.dat"
     @file4 = @subdirectory + "/your_file4.html"
     @file5 = @subdirectory + "/your_file5.csv"
-    @file6 = @subdirectory + "/your_file6"
+    @file6 = @subdirectory + "/your_file5"
   end
 
   before(:each) do
@@ -99,6 +99,14 @@ describe Find do
     end
 
   end
+
+  describe "when listing uniqnames in a directory" do
+
+    it "should return a unique set of uniqnames" do
+      Find.uniqnames_in_directory(@root_directory, :include => /your/).should match_without_regard_to_order([:your_file4, :your_file5])
+    end
+  end
+  
     
 end
 
