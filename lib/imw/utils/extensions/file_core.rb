@@ -7,7 +7,9 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
+
+require 'imw/utils/extensions/string'
 
 class File
 
@@ -16,6 +18,14 @@ class File
   #   File.name_of_file("/path/to/somefile.txt") => "somefile".
   def self.name_of_file path
     basename(path)[0,basename(path).length - extname(path).length]
+  end
+
+  # Returns what would be the uniqname of a source or dataset
+  # described by a file at +path+:
+  #
+  #   File.uniqname "/path/to/some_named_file.yaml"  #=> :some_named_file
+  def self.uniqname path
+    name_of_file(path).uniqname
   end
 
   # Returns a unique (non-existing) version of the given +path+ by
