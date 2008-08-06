@@ -16,6 +16,12 @@ class Symbol
   def to_proc
     Proc.new { |*args| args.shift.__send__(self, *args) }
   end
+
+  # Returns the symbol itself (for compatibility with
+  # <tt>String.uniqnae</tt> and so on.
+  def uniqname
+    self
+  end
   
 end
 

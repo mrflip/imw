@@ -26,6 +26,26 @@ class String
     prefix = prefix.to_s
     self[0, prefix.length] == prefix
   end
+
+  # Downcases a string and replaces spaces with underscores.  This
+  # works slightly differently than
+  # <tt>ActiveSupport::CoreExtensions::String::Infletions.pluralize</tt>
+  # which is intended to be used for camel-cased Ruby constants.
+  #
+  #   "A long and unwieldy phrase".underscore #=> "a_long_and_unwieldy_phrase"
+  def underscore
+    self.to_s.tr("-", "_").tr(" ","_").downcase
+  end
+
+  # Returns the uniqname corresponding to this string as a symbol:
+  #
+  #   "A possible title of a dataset".uniqname #=> :a_possible_title_of_a_dataset
+  def uniqname
+    self.downcase.underscore.to_sym
+  end
+  
+    
+
   
 end
 
