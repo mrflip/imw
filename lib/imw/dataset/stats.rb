@@ -1,6 +1,5 @@
 module IMW
   class DataSet
-
     #
     # simple histogram
     #

@@ -42,7 +42,6 @@ module IMW
   #
   def path_to *pathsegs
     # recursively expand
-    require 'JSON'
     expanded = pathsegs.flatten.map do |pathseg|
       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
     end
