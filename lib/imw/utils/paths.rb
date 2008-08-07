@@ -42,7 +42,6 @@ module IMW
   #
   def path_to *pathsegs
     # recursively expand
-    require 'JSON'
     expanded = pathsegs.flatten.map do |pathseg|
       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
     end
@@ -60,7 +59,7 @@ module IMW
 
 
   #
-  #
+  # Makes a set of symbolic paths referenced to this dataset's path
   #
   def as_dset_paths dset_path, cut_dirs
     if dset_path.is_a?(String)
@@ -84,7 +83,27 @@ module IMW
     end
   end
 
-  protected
+  #
+  # Canonical log file
+  #
+  # a file in your
+  #
+  def log_file_name *args
+    log_head = @@paths.include?(:log) ? :log : [:log_root, 'meta']
+    log_name = [args, path_datecode].flatten.join('-') + '.log'
+    log_path = path_to(log_head, log_name)
+    # user can add paths, so re-take the dirname
+    mkdir_p File.dirname(log_path)
+    log_path
+  end
+
+
+  def path_datecode
+    Time.now.strftime("%Y%m%d")
+  end
+
+protected
+
   #
   #   :fixd # => :fixd_root
   def pathseg_root pathseg
