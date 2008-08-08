@@ -9,6 +9,8 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
+require 'imw/utils/error'
+require 'imw/utils/config'
 require 'imw/utils/extensions/string'
 
 class File
@@ -25,9 +27,16 @@ class File
   #
   #   File.uniqname "/path/to/some_named_file.yaml"  #=> :some_named_file
   def self.uniqname path
-    name_of_file(path).uniqname
+    name = name_of_file(path)
+    if name.ends_with?(IMW::PROCESSING_INSTRUCTION_SUFFIX) then
+      name[0,name.length - IMW::PROCESSING_INSTRUCTION_SUFFIX.length].uniqname
+    elsif name.ends_with?(IMW::METADATA_SUFFIX) then
+      name[0,name.length - IMW::METADATA_SUFFIX.length].uniqname
+    else
+      raise IMW::PathError.new("#{path} is not a valid path to a file describing an object with a uniqname")
+    end
   end
-
+  
   # Returns a unique (non-existing) version of the given +path+ by
   # appending successive intgers, useful for copying files ito
   # directories without clobbering existing files (a la <tt>wget
@@ -47,10 +56,11 @@ class File
   #   File.uniquify("/path/to/data.txt") #=> "/path/to/data.txt.2"
   #
   # and so on.
-  def uniquify path
+  def self.uniquify path
+    orig_path = path.clone
     copy_number = 1
     while exist? path do
-      path = path + ".#{copy_number}"
+      path = orig_path + ".#{copy_number}"
       copy_number += 1
     end
     path
@@ -58,4 +68,4 @@ class File
   
 end
 
-# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+# puts "#{File.basename(__FILE__)}: You add a bit of glitter and jazz to all the folders in the cabinet.  It makes you feel happier when you have to sort through them." # at bottom
