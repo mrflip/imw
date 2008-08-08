@@ -43,10 +43,77 @@
 require 'rubygems'
 require 'yaml'
 
+################################################################
+## DEFAULT SETTINGS WHICH WILL BE OVERRIDDEN BY CONFIGURATION FILES
+################################################################
+
+# Paths to external programs.
 module IMW
+  EXTERNAL_PROGRAMS = {
+    :tar => "tar",
+    :rar => "rar",
+    :zip => "zip",
+    :unzip => "unzip",
+    :gzip => "gzip",
+    :bzip2 => "bzip2",
+    :wget => "wget"
+  } unless defined? EXTERNAL_PROGRAMS
 
+  # Directories where IMW will write and look for files.
+  DIRECTORIES = {
+    :sources => File.expand_path("~/imw/pool/sources"),
+    :datasets => File.expand_path("~/imw/pool/datasets"),
+    
+    :data => File.expand_path("~/imw/data"),
+    :ripd => File.expand_path("~/imw/data/ripd"),
+    :xtrd => File.expand_path("~/imw/data/xtrd"),
+    :prsd => File.expand_path("~/imw/data/prsd"),
+    :mungd => File.expand_path("~/imw/data/mungd"),
+    :fixd => File.expand_path("~/imw/data/fixd"),
+    :pkgd => File.expand_path("~/imw/data/pkgd"),
+
+    :dump => "/tmp/imw"
+  } unless defined? ::IMW::DIRECTORIES
+
+  # Files which provide metadata or processing instructions should
+  # be named with the uniqname of the source/dataset they describe
+  # with the following sufficies to the filename (but before the
+  # file extension)::
+  PROCESSING_INSTRUCTION_SUFFIX = "_proc" unless defined? PROCESSING_INSTRUCTION_SUFFIX
+  METADATA_SUFFIX = "_meta" unless defined? METADATA_SUFFIX
+
+  module Files
+    # Correspondence between extensions and file types.  Used by
+    # <tt>IMW::Files.identify</tt> to identify files based on known
+    # extensions.
+    #
+    # File type strings should be stripped of the leading
+    # <tt>IMW::Files</tt> prefix, i.e. - the file object
+    # <tt>IMW::Files::Bz2</tt> should be referenced by the string
+    # <tt>"Bz2"</tt>.
+    EXTENSIONS = {
+      ".bz2" => "Bz2",
+      ".gz" => "Gz",
+      ".tar.bz2" => "TarBz2",
+      ".tbz2" => "TarBz2",
+      ".tar.gz" => "TarGz",
+      ".tgz" => "TarGz",
+      ".rar" => "Rar",
+      ".zip" => "Zip",
+      ".txt" => "Text",
+      ".ascii" => "Text",
+      ".csv" => "Csv",
+      ".xml" => "Xml",
+      ".html" => "Html",
+      ".yaml" => "Yaml",
+      ".yml" => "Yaml"
+    } unless defined? EXTENSIONS
+  end
+end
+
+
+module IMW
   module Config
-
     ################################################################
     ## Find all the external configuration settings
     ################################################################
@@ -59,7 +126,7 @@ module IMW
     # Returns the default configuration filename, <tt>etc/imwrc</tt>
     # in the IMW root directory.
     def self.default_config_filename
-      File.join(imw_root, 'etc', 'imwrc.rb')
+      File.join(imw_root, 'etc', 'imwrc')
     end
 
     # we require the default configuration file
@@ -86,67 +153,6 @@ module IMW
     # we now require the configuration file pointed at by the user's
     # environment variable
     eval(File.open(USER_CONFIG_FILE_ENV_VARIABLE).read) if File.exist? USER_CONFIG_FILE_ENV_VARIABLE
-
-    ################################################################
-    ## Now make settings here if they're not defined already in the above
-    ################################################################
-    
-    # Paths to external programs.
-    IMW::EXTERNAL_PROGRAMS = {
-      :tar => "tar",
-      :rar => "rar",
-      :zip => "zip",
-      :unzip => "unzip",
-      :gzip => "gzip",
-      :bzip2 => "bzip2",
-      :wget => "wget"
-    } unless defined? IMW::EXTERNAL_PROGRAMS
-
-    # Directories where IMW will write and look for files.
-    IMW::DIRECTORIES = {
-      :sources => File.expand_path("~/imw/pool/sources"),
-      :datasets => File.expand_path("~/imw/pool/datasets"),
-      
-      :data => File.expand_path("~/imw/data"),
-      :ripd => File.expand_path("~/imw/data/ripd"),
-      :xtrd => File.expand_path("~/imw/data/xtrd"),
-      :prsd => File.expand_path("~/imw/data/prsd"),
-      :mungd => File.expand_path("~/imw/data/mungd"),
-      :fixd => File.expand_path("~/imw/data/fixd"),
-      :pkgd => File.expand_path("~/imw/data/pkgd"),
-
-      :dump => "/tmp/imw"
-    } unless defined? IMW::DIRECTORIES
-
-  end
-  
-  module Files
-    # Correspondence between extensions and file types.  Used by
-    # <tt>IMW::Files.identify</tt> to identify files based on known
-    # extensions.
-    #
-    # File type strings should be stripped of the leading
-    # <tt>IMW::Files</tt> prefix, i.e. - the file object
-    # <tt>IMW::Files::Bz2</tt> should be referenced by the string
-    # <tt>"Bz2"</tt>.
-    EXTENSIONS = {
-      ".bz2" => "Bz2",
-      ".gz" => "Gz",
-      ".tar.bz2" => "TarBz2",
-      ".tbz2" => "TarBz2",
-      ".tar.gz" => "TarGz",
-      ".tgz" => "TarGz",
-      ".rar" => "Rar",
-      ".zip" => "Zip",
-      ".txt" => "Text",
-      ".ascii" => "Text",
-      ".csv" => "Csv",
-      ".xml" => "Xml",
-      ".html" => "Html",
-      ".yaml" => "Yaml",
-      ".yml" => "Yaml"
-    } unless defined? IMW::Files::EXTENSIONS
   end
 end
-
 # puts "#{File.basename(__FILE__)}: You carefully adjust the settings on your Monkeywrench.  Beware, glob-monsters!" # at bottom
