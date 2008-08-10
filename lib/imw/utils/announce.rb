@@ -19,6 +19,8 @@ require 'imw/utils/extensions/core'
 
 module IMW
   class << self; attr_accessor :verbose end
+  self.verbose = true
+
   def announce str
     return unless IMW.verbose
     puts "#{Time.now}\t" + str.to_s
@@ -46,6 +48,13 @@ module IMW
       announce "  #{tracker.to_s.gsub(/_/,' ')}: #{val}"
       IMW::PROGRESS_TRACKERS[tracker] = val
     end
+  end
+
+  PROGRESS_COUNTERS = {}
+  def track_count tracker, every=1000
+    PROGRESS_COUNTERS[tracker] ||= 0
+    PROGRESS_COUNTERS[tracker]  += 1
+    track_progress tracker, every * (PROGRESS_COUNTERS[tracker] / every).to_i
   end
 
 end
