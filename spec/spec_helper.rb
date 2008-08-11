@@ -10,4 +10,9 @@ require 'imw/utils'
 
 module IMW::SpecConfig
   SKIP_ARCHIVE_FORMATS = [:rar]
+
+  TEST_WITH_DATAMAPPER = false
+
 end unless defined? IMW::SpecConfig
+
+
