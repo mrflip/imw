@@ -12,16 +12,16 @@ require 'imw/dataset/datamapper'
 #
 class DM_URI
   include DataMapper::Resource
-  property      :id,                    Integer,   :serial   => true
-  property      :scheme,                String,    :nullable => false
-  property      :user,                  String,    :nullable => false, :default => ''
-  property      :password,              String,    :nullable => false, :default => ''
-  property      :host,                  String,    :nullable => false
+  property      :id,                    Integer,        :serial   => true
+  property      :scheme,                String
+  property      :user,                  String
+  property      :password,              String
+  property      :host,                  String
   # note: port is not an integer: URI returns a string and it's almost always used as a string.
-  property      :port,                  String,    :nullable => true
-  property      :path,                  Text,      :nullable => false, :default => ''
-  property      :query,                 Text,      :nullable => false, :default => ''
-  property      :fragment,              Text,      :nullable => false, :default => ''
+  property      :port,                  String
+  property      :path,                  Text
+  property      :query,                 Text
+  property      :fragment,              Text
 
   #
   # Mix in a URI by Aggregation or whatever it's called  
@@ -51,8 +51,11 @@ class DM_URI
   #
   # convert the uri to its representation as a filename
   #
-  def to_pathname
+  def as_path
     File.join(host, path).gsub(%r{/$},'') # kill terminal '/'
   end
 
+  def as_flat_filename
+    as_path.gsub('/','-')
+  end
 end
