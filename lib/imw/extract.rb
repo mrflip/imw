@@ -53,28 +53,4 @@ module IMW
 
   end
 
-  class WeatherStationFile < FlatFile
-    def fix_coords sgn, value, scale = 1
-      return nil if value == "99999"
-      (sgn=="+" ? 1 : -1) * (value.to_f) / scale
-    end
-
-    def records
-      recs = super()
-      recs.map do |rec_in|
-        rec_out = { }
-        [:USAF_weatherstation_code, :WBAN_weatherstation_code,
-          :country_code_wmo, :country_code_fips, :us_state, :ICAO_call_sign
-        ].each do |f|
-          rec_out[f] = rec_in[f].rstrip
-        end
-
-        rec_out[:lat]   = fix_coords(rec_in[:lat_sign],  rec_in[:lat],  1000)
-        rec_out[:lng]   = fix_coords(rec_in[:lng_sign],  rec_in[:lng],  1000)
-        rec_out[:elev]  = fix_coords(rec_in[:elev_sign], rec_in[:elev],   10)
-        rec_out
-      end
-    end
-  end
-
 end
