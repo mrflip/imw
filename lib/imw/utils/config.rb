@@ -39,7 +39,7 @@ module IMW
   # Source the config files
   def self.load_config
     require config_base
-    require config_file if File.exist? config_file
+    require config_file if File.exist? config_file+'.rb'
   end
 
 
