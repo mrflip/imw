@@ -10,8 +10,6 @@ class DatasetFileCollection
   property      :category,              String,    :nullable => false, :unique_index => :category
   has n,        :ripped_file_collections
 
-
-
 end
 
 #
@@ -24,17 +22,17 @@ class RippedFileCollection
   has n,        :ripped_files
   belongs_to    :dataset_file_collection
 
-  def self.index_siterip url, dataset_file_collection
+  def self.find_or_create_from_url url, dataset_file_collection
     url = DM_URI.find_or_create_from_url(url)
-    ripdfiles = self.find_or_create({ :url_id => url.id })
-    ripdfiles.dataset_file_collection = dataset_file_collection
-    ripdfiles.save
-    ripdfiles.index_from_listing
+    ripdfiles = self.find_or_create(
+      { :url_id => url.id },
+      { :dataset_file_collection => dataset_file_collection})
   end
 
   def listing_filename()
     path_to(:rawd, "listing-#{url.as_flat_filename}.txt")
   end
+
   def make_listing_file
     return if File.exist?(listing_filename)
     FileUtils.cd path_to(:ripd_root) do
@@ -53,7 +51,6 @@ class RippedFileCollection
         full_path.chomp!
         ripd_path = full_path[1+url.as_path.length..-1]
         next if ripd_path.blank?
-        # self.ripped_files <<
         RippedFile.from_file(self, full_path, ripd_path)
       end
     end
@@ -67,6 +64,7 @@ end
 class RippedFile
   include DataMapper::Resource
   property      :id,                    Integer,   :serial => true
+  property      :ripped_file_collection_id, Integer,                 :unique_index => :ripd_path
   property      :ripd_path,             String,    :length => 255, :nullable => false, :unique_index => :ripd_path
   property      :retrieval_date,        DateTime
   property      :compressed_size,       Integer
