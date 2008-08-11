@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'imw/dataset'
 require 'dm-core'
 require 'dm-ar-finders'
 require 'dm-aggregates'

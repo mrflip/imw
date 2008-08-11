@@ -1,4 +1,3 @@
-require 'YAML'
 require 'imw/utils/paths'
 
 module IMW

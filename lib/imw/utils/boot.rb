@@ -12,8 +12,6 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'yaml'
-
 # Checks that dependencies on Ruby gems and external programs are
 # satisfied
 #
