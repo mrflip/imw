@@ -1,17 +1,38 @@
 
 module IMW
 
-  class LineOrientedFile
-    attr_accessor :fields, :struct
-    attr_accessor :file
+  class LineOrientedFileParser
+    attr_accessor :fields, :skip_head
+    # the Struct factory each record will be mapped to
+    attr_accessor :struct
 
-    def skip_lines n_lines
-      return unless self.file
-      #self.file.lineno = self.file.lineno + n_lines
-      n_lines.times do self.file.gets end
+    #
+    #
+    # +:fields+         List of symbols giving field names of resultant struct.
+    # +:skip_head+      Initial lines to skip in file
+    #
+    def initialize(options)
+      self.skip_head = options[:skip_head] || 0
+      self.struct = Struct.new(*options[:fields].map{ |f| f.to_sym })
     end
 
-    def rows
+    #
+    # Skip (unconditionally) a given number of lines in the file
+    #
+    def skip_lines file, n_lines
+      return unless file
+      #self.file.lineno = self.file.lineno + n_lines # KLUDGE why doesn't this work?
+      n_lines.times do file.gets end
+    end
+
+    #
+    #
+    #
+    def parse iter, &block
+      line_num = 0
+      iter.map do |line|
+
+      end
       rows = []
       while line = self.file.gets do
         rows << decode_line(line)
@@ -25,15 +46,14 @@ module IMW
 
   end
 
-  class FlatFile < LineOrientedFile
+  class FlatFileParser < LineOrientedFileParser
     attr_accessor :cartoon, :cartoon_re
 
     def initialize(options)
-      [:file, :cartoon, :fields].each do |field|
+      super(options)
+      [:cartoon, ].each do |field|
         self.send("#{field}=", options[field])
       end
-      self.fields.map!{ |f| f.to_sym }
-      self.struct = Struct.new(*fields)
     end
 
     def decode_line line
@@ -48,7 +68,7 @@ module IMW
       template.gsub!(/c/,      '(.)')
       template.gsub!(/i(\d+)/, '(.{\1})')
       template.gsub!(/\s/, '')
-      %r{^#{template}}
+      @cartoon_re = %r{^#{template}$}
     end
 
   end
