@@ -3,7 +3,7 @@
 module IMW
   @@paths = {
     :home      => ENV['HOME'],
-    :imw_root  => File.join(File.dirname(__FILE__), '..'),
+    :imw_root  => File.expand_path(File.join(File.dirname(__FILE__), '..')),
 
     # Data processing scripts
     :scripts_root => [:home, 'ics', 'pool'],
@@ -21,6 +21,8 @@ module IMW
     :fixd_root => [:data_root, 'fixd'],
     :pkgd_root => [:data_root, 'pkgd'],
     :log_root  => [:data_root, 'log'],
+
   }
+  @@paths[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
 
 end
