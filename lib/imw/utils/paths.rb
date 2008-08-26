@@ -42,7 +42,7 @@ module IMW
   #
   def path_to *pathsegs
     # recursively expand
-    expanded = pathsegs.flatten.map do |pathseg|
+    expanded = pathsegs.flatten.compact.map do |pathseg|
       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
     end
     begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}'"); end
