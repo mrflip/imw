@@ -41,11 +41,16 @@ module IMW
   # => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
   #
   def path_to *pathsegs
+    path = Pathname.new path_to_helper(*pathsegs)
+    path.absolute? ? File.expand_path(path) : path
+  end
+
+  def path_to_helper *pathsegs
     # recursively expand
     expanded = pathsegs.flatten.compact.map do |pathseg|
       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
     end
-    begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}'"); end
+    begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}' from #{joined.inspect}"); end
     joined
   end
 
