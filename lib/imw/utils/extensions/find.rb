@@ -88,12 +88,9 @@ module Find
   end
 
   # Scan recursively through +directory+ and return a list of all
-  # unique uniqnames corresponding to files in +dir+.  Options will be
-  # passed directly to <tt>Find.files_in_directory</tt> and can be
-  # used to include/exculde files which match a given regular
-  # expression.
-  def self.uniqnames_in_directory directory, opts = {}
-    files_in_directory(directory,opts).map {|path| File.uniqname path}.uniq
+  # unique uniqnames corresponding to files in +dir+.
+  def self.uniqnames_in_directory directory
+    files_in_directory(directory).map {|path| File.uniqname path}.uniq
   end
   
 end

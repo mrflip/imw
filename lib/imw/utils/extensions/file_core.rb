@@ -25,16 +25,9 @@ class File
   # Returns what would be the uniqname of a source or dataset
   # described by a file at +path+:
   #
-  #   File.uniqname "/path/to/some_named_file.yaml"  #=> :some_named_file
+  #   File.uniqname "/path/to/a_particular_dataset.instructions.yaml"  #=> :a_particular_dataset
   def self.uniqname path
-    name = name_of_file(path)
-    if name.ends_with?(IMW::PROCESSING_INSTRUCTION_SUFFIX) then
-      name[0,name.length - IMW::PROCESSING_INSTRUCTION_SUFFIX.length].uniqname
-    elsif name.ends_with?(IMW::METADATA_SUFFIX) then
-      name[0,name.length - IMW::METADATA_SUFFIX.length].uniqname
-    else
-      raise IMW::PathError.new("#{path} is not a valid path to a file describing an object with a uniqname")
-    end
+    File.basename(path).split('.').first.uniqname
   end
   
   # Returns a unique (non-existing) version of the given +path+ by

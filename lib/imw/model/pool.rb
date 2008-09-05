@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/pool.rb -- describes collections of data sources and datasets
+# h2. lib/imw/model/pool.rb -- describes collections of datasets
 #
 # == About
 #
@@ -10,55 +10,51 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'set'
-
 require 'imw/utils'
 require 'imw/utils/extensions/find'
 
 module IMW
 
-  # A collection of data sources or datasets is referred to as a
-  # "pool" and this is a container class with useful methods for
-  # operating on such collections.
+  # A collection of datasets is referred to as a "pool" and this is a
+  # container class with useful methods for operating on such
+  # collections.
   class Pool
 
-    attr_reader :items, :klass
+    attr_reader :datasets
 
     include Enumerable
     
     private
-    # Initialize this pool with uniqnames from the files in +paths+
-    # with the understanding that this is a pool of items of class
-    # +klass+.
+    # Initialize this pool with the uniqnames of datsets culled from
+    # the files in +paths+.
     #
     # Ex:
     #
-    #   sources = IMW::Pool.new IMW::Source, "/path/to/dir_of_sources", "/path/to/a_particular_source.yaml"
-    def initialize klass, *paths
-      @klass = klass
-      @items = paths.flatten.map {|path| File.directory?(path) ? Find.uniqnames_in_directory(path) : File.uniqname(path) }.flatten.to_set
+    #   IMW::Pool.new "/path/to/dir_of_datasets", "/path/to/a_particular_dataset.instructions.yaml"
+    def initialize *paths
+      @datasets = paths.flatten.map {|path| File.directory?(path) ? Find.uniqnames_in_directory(path) : File.uniqname(path) }.flatten
     end
         
     public
     # Iterate over the items in this pool.
     def each
-      @items.each {|item| yield item}
+      @datasets.each {|dataset| yield dataset}
     end
 
-    # Add an +item+ to the pool.
-    def add item
-      @items.add(item.uniqname)
+    # Add a +dataset+ to the pool.
+    def add dataset
+      @datasets.add(dataset.uniqname)
     end
 
-    # Delete +item+ from the pool.
-    def delete item
-      @items.delete(item.uniqname)
+    # Delete +datset+ from the pool.
+    def delete dataset
+      @datasets.delete(dataset.uniqname)
     end
 
-    # Return the path to the given workflow +step+ for +item+.
-    def path_to step, item
-      raise IMW::Error.new("#{item} not in pool") unless include? item.uniqname
-      @klass.new(item.uniqname).path_to(step)
+    # Return the path to the given workflow +step+ for the given +dataset+.
+    def path_to step, dataset
+      raise IMW::Error.new("#{dataset.uniqname} not in pool") unless include? dataset.uniqname
+      IMW::Dataset.new(dataset.uniqname)
     end
     
   end

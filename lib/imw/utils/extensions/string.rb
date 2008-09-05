@@ -29,7 +29,7 @@ class String
 
   # Downcases a string and replaces spaces with underscores.  This
   # works slightly differently than
-  # <tt>ActiveSupport::CoreExtensions::String::Infletions.pluralize</tt>
+  # <tt>ActiveSupport::CoreExtensions::String::Inflections.underscore</tt>
   # which is intended to be used for camel-cased Ruby constants.
   #
   #   "A long and unwieldy phrase".underscore #=> "a_long_and_unwieldy_phrase"
@@ -44,9 +44,6 @@ class String
     self.downcase.underscore.to_sym
   end
   
-    
-
-  
 end
 
-# puts "#{File.basename(__FILE__)}: You tie a long string to your Monkeywrench, place it on the ground, and hide around the corner with the string in your hand, waiting for passersby to try and pick up your tool." # at bottom
+# puts "#{File.basename(__FILE__)}: You tie a long string to your Monkeywrench, place it on the ground, and hide around the corner with the string in your hand, waiting for passersby to try and make a grab for it." # at bottom
