@@ -1,19 +1,20 @@
-#!/usr/bin/env ruby
 #
-# h2. etc/imwrc -- default imw configuration file
+# h2. etc/imwrc -- default site-wide imw configuration file
 #
 # == About
 #
-# This file contains the default configuration settings for this
-# installation of the Infinite Monkeywrench.  Setting here override
-# those in <tt>lib/imw/utils/config.rb</tt> (see the documentation for
-# that file for more detail on the varioables that can be configured
-# here).
+# This file contains the site-wide configuration settings for this
+# installation of the Infinite Monkeywrench.  Settings here override
+# the defaults in <tt>lib/imw/utils/config.rb</tt> (see the
+# documentation for that file for more detail on the variables that
+# can be configured here) but will in turn be overwritten by settings
+# in the <tt>~/.imwrc</tt> file in each user's directory (though the
+# location of this file can be customized).
 #
-# At the present moment, this is a plain Ruby file (though it lacks
-# the <tt>.rb</tt> extension).  As the IMW develops, this will become
-# a YAML file which will be parsed by
-# <tt>lib/imw/utils/config.rb</tt>.
+# At the present moment, all settings are stored as plain Ruby files
+# (though they may lack the <tt>.rb</tt> extension).  As the IMW
+# develops, these will be replaced by YAML files which will be parsed
+# by <tt>lib/imw/utils/config.rb</tt>.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -45,4 +46,4 @@ module IMW
   }
 end
 
-# puts "#{File.basename(__FILE__)}: You spend three hours configuring the settings on your Monkeywrench only to realize that you've missed your opportunity to put it to use." # at bottom
+puts "#{File.basename(__FILE__)}: You spend three hours configuring the settings on your Monkeywrench only to realize that you've missed your opportunity to put it to use." # at bottom

@@ -6,7 +6,7 @@
 # IMW looks for configuration settings in the following places, in
 # order of increasing precedence:
 #
-#   1. Settings defined in this file as Ruby objects.
+#   1. Settings defined directly in this file.
 #
 #   2. From the <tt>etc/imwrc</tt> file in the IMW root directory.
 #
@@ -21,17 +21,18 @@
 # Settings not found in one configuration location will be searched
 # for in locations of lesser precedence.
 #
-# *Note:* configuration files are _currently_ meant to by plain Ruby code that
-# will be directly executed.  Eventually, they are meant to be
-# replaced by YAML files that will be parsed by IMW.
+# *Note:* configuration files are _currently_ plain Ruby code that
+# will be directly evaluated.  Eventually, they will be replaced by
+# YAML files that will be parsed by IMW.
 #
 # Relevant settings include
 #
-#   * interfaces with external programs (+tar+, +wget+, &c.)
-#   * paths to directories where IMW reads/writes files
+# * interfaces with external programs (+tar+, +wget+, &c.)
+# * paths to directories where IMW reads/writes files
+# * correspondences between file extensions and IMW file classes
 #
-# For more detailed information, read the code of this file or read
-# the example configuration file provided at <tt>etc/imwrc</tt>.
+# For more detailed information, see the default configuration file,
+# <tt>etc/imwrc</tt>.
 #
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
@@ -40,15 +41,40 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'rubygems'
-require 'yaml'
-
-################################################################
-## DEFAULT SETTINGS WHICH WILL BE OVERRIDDEN BY CONFIGURATION FILES
-################################################################
-
-# Paths to external programs.
 module IMW
+  module Config
+    private
+
+    # Returns the root of the IMW source base.
+    def self.imw_root
+      File.join(File.dirname(__FILE__), '../../..')
+    end
+
+    # The path to the site IMW configuration file.
+    SITE_CONFIG_FILE = File.join(imw_root,"etc","imwrc")
+    
+    # The default path to the user-specific IMW configuration file.
+    USER_CONFIG_FILE = File.expand_path("~/.imwrc")
+
+    # The default environment variable which points to a
+    # configuration file.
+    ENV_CONFIG_FILE = "IMWRC"
+
+    # Evaluate the default configuration file
+    eval(File.open(SITE_CONFIG_FILE).read) if File.exist? SITE_CONFIG_FILE
+
+    # Evaluate the user-specific config file
+    eval(File.open(USER_CONFIG_FILE).read) if File.exist? USER_CONFIG_FILE
+
+    # Evaluate the configuration file pointed at by the environment
+    # variable
+    eval(File.open(ENV[ENV_CONFIG_FILE]).read) if ENV[ENV_CONFIG_FILE] && File.exist?(ENV[ENV_CONFIG_FILE])
+  end
+end
+
+module IMW
+
+  # Paths to external programs used by IMW.
   EXTERNAL_PROGRAMS = {
     :tar => "tar",
     :rar => "rar",
@@ -57,12 +83,11 @@ module IMW
     :gzip => "gzip",
     :bzip2 => "bzip2",
     :wget => "wget"
-  } unless defined? EXTERNAL_PROGRAMS
+  } unless defined? ::IMW::EXTERNAL_PROGRAMS
 
   # Directories where IMW will write and look for files.
   DIRECTORIES = {
-    :sources => File.expand_path("~/imw/pool/sources"),
-    :datasets => File.expand_path("~/imw/pool/datasets"),
+    :instructions => File.expand_path("~/imw/instructions"),
     
     :data => File.expand_path("~/imw/data"),
     :ripd => File.expand_path("~/imw/data/ripd"),
@@ -74,13 +99,6 @@ module IMW
 
     :dump => "/tmp/imw"
   } unless defined? ::IMW::DIRECTORIES
-
-  # Files which provide metadata or processing instructions should
-  # be named with the uniqname of the source/dataset they describe
-  # with the following sufficies to the filename (but before the
-  # file extension)::
-  PROCESSING_INSTRUCTION_SUFFIX = "_proc" unless defined? PROCESSING_INSTRUCTION_SUFFIX
-  METADATA_SUFFIX = "_meta" unless defined? METADATA_SUFFIX
 
   module Files
     # Correspondence between extensions and file types.  Used by
@@ -107,52 +125,8 @@ module IMW
       ".html" => "Html",
       ".yaml" => "Yaml",
       ".yml" => "Yaml"
-    } unless defined? EXTENSIONS
+    } unless defined? ::IMW::Files::EXTENSIONS
   end
 end
 
-
-module IMW
-  module Config
-    ################################################################
-    ## Find all the external configuration settings
-    ################################################################
-    private
-    # Returns the root of the IMW source base.
-    def self.imw_root
-      File.join(File.dirname(__FILE__), '../../..')
-    end
-
-    # Returns the default configuration filename, <tt>etc/imwrc</tt>
-    # in the IMW root directory.
-    def self.default_config_filename
-      File.join(imw_root, 'etc', 'imwrc')
-    end
-
-    # we require the default configuration file
-    eval(File.open(default_config_filename).read) if File.exist? default_config_filename
-
-    # The basename of the file looked for in the user's home directory
-    # for configuration settings.
-    USER_CONFIG_FILE_BASENAME = ".imwrc" unless defined? USER_CONFIG_FILE_BASENAME
-
-    # Returns the path to the configuration file in the home directory
-    # of each user.
-    def self.user_home_config_filename
-      File.join(ENV['HOME'], USER_CONFIG_FILE_BASENAME)
-    end
-
-    # we now require the configuration file in the home directory of
-    # the user
-    eval(File.open(user_home_config_filename).read) if File.exist? user_home_config_filename
-
-    # The environment variable checked for a file with configuration
-    # settings.
-    USER_CONFIG_FILE_ENV_VARIABLE = "IMWRC" unless defined? USER_CONFIG_FILE_ENV_VARIABLE
-
-    # we now require the configuration file pointed at by the user's
-    # environment variable
-    eval(File.open(USER_CONFIG_FILE_ENV_VARIABLE).read) if File.exist? USER_CONFIG_FILE_ENV_VARIABLE
-  end
-end
-# puts "#{File.basename(__FILE__)}: You carefully adjust the settings on your Monkeywrench.  Beware, glob-monsters!" # at bottom
+# puts "#{File.basename(__FILE__)}: You carefully adjust the settings on your Monkeywrench.  Glob-monsters: beware!!" # at bottom

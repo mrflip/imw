@@ -14,14 +14,12 @@
 
 require 'imw/utils'
 require 'imw/model/pool'
-require 'imw/model/source'
-require 'imw/utils/paths'
 
 module IMW
 
   # A pool for all the sources at this IMW installation.
-  IMW::SOURCES = IMW::Pool.new(IMW::Source,IMW::DIRECTORIES[:sources])
-
+  IMW::POOL = IMW::Pool.new(IMW::DIRECTORIES[:instructions])
+  
   # Initialize IMW.paths to hold various useful paths at startup.
   IMW::DIRECTORIES.each_pair {|name,path| IMW.add_path name, path }
   

@@ -10,6 +10,7 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
+require 'imw/model/dataset'
 require 'imw/utils'
 require 'imw/utils/extensions/find'
 

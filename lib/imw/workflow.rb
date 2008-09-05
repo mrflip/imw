@@ -30,6 +30,8 @@ module IMW
   # check before performing their actions.
   class Workflow
 
+    include Rake::TaskManager
+
     # The steps in the IMW workflow, in order from first to last.
     STEPS = [:rip, :parse, :munge, :fix, :package]
 
@@ -42,12 +44,9 @@ module IMW
       :verbose => false
     }
 
-    include Rake::TaskManager
-
     def initialize
       super
       @options = OpenStruct.new(DEFAULT_OPTIONS)
-
       set_default_tasks
     end
 
@@ -56,9 +55,10 @@ module IMW
     # The default tasks constitute a set of consecutive actions that
     # must be taken in order: <tt>:rip</tt>, <tt>parse</tt>,
     # <tt>munge</tt>, <tt>fix</tt>, and <tt>package</tt>.  Each task
-    # is a <tt>Rake::Task</tt> which depends on the one before it.  No
-    # task has any actions associated with it by default though each
-    # has a short comment.
+    # is a <tt>Rake::Task</tt> which depends on the one before it.
+    # 
+    # Each task does nothing by default other than create directories
+    # to hold files for this dataset as it undergoes the workflow.
     def set_default_tasks
       define_task(Rake::Task, {:rip => []})
       define_task(Rake::Task, {:parse => :rip})
@@ -66,11 +66,20 @@ module IMW
       define_task(Rake::Task, {:fix => :munge})
       define_task(Rake::Task, {:package => :fix})
 
-      self[:rip].comment = "Rip data from an origin"
-      self[:parse].comment = "Parse data into intermediate form"
-      self[:munge].comment = "Munge together a dataset from different data sources"
-      self[:fix].comment = "Fix and format a dataset"
-      self[:package].comment = "Package a dataset into a delivery format"
+      [:rip].comment = "Rip dataset from an origin"
+      [:parse].comment = "Parse dataset into intermediate form"
+      [:munge].comment = "Munge dataset's structure into desired form"
+      [:fix].comment = "Fix and format dataset"
+      [:package].comment = "Package dataset into a final format"
+
+      # create directories for this dataset corresponding to each step
+      # of the workflow
+      tasks.each do |task|
+        task.enhance do
+          FileUtils.mkdir_p(path_to(task.name))
+        end
+      end
+
     end
     
   end
