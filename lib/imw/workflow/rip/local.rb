@@ -29,7 +29,7 @@ module IMW
     # +target_directory+ and named with their basenames, without any
     # further hierarchical directory structure:
     #
-    #   copy_files_to_target("/target/directory","/path/to/first/file.txt", "/different/path/to/second/thing.dat")
+    #   from_local_disk("/target/directory","/path/to/first/file.txt", "/different/path/to/second/thing.dat")
     #
     # will result in the files <tt>/target/directory/file.txt</tt>
     # and <tt>/target/directorything.dat</tt>.
@@ -39,7 +39,7 @@ module IMW
     # the copy, relative to the +target_directory+.  If the block
     # returns +nil+, then the file will not be copied:
     #
-    #   copy_files_to_target("/target/directory", "/path/to/file.txt", "/path/to/second/thing.dat", "/path/to/third.html") do |file|
+    #   from_local_disk("/target/directory", "/path/to/file.txt", "/path/to/second/thing.dat", "/path/to/third.html") do |file|
     #     case File.extname file
     #     when ".txt"
     #       File.join("txt",File.basename file) # put text files in /target/directory/txt
@@ -61,7 +61,7 @@ module IMW
     # <tt>common_filename.txt.1</tt> or
     # <tt>common_filename.txt.2</tt> and so on until a non-existing
     # filename was found(see <tt>File.uniquify</tt>).
-    def self.copy_files_to_target target_directory, *paths
+    def self.from_local_disk target_directory, *paths
       target_directory = File.expand_path(target_directory)
       raise IMW::PathError.new("#{target_directory} is not a valid directory") unless File.directory?(target_directory)
       files = paths.flatten.map do |path|

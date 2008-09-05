@@ -1,4 +1,25 @@
 #!/usr/bin/env ruby
+#
+# h2. etc/imwrc -- default imw configuration file
+#
+# == About
+#
+# This file contains the default configuration settings for this
+# installation of the Infinite Monkeywrench.  Setting here override
+# those in <tt>lib/imw/utils/config.rb</tt> (see the documentation for
+# that file for more detail on the varioables that can be configured
+# here).
+#
+# At the present moment, this is a plain Ruby file (though it lacks
+# the <tt>.rb</tt> extension).  As the IMW develops, this will become
+# a YAML file which will be parsed by
+# <tt>lib/imw/utils/config.rb</tt>.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+# 
 
 module IMW
   @@paths = {
@@ -22,31 +43,6 @@ module IMW
     :pkgd_root => [:data_root, 'pkgd'],
     :log_root  => [:data_root, 'log'],
   }
-
-  # Paths to external programs.
-  IMW::EXTERNAL_PROGRAMS = {
-    :tar => "tar",
-    :rar => "rar",
-    :zip => "zip",
-    :unzip => "unzip",
-    :gzip => "gzip",
-    :bzip2 => "bzip2",
-    :wget => "wget"
-  }
-
-  # Directories where IMW will write and look for files.
-  IMW::DIRECTORIES = {
-    :sources => File.expand_path("~/imw/pool/sources"),
-    :datasets => File.expand_path("~/imw/pool/datasets"),
-    
-    :data => File.expand_path("~/imw/data"),
-    :ripd => File.expand_path("~/imw/data/ripd"),
-    :xtrd => File.expand_path("~/imw/data/xtrd"),
-    :prsd => File.expand_path("~/imw/data/prsd"),
-    :mungd => File.expand_path("~/imw/data/mungd"),
-    :fixd => File.expand_path("~/imw/data/fixd"),
-    :pkgd => File.expand_path("~/imw/data/pkgd"),
-
-    :dump => "/tmp/imw"
-  }
 end
+
+# puts "#{File.basename(__FILE__)}: You spend three hours configuring the settings on your Monkeywrench only to realize that you've missed your opportunity to put it to use." # at bottom

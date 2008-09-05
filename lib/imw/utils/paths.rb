@@ -20,6 +20,8 @@
 
 module IMW
 
+  @@paths = {}
+
   public
   # Returns pathnames from shorthand input in various formats.
   #
@@ -50,7 +52,13 @@ module IMW
 
   # Adds the symbolic path +sym+ defined by +dirs+.
   def self.add_path sym, *dirs
-    @@paths[sym] = dirs.flatten
+    
+@@paths[sym] = dirs.flatten
+
+
+
+
+
   end
 
   # Removes the symbolic path +sym+.

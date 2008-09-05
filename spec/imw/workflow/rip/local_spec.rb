@@ -48,6 +48,7 @@ describe "Ripping from local disk" do
     FileUtils.rm_rf @root_directory
   end
 
+
   def basenames_of files
     files.map {|file| File.basename file}
   end
