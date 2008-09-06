@@ -1,0 +1,1 @@
+--exclude "bin/*,etc/*,meta/*,gems/*,old/*,spec/*" 

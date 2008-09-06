@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require 'imw/utils'
+include IMW; IMW.verbose = true
+as_dset(".", :cut_dirs => 1)
+
+prog = ARGV.join("\n")
+puts "=> {#{prog}}"
+eval prog

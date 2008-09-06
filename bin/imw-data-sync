@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'imw/utils'
+include IMW; IMW.verbose = true
+require 'fileutils'; include FileUtils::Verbose
+
+case ARGV[0]
+when 'diffhosts'
+  cmd, to, dir = ARGV
+  to       = to.gsub(/:?$/,'')
+  toname   = to.gsub(/\W+/,'')
+  fromname = `hostname -s`.chomp
+  dir ||= path_to(:data_root)
+
+  log_file  = log_file_name('listing/listing-diff', fromname, toname)
+  cmd = %Q{ rsync -nCuvzrtlp #{dir}/ #{to}:#{dir}/ >> #{log_file} }
+  puts cmd
+  puts "Logging to #{log_file}, follow along with tail -f #{log_file}"
+  puts `#{cmd}`
+else
+  raise "Don't get '#{ARGV.join('')}'"
+end
+

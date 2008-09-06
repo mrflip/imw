@@ -45,7 +45,7 @@ share_examples_for "a compressed file" do
   describe "when decompressing" do
 
     before(:each) do
-      FileUtils.mkdir @root_directory
+      FileUtils.mkdir_p @root_directory
     end
 
     after(:each) do

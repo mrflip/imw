@@ -1,0 +1,20 @@
+--- # !infochimps.org/^icss
+
+datasets:
+- name:                 ~
+  uniqname:             ~   # will be auto-generated if missing
+  url:                  ~
+  category:             ~
+
+  user_taggings:        {}  # convenience methods; hash of uniqname => model pairs
+  role_credits:         {}
+  path_payloads:        {}
+  fields:               {}
+  role_notes:           {}
+  url_links:            {}
+      
+  valuation:
+      approved_by:      ~
+      bonus:            ~
+
+contributors:           []    

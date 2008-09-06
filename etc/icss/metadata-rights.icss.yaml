@@ -1,0 +1,35 @@
+--- !infochimps.org/^icss
+
+metadatarights:
+  license:          CC-BY
+  license_url:      http://creativecommons.org/licenses/by/3.0
+  url:              http://infochimps.org/info/license
+  statement:        |
+      Information contributed to infochimps.org is and will always be free and
+      open. This statement applies to this metadata and not necessarily to the
+      dataset itself.
+      
+      Curation data (aka metadata) -- descriptions and information about
+      datasets, such as what you are reading now -- is available under a
+      "Creative Commons Attribution 3.0":http://creativecommons.org/licenses/by/3.0/ license.
+      Among other things, this means if you use an infochimps.org
+      metadataset, you should give us credit (but not in any way that
+      suggests that we endorse you or your use of the work), something like:
+
+      bq. Data from infochimps.org (http://infochimps.org), including
+          contributions from [list the contributors given in the
+          credits: section of each metadataset you use]
+
+      Rather than list all the contributors, you may give a clickable link
+      to a listing of contributors or to each metadataset's credits page.
+
+      The datasets themselves bear whatever rights and restrictions are
+      imposed by its source.  Infochimps.org will never add to and will
+      never subtract from these rights and restrictions.  See the rights
+      statement, if any, in the metadataset, and if in doubt contact the
+      data source directly.
+
+      We encourage everyone to be responsible, neighborly and generous:
+      respect the wishes of those who have done the hard work to gather
+      interesting datasets, acknowledge the contributions of others, and
+      share.
