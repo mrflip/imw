@@ -43,32 +43,32 @@
 
 module IMW
   module Config
-    private
-
     # Returns the root of the IMW source base.
     def self.imw_root
       File.join(File.dirname(__FILE__), '../../..')
     end
 
-    # The path to the site IMW configuration file.
-    SITE_CONFIG_FILE = File.join(imw_root,"etc","imwrc")
+    # The path to the site IMW configuration file relative to the IMW
+    # root.
+    SITE_CONFIG_FILE = "etc/imwrc"
     
-    # The default path to the user-specific IMW configuration file.
-    USER_CONFIG_FILE = File.expand_path("~/.imwrc")
+    # The default path to the user-specific IMW configuration file
+    # (will be +expand_path+'ed before use)
+    USER_CONFIG_FILE = "~/.imwrc"
 
     # The default environment variable which points to a
     # configuration file.
     ENV_CONFIG_FILE = "IMWRC"
 
     # Evaluate the default configuration file
-    eval(File.open(SITE_CONFIG_FILE).read) if File.exist? SITE_CONFIG_FILE
+    load File.join(imw_root,SITE_CONFIG_FILE)
 
     # Evaluate the user-specific config file
-    eval(File.open(USER_CONFIG_FILE).read) if File.exist? USER_CONFIG_FILE
+    load File.expand_path(USER_CONFIG_FILE)
 
     # Evaluate the configuration file pointed at by the environment
     # variable
-    eval(File.open(ENV[ENV_CONFIG_FILE]).read) if ENV[ENV_CONFIG_FILE] && File.exist?(ENV[ENV_CONFIG_FILE])
+    load(File.expand_path(ENV[ENV_CONFIG_FILE])) if ENV[ENV_CONFIG_FILE] && File.exist?(ENV[ENV_CONFIG_FILE])
   end
 end
 

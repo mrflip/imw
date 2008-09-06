@@ -46,4 +46,4 @@ module IMW
   }
 end
 
-puts "#{File.basename(__FILE__)}: You spend three hours configuring the settings on your Monkeywrench only to realize that you've missed your opportunity to put it to use." # at bottom
+# puts "#{File.basename(__FILE__)}: You spend three hours configuring the settings on your Monkeywrench only to realize that you've missed your opportunity to put it to use." # at bottom
