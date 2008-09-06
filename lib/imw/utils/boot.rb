@@ -20,9 +20,6 @@ module IMW
   # A pool for all the sources at this IMW installation.
   IMW::POOL = IMW::Pool.new(IMW::DIRECTORIES[:instructions])
   
-  # Initialize IMW.paths to hold various useful paths at startup.
-  IMW::DIRECTORIES.each_pair {|name,path| IMW.add_path name, path }
-  
 end
 
 # puts "#{File.basename(__FILE__)}: You heft up your Infinite Monkeywrench for the first time and marvel at how something so powerful could be made so wondrous light!" # at bottom
