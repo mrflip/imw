@@ -64,9 +64,9 @@ module IMW
   # Adds a symbolic path for expansion by path_to
   #
   def add_path sym, *pathsegs
-    @@paths[sym] = pathsegs.flatten
+    IMW::PATHS[sym] = pathsegs.flatten
   end
-  def paths() @@paths  end
+  def paths() IMW::PATHS  end
 
 
   #
@@ -100,7 +100,7 @@ module IMW
   # a file in your
   #
   def log_file_name *args
-    log_head = @@paths.include?(:log) ? :log : [:log_root, 'meta']
+    log_head = IMW::PATHS.include?(:log) ? :log : [:log_root, 'meta']
     log_name = [args, path_datecode].flatten.join('-') + '.log'
     log_path = path_to(log_head, log_name)
     # user can add paths, so re-take the dirname

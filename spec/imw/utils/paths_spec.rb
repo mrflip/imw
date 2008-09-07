@@ -12,7 +12,6 @@ describe IMW do
       :second  => ['2', :third],
       :third   => ['3'],
     }
-    stub!(:paths).and_return @paths
   end
 
   it 'is idempotent on a string' do
