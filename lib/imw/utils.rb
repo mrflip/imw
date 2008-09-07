@@ -9,7 +9,6 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 require 'rubygems'
-require 'imw'
 require 'imw/utils/error'
 require 'imw/utils/announce'
 require 'imw/utils/config'
