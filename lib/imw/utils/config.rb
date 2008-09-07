@@ -88,16 +88,15 @@ module IMW
   # Directories where IMW will write and look for files.
   DIRECTORIES = {
     :instructions => File.expand_path("~/imw/instructions"),
+    :log => File.exapnd_path("~imw/data/log"),
+    :dump => "/tmp/imw",
     
     :data => File.expand_path("~/imw/data"),
-    :ripd => File.expand_path("~/imw/data/ripd"),
-    :xtrd => File.expand_path("~/imw/data/xtrd"),
-    :prsd => File.expand_path("~/imw/data/prsd"),
-    :mungd => File.expand_path("~/imw/data/mungd"),
-    :fixd => File.expand_path("~/imw/data/fixd"),
-    :pkgd => File.expand_path("~/imw/data/pkgd"),
-
-    :dump => "/tmp/imw"
+    :rip => File.expand_path("~/imw/data/ripd"),
+    :parse => File.expand_path("~/imw/data/prsd"),
+    :munge => File.expand_path("~/imw/data/mungd"),
+    :fix => File.expand_path("~/imw/data/fixd"),
+    :package => File.expand_path("~/imw/data/pkgd")
   } unless defined? ::IMW::DIRECTORIES
 
   module Files

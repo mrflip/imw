@@ -45,17 +45,17 @@ module IMW
     path.absolute? ? File.expand_path(path) : path
   end
 
-
+  private
   # +path_to_helper+ handles the recursive calls for +path_to+.
-  private def path_to_helper *pathsegs
-    # recursively expand
-    expanded = pathsegs.flatten.compact.map do |pathseg|
-      pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
-    end
-    begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}' from #{joined.inspect}"); end
-    joined
-  end
-  public
+   def path_to_helper *pathsegs
+     # recursively expand
+     expanded = pathsegs.flatten.compact.map do |pathseg|
+       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
+     end
+     begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}' from #{joined.inspect}"); end
+     joined
+   end
+   public
   
   #
   # Adds a symbolic path for expansion by path_to
