@@ -24,12 +24,13 @@
 #
 
 module IMW
-  @@paths = {
-    :home      => ENV['HOME'],
-    :imw_root  => File.expand_path(File.join(File.dirname(__FILE__), '..')),
+  PATHS = {
+    :home       => ENV['HOME'],
+    :imw_root   => File.expand_path(File.join(File.dirname(__FILE__), '..')),
+    :super_root => File.expand_path(File.join(File.dirname(__FILE__), '../..')),
 
     # Data processing scripts
-    :scripts_root => [:home, 'imw', 'pool'],
+    :scripts_root => [:super_root, 'pool'],
 
     # the imw library
     :imw_bin   => [:imw_root, 'bin'],
@@ -37,7 +38,7 @@ module IMW
     :imw_lib   => [:imw_root, 'lib'],
 
     # Data
-    :data_root => [:home,      'imw',  'data'],
+    :data_root => [:super_root,  'data'],
     :ripd_root => [:data_root, 'ripd'],
     :rawd_root => [:data_root, 'rawd'],
     :temp_root => [:data_root, 'temp'],
@@ -45,7 +46,7 @@ module IMW
     :pkgd_root => [:data_root, 'pkgd'],
     :log_root  => [:data_root, 'log'],
   }
-  @@paths[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
+  PATHS[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
 end
 
 

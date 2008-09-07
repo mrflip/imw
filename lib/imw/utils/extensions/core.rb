@@ -11,8 +11,6 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'imw/utils/error'
-
 require 'imw/utils/extensions/string'
 require 'imw/utils/extensions/array'
 require 'imw/utils/extensions/hash'

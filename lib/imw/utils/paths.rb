@@ -14,11 +14,9 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 #
-
-require 'imw/utils'
+require 'pathname'
 
 module IMW
-
   module Paths
     # Returns the root of workflow `step'
     def self.root_of(step)
@@ -43,7 +41,7 @@ module IMW
   def path_to *pathsegs
     begin
       path = Pathname.new path_to_helper(*pathsegs)
-      path.absolute? ? File.expand_path(path) : path
+      path.absolute? ? File.expand_path(path) : path.to_s
     rescue Exception => e
       raise("Can't find path to '#{pathsegs}': #{e}");
     end
@@ -52,7 +50,11 @@ module IMW
   def path_to_helper *pathsegs # :nodoc:
     # +path_to_helper+ handles the recursive calls for +path_to+.
     expanded = pathsegs.flatten.compact.map do |pathseg|
-      pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
+      case
+      when pathseg.is_a?(Symbol) &&    IMW::PATHS.include?(pathseg)  then path_to(IMW::PATHS[pathseg])
+      when pathseg.is_a?(Symbol) && (! IMW::PATHS.include?(pathseg)) then raise IMW::PathError.new("No path expansion set for #{pathseg.inspect}")
+      else pathseg
+      end
     end
     File.join(*expanded)
   end
