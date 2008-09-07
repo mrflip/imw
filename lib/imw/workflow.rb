@@ -67,6 +67,7 @@ module IMW
       define_task(Rake::Task, {:package => :fix})
 
       comment_default_tasks
+
     end
 
     # Set the initial comments for each of the default tasks.
