@@ -16,6 +16,7 @@
 
 require 'rexml/document'
 require 'imw/utils'
+require 'net/ftp'
 
 module IMW
 
@@ -54,6 +55,8 @@ module IMW
     # <tt>items-uploads.archive.org</tt> using an approved username
     # and password.
     module Archive
+
+      attr_reader :connection
 
       # Username for arhive.org FTP upload (should be set in
       # user-configuration file).
@@ -109,7 +112,7 @@ module IMW
       end
 
       # Create an XML file at +path+ in the format required by
-      # archive.org describing metdata.
+      # archive.org describing metadata.
       def self.create_meta_xml path, title
         xml = REXML::Document.new
         xml << REXML::XMLDecl.new
@@ -123,7 +126,13 @@ module IMW
         # should...
         xml.write(path,2)
       end
-      
+
+      # Initiate a connection to the archive.org FTP server and return
+      # it.
+      def connect
+        @connection = Net::FTP.new SERVER,USERNAME,PASSWORD
+      end
+
     end
     
   end
