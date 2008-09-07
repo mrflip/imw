@@ -46,6 +46,7 @@ module IMW
       raise("Can't find path to '#{pathsegs}': #{e}");
     end
   end
+
   private
   def path_to_helper *pathsegs # :nodoc:
     # +path_to_helper+ handles the recursive calls for +path_to+.
