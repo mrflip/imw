@@ -21,9 +21,8 @@
 # Settings not found in one configuration location will be searched
 # for in locations of lesser precedence.
 #
-# *Note:* configuration files are _currently_ plain Ruby code that
-# will be directly evaluated.  Eventually, they will be replaced by
-# YAML files that will be parsed by IMW.
+# *Note:* configuration files are plain Ruby code that will be directly
+# evaluated.
 #
 # Relevant settings include
 #
@@ -43,37 +42,39 @@
 
 module IMW
   module Config
-    # Returns the root of the IMW source base.
+
+    # Root of the IMW source base.
     def self.imw_root
-      File.join(File.dirname(__FILE__), '../../..')
+      File.expand_path File.join(File.dirname(__FILE__), '../../..')
     end
 
-    # The path to the site IMW configuration file relative to the IMW
-    # root.
-    SITE_CONFIG_FILE = "etc/imwrc"
-    
-    # The default path to the user-specific IMW configuration file
-    # (will be +expand_path+'ed before use)
-    USER_CONFIG_FILE = "~/.imwrc"
+    #
+    # User configuration file
+    #
+    # By default, the file ~/.imwrc (.imwrc, in your home directory -- note no .rb extension)
+    # is sourced at top level.  If the $IMWRC environment variable is set,
+    # that file will be sourced instead.
+    #
+    # Any code within this file will override settings in IMW_ROOT/etc/imwrc.rb
+    #
+    def self.user_config_file
+      File.expand_path(ENV['IMWRC'] || File.join(ENV['HOME'], '.imwrc'))
+    end
 
-    # The default environment variable which points to a
-    # configuration file.
-    ENV_CONFIG_FILE = "IMWRC"
+    # System-level config file
+    def self.system_config_file
+      File.join(imw_root, 'etc', 'imwrc.rb')
+    end
 
-    # Evaluate the default configuration file
-    load File.join(imw_root,SITE_CONFIG_FILE)
-
-    # Evaluate the user-specific config file
-    load File.expand_path(USER_CONFIG_FILE)
-
-    # Evaluate the configuration file pointed at by the environment
-    # variable
-    load(File.expand_path(ENV[ENV_CONFIG_FILE])) if ENV[ENV_CONFIG_FILE] && File.exist?(ENV[ENV_CONFIG_FILE])
+    # Source the config files
+    def self.load_config
+      require system_config_file
+      require user_config_file   if File.exist? user_config_file
+    end
   end
 end
 
 module IMW
-
   # Paths to external programs used by IMW.
   EXTERNAL_PROGRAMS = {
     :tar => "tar",
@@ -88,7 +89,7 @@ module IMW
   # Directories where IMW will write and look for files.
   DIRECTORIES = {
     :instructions => File.expand_path("~/imw/instructions"),
-    
+
     :data => File.expand_path("~/imw/data"),
     :ripd => File.expand_path("~/imw/data/ripd"),
     :xtrd => File.expand_path("~/imw/data/xtrd"),
