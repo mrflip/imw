@@ -41,22 +41,23 @@ module IMW
   # => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
   #
   def path_to *pathsegs
-    path = Pathname.new path_to_helper(*pathsegs)
-    path.absolute? ? File.expand_path(path) : path
+    begin
+      path = Pathname.new path_to_helper(*pathsegs)
+      path.absolute? ? File.expand_path(path) : path
+    rescue Exception => e
+      raise("Can't find path to '#{pathsegs}': #{e}");
+    end
   end
-
-
-  # +path_to_helper+ handles the recursive calls for +path_to+.
-  private def path_to_helper *pathsegs
-    # recursively expand
+  private
+  def path_to_helper *pathsegs # :nodoc:
+    # +path_to_helper+ handles the recursive calls for +path_to+.
     expanded = pathsegs.flatten.compact.map do |pathseg|
       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
     end
-    begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}' from #{joined.inspect}"); end
-    joined
+    File.join(*expanded)
   end
   public
-  
+
   #
   # Adds a symbolic path for expansion by path_to
   #
