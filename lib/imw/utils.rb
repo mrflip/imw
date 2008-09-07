@@ -8,10 +8,13 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 #
-# puts "#{File.basename(__FILE__)}: Early economists thought they would measure the utility of an action in units of `utils'.  Really." # at bottom
 
+require 'rubygems'
 require 'imw/utils/error'
 require 'imw/utils/announce'
 require 'imw/utils/config'
 require 'imw/utils/paths'
+require 'imw/utils/misc'
 require 'imw/utils/extensions/core'
+
+# puts "#{File.basename(__FILE__)}: Early economists thought they would measure the utility of an action in units of `utils'.  Really." # at bottom

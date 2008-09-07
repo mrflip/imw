@@ -13,6 +13,7 @@
 
 require 'imw/model/files/file'
 require 'imw/model/files/archive'
+require 'imw/model/files/compressible'
 
 require 'imw/utils'
 
@@ -32,6 +33,7 @@ module IMW
       }
 
       include IMW::Files::Archive
+      include IMW::Files::Compressible
 
       def initialize path
         super

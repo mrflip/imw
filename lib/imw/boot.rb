@@ -30,23 +30,27 @@ module IMW
     #
     # Any code within this file will override settings in IMW_ROOT/etc/imwrc.rb
     #
-    def self.user_config_file
-      File.expand_path(ENV['IMWRC'] || File.join(ENV['HOME'], '.imwrc'))
+    USER_CONFIG_FILE = File.join(ENV['HOME'], '.imwrc')
+    # Environment variable to override user configuration file location.
+    ENV_CONFIG_FILE = "IMWRC"
+    def self.user_config_file # :nodoc:
+      File.expand_path(ENV[ENV_CONFIG_FILE] || USER_CONFIG_FILE)
     end
 
     # System-level config file
-    def self.system_config_file
-      File.join(imw_root, 'etc', 'imwrc.rb')
+    SITE_CONFIG_FILE = "etc/imwrc.rb"
+    def self.site_config_file # :nodoc:
+      File.join(imw_root, SITE_CONFIG_FILE)
     end
 
     # Source the config files
     def self.load_config
-      require system_config_file
-      require user_config_file   if File.exist? user_config_file
+      require site_config_file
+      load    user_config_file   if File.exist? user_config_file
     end
   end
 end
- 
+
 #
 # Load the config files
 #

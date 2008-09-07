@@ -36,7 +36,7 @@ module IMW
     STEPS = [:rip, :parse, :munge, :fix, :package]
 
     attr_reader :options
-    
+
     # Default options
     DEFAULT_OPTIONS = {
       :dry_run => false,
@@ -66,20 +66,17 @@ module IMW
       define_task(Rake::Task, {:fix => :munge})
       define_task(Rake::Task, {:package => :fix})
 
-      [:rip].comment = "Rip dataset from an origin"
-      [:parse].comment = "Parse dataset into intermediate form"
-      [:munge].comment = "Munge dataset's structure into desired form"
-      [:fix].comment = "Fix and format dataset"
-      [:package].comment = "Package dataset into a final format"
+      comment_default_tasks
 
-      # create directories for this dataset corresponding to each step
-      # of the workflow
-      tasks.each do |task|
-        task.enhance do
-          FileUtils.mkdir_p(path_to(task.name))
-        end
-      end
+    end
 
+    # Set the initial comments for each of the default tasks.
+    def comment_default_tasks
+      self[:rip].comment = "Rip dataset from an origin"
+      self[:parse].comment = "Parse dataset into intermediate form"
+      self[:munge].comment = "Munge dataset's structure into desired form"
+      self[:fix].comment = "Fix and format dataset"
+      self[:package].comment = "Package dataset into a final format"
     end
     
   end

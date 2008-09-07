@@ -41,59 +41,6 @@
 #
 
 module IMW
-  # Paths to external programs used by IMW.
-  EXTERNAL_PROGRAMS = {
-    :tar => "tar",
-    :rar => "rar",
-    :zip => "zip",
-    :unzip => "unzip",
-    :gzip => "gzip",
-    :bzip2 => "bzip2",
-    :wget => "wget"
-  } unless defined? ::IMW::EXTERNAL_PROGRAMS
-
-  # Directories where IMW will write and look for files.
-  DIRECTORIES = {
-    :instructions => File.expand_path("~/imw/instructions"),
-
-    :data => File.expand_path("~/imw/data"),
-    :ripd => File.expand_path("~/imw/data/ripd"),
-    :xtrd => File.expand_path("~/imw/data/xtrd"),
-    :prsd => File.expand_path("~/imw/data/prsd"),
-    :mungd => File.expand_path("~/imw/data/mungd"),
-    :fixd => File.expand_path("~/imw/data/fixd"),
-    :pkgd => File.expand_path("~/imw/data/pkgd"),
-
-    :dump => "/tmp/imw"
-  } unless defined? ::IMW::DIRECTORIES
-
-  module Files
-    # Correspondence between extensions and file types.  Used by
-    # <tt>IMW::Files.identify</tt> to identify files based on known
-    # extensions.
-    #
-    # File type strings should be stripped of the leading
-    # <tt>IMW::Files</tt> prefix, i.e. - the file object
-    # <tt>IMW::Files::Bz2</tt> should be referenced by the string
-    # <tt>"Bz2"</tt>.
-    EXTENSIONS = {
-      ".bz2" => "Bz2",
-      ".gz" => "Gz",
-      ".tar.bz2" => "TarBz2",
-      ".tbz2" => "TarBz2",
-      ".tar.gz" => "TarGz",
-      ".tgz" => "TarGz",
-      ".rar" => "Rar",
-      ".zip" => "Zip",
-      ".txt" => "Text",
-      ".ascii" => "Text",
-      ".csv" => "Csv",
-      ".xml" => "Xml",
-      ".html" => "Html",
-      ".yaml" => "Yaml",
-      ".yml" => "Yaml"
-    } unless defined? ::IMW::Files::EXTENSIONS
-  end
 end
 
 # puts "#{File.basename(__FILE__)}: You carefully adjust the settings on your Monkeywrench.  Glob-monsters: beware!!" # at bottom

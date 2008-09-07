@@ -44,18 +44,12 @@ module IMW
 
     # Add a +dataset+ to the pool.
     def add dataset
-      @datasets.add(dataset.uniqname)
+      @datasets.add(dataset.uniqname) unless @datasets.include?(dataset.uniqname)
     end
 
     # Delete +datset+ from the pool.
     def delete dataset
       @datasets.delete(dataset.uniqname)
-    end
-
-    # Return the path to the given workflow +step+ for the given +dataset+.
-    def path_to step, dataset
-      raise IMW::Error.new("#{dataset.uniqname} not in pool") unless include? dataset.uniqname
-      IMW::Dataset.new(dataset.uniqname)
     end
     
   end

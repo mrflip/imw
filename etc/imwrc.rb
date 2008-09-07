@@ -47,6 +47,63 @@ module IMW
     :log_root  => [:data_root, 'log'],
   }
   PATHS[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
+
+  # Default time format.
+  STRFTIME_FORMAT = "%Y%m%d-%H%M%S" unless defined? STRFTIME_FORMAT
+
+  # Paths to external programs used by IMW.
+  EXTERNAL_PROGRAMS = {
+    :tar => "tar",
+    :rar => "rar",
+    :zip => "zip",
+    :unzip => "unzip",
+    :gzip => "gzip",
+    :bzip2 => "bzip2",
+    :wget => "wget"
+  } unless defined? ::IMW::EXTERNAL_PROGRAMS
+
+  # Directories where IMW will write and look for files.
+  DIRECTORIES = {
+    :instructions => File.expand_path("~/imw/instructions"),
+    :log => File.expand_path("~/imw/data/log"),
+    :dump => "/tmp/imw",
+    :data => File.expand_path("~/imw/data"),
+    :rip => File.expand_path("~/imw/data/ripd"),
+    :parse => File.expand_path("~/imw/data/prsd"),
+    :munge => File.expand_path("~/imw/data/mungd"),
+    :fix => File.expand_path("~/imw/data/fixd"),
+    :package => File.expand_path("~/imw/data/pkgd")
+  } unless defined? ::IMW::DIRECTORIES
+
+  module Files
+    # Correspondence between extensions and file types.  Used by
+    # <tt>IMW::Files.identify</tt> to identify files based on known
+    # extensions.
+    #
+    # File type strings should be stripped of the leading
+    # <tt>IMW::Files</tt> prefix, i.e. - the file object
+    # <tt>IMW::Files::Bz2</tt> should be referenced by the string
+    # <tt>"Bz2"</tt>.
+    EXTENSIONS = {
+      ".bz2" => "Bz2",
+      ".gz" => "Gz",
+      ".tar.bz2" => "TarBz2",
+      ".tbz2" => "TarBz2",
+      ".tar.gz" => "TarGz",
+      ".tgz" => "TarGz",
+      ".rar" => "Rar",
+      ".zip" => "Zip",
+      ".txt" => "Text",
+      ".ascii" => "Text",
+      ".csv" => "Csv",
+      ".xml" => "Xml",
+      ".html" => "Html",
+      ".yaml" => "Yaml",
+      ".yml" => "Yaml"
+    } unless defined? ::IMW::Files::EXTENSIONS
+  end
+
+
 end
 
 
