@@ -48,3 +48,4 @@ module IMW
 end
 
 
+# puts "#{File.basename(__FILE__)}: You spend three hours configuring the settings on your Monkeywrench thereby missing your opportunity to use it." # at bottom

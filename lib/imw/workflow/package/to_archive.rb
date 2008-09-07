@@ -129,7 +129,7 @@ module IMW
 
       # Initiate a connection to the archive.org FTP server and return
       # it.
-      def connect
+      def self.connect
         @connection = Net::FTP.new SERVER,USERNAME,PASSWORD
       end
 
