@@ -14,6 +14,7 @@ require 'imw/utils/error'
 require 'imw/utils/announce'
 require 'imw/utils/config'
 require 'imw/utils/paths'
+require 'imw/utils/misc'
 require 'imw/utils/extensions/core'
 # some stupid collision with datamapper makes it double include
 require 'YAML' unless defined?('YAML')

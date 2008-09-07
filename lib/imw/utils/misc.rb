@@ -12,12 +12,23 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
+require 'imw/utils/config'
+
 def identify(obj)
   obj.hash
 end
 
 def announce(*args)
     $stderr.puts "%s: %s" % [Time.now, args.flatten.map(&:to_s).join("\t")]
+end
+
+module IMW
+
+  # Return a string representing the current UTC time in the IMW
+  # format.
+  def self.current_utc_time_string
+    Time.now.utc.strftime(IMW::STRFTIME_FORMAT)
+  end
 end
 
 # puts "#{File.basename(__FILE__)}: Your Monkeywrench seems suddenly more utilisable." # at bottom

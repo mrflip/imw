@@ -74,6 +74,9 @@ end
 
 module IMW
 
+  # Default time format.
+  STRFTIME_FORMAT = "%Y%m%dT%H%M%S" unless defined? STRFTIME_FORMAT
+
   # Paths to external programs used by IMW.
   EXTERNAL_PROGRAMS = {
     :tar => "tar",
