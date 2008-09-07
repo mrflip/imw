@@ -14,11 +14,9 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 #
-
-require 'imw/utils'
+require 'pathname'
 
 module IMW
-
   module Paths
     # Returns the root of workflow `step'
     def self.root_of(step)
@@ -41,29 +39,35 @@ module IMW
   # => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
   #
   def path_to *pathsegs
-    path = Pathname.new path_to_helper(*pathsegs)
-    path.absolute? ? File.expand_path(path) : path
+    begin
+      path = Pathname.new path_to_helper(*pathsegs)
+      path.absolute? ? File.expand_path(path) : path.to_s
+    rescue Exception => e
+      raise("Can't find path to '#{pathsegs}': #{e}");
+    end
   end
 
   private
-  # +path_to_helper+ handles the recursive calls for +path_to+.
-   def path_to_helper *pathsegs
-     # recursively expand
-     expanded = pathsegs.flatten.compact.map do |pathseg|
-       pathseg.is_a?(Symbol) ? path_to(paths[pathseg]) : pathseg
-     end
-     begin joined = File.join(*expanded) rescue raise("Can't find path to '#{pathsegs}' from #{joined.inspect}"); end
-     joined
-   end
-   public
-  
+  def path_to_helper *pathsegs # :nodoc:
+    # +path_to_helper+ handles the recursive calls for +path_to+.
+    expanded = pathsegs.flatten.compact.map do |pathseg|
+      case
+      when pathseg.is_a?(Symbol) &&    IMW::PATHS.include?(pathseg)  then path_to(IMW::PATHS[pathseg])
+      when pathseg.is_a?(Symbol) && (! IMW::PATHS.include?(pathseg)) then raise IMW::PathError.new("No path expansion set for #{pathseg.inspect}")
+      else pathseg
+      end
+    end
+    File.join(*expanded)
+  end
+  public
+
   #
   # Adds a symbolic path for expansion by path_to
   #
   def add_path sym, *pathsegs
-    @@paths[sym] = pathsegs.flatten
+    IMW::PATHS[sym] = pathsegs.flatten
   end
-  def paths() @@paths  end
+  def paths() IMW::PATHS  end
 
 
   #
@@ -97,7 +101,7 @@ module IMW
   # a file in your
   #
   def log_file_name *args
-    log_head = @@paths.include?(:log) ? :log : [:log_root, 'meta']
+    log_head = IMW::PATHS.include?(:log) ? :log : [:log_root, 'meta']
     log_name = [args, path_datecode].flatten.join('-') + '.log'
     log_path = path_to(log_head, log_name)
     # user can add paths, so re-take the dirname

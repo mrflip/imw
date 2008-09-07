@@ -17,10 +17,10 @@ require 'set'
 class Hash
   # Return the elements of this hash in a pretty-printed string,
   # inserting +final_string+ between the last two items.
-  # 
+  #
   #   >> {:one => 1, :two => 2, :three => 3}.quote_keys_with "or"
   #   `one', `two', or `three'
-  #   
+  #
   def quote_keys_with final_string = nil
     self.keys.quote_items_with final_string
   end
@@ -29,19 +29,19 @@ class Hash
   def reverse_merge(other_hash)
     other_hash.merge(self)
   end
-  
+
   # Stolen from ActiveSupport::CoreExtensions::Hash::ReverseMerge.
   def reverse_merge!(other_hash)
     replace(reverse_merge(other_hash))
   end
-  
+
   # Create a hash from an array of keys and corresponding values.
   def self.zip(keys, values, default=nil, &block)
     hash = block_given? ? Hash.new(&block) : Hash.new(default)
     keys.zip(values) { |k,v| hash[k]=v }
     hash
   end
-  
+
   # Turns a collection of pairs into a hash.  The first of each pair
   # make the keys and the second the values. Elements with length
   # longer than two will lose those values.
@@ -53,7 +53,7 @@ class Hash
     self.each{ |k,v| hsh[k] = v }
     hsh
   end
-  
+
   # Merges self with another hash, recursively.
   #
   # first  = {
@@ -107,7 +107,7 @@ class Hash
     end
     self
   end
-  
+
   # Merge another array with this one, accumulating values that appear in both
   # into arrays.
   #
@@ -153,7 +153,7 @@ class Hash
   def rassoc(key)
     self.has_value?(key) ? [key, self[key]] : nil
   end
-  
+
   # Allows loading ostruct directly from YAML
   def to_openstruct
     map{ |el| el.to_openstruct }

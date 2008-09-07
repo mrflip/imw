@@ -12,7 +12,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require 'rexml/document'
 require 'imw/utils'
@@ -27,7 +27,7 @@ module IMW
     # files If the name of the directory is +DIRECTORY+ then the first
     # of these files must be named <tt>DIRECTORY_files.xml</tt> and is
     # of the form
-    # 
+    #
     #   <files>
     #     <file name='filename1.ext'>
     #       <format>FILE_FORMAT</format>
@@ -38,7 +38,7 @@ module IMW
     #
     # The second XML file must be named <tt>DIRECTORY_meta.xml</tt>
     # and is of the form
-    # 
+    #
     #   <metadata>
     #     <collection>name_of_collection</collection>
     #     <mediatype>mediatype</mediatype>
@@ -134,8 +134,8 @@ module IMW
       end
 
     end
-    
+
   end
 end
-        
+
 # puts "#{File.basename(__FILE__)}: Keep all your bananas in one place, somewhere far, far away from you.." # at bottom

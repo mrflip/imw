@@ -9,7 +9,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 module IMW
 
@@ -25,7 +25,7 @@ module IMW
 
   class NotImplementedError < NotImplementedError
   end
-  
+
   # An error meant to be used when a system call goes awry.  It will
   # report exit status and the process id of the offending call.
   class SystemCallError < IMW::Error
