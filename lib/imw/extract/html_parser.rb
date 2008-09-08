@@ -1,5 +1,18 @@
-
+require 'imw/extract/hpricot'
 class HTMLParser
+  attr_accessor :mapping
+
+  #
+  # Feed me a hash and I'll semantify HTML
+  #
+  # The hash should magically adhere to the too-complicated,
+  # ever evolving goatrope that works for the below
+  #
+  #
+  def initialize mapping
+    self.mapping = mapping
+  end
+
   #
   # take a document subtree,
   # and a mapping of hpricot paths to that subtree's data structure
@@ -25,9 +38,16 @@ class HTMLParser
   #
   def extract_link data, content, el, target
     case
+    # subtree
     when target.is_a?(Hash)   then
       val = extract_links(content, target)
       (data[el]     ||=[]) << val unless val.blank?
+    # element -> attribute terminal pair
+    when el.is_a?(Hash) then
+      warn("attribute terminal should be hash of one pair") if el.length != 1
+      k, v = el.to_a[0]
+      val  = (content.at(k)).attributes[v.to_s]
+      data[target] = val unless val.blank?
     when el.is_a?(Symbol) then
       val = content.attributes[el.to_s]
       (data[target] ||=[]) << val unless val.blank?
@@ -38,5 +58,12 @@ class HTMLParser
     else
       raise "crapsticks: " + [data.inspect, content.to_s[0..200], el, target].join(" - ")
     end
+  end
+
+  # use #mapping to parse file
+  def parse_html_file html_file
+    begin       hdoc = Hpricot(File.open(File.expand_path(html_file)))
+    rescue;     warn "can't hpricot #{html_file}" ; return false;  end
+    extract_links hdoc, self.mapping
   end
 end
