@@ -46,7 +46,7 @@ class HTMLParser
     when el.is_a?(Hash) then
       warn("attribute terminal should be hash of one pair") if el.length != 1
       k, v = el.to_a[0]
-      val  = (content.at(k)).attributes[v.to_s]
+      val  = (content.at(k)).attributes[v.to_s] if (content.at(k))
       data[target] = val unless val.blank?
     when el.is_a?(Symbol) then
       val = content.attributes[el.to_s]

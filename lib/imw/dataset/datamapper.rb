@@ -8,13 +8,15 @@ module IMW
   class DataSet
     # Connect to a remote database
     def self.setup_remote_connection options
+      options = { :handle => :default }.merge options
       params = options.values_at(:protocol, :username, :password, :hostname, :dbname)
-      DataMapper.setup(:default, "%s://%s:%s@%s/%s" % params)
+      DataMapper.setup(options[:handle], "%s://%s:%s@%s/%s" % params)
     end
     # Connect to a local database
     def self.setup_local_connection options
+      options = { :handle => :default }.merge options
       params = options.values_at(:protocol, :dbpath, :dbname)
-      DataMapper.setup(:default, "%s://%s/%s" % options)
+      DataMapper.setup(options[:handle], "%s://%s/%s" % options)
     end
   end
 end
