@@ -1,33 +1,6 @@
-# -*- coding: utf-8 -*-
-require 'rubygems'
-require 'dm-ar-finders'
-require 'dm-aggregates'
-require 'imw/dataset/datamapper'
-require 'imw/dataset/datamapper/uri'
-
-#DataMapper::Logger.new(STDOUT, :debug)
-IMW::DataSet.setup_remote_connection IMW::DEFAULT_DATABASE_CONNECTION_PARAMS.merge({ :dbname => 'imw_social_network_delicious' })
 
 #
-# Models for the delicious.com (formerly del.icio.us) social network
 #
-# Link:         has tags,   tagged by socialites
-# Socialite:                describes links with tabs,  uses tags,         follows/followedby socialites
-# Tag:          tags links,                             used by socialites
-
-#
-# First steps towards craws that can give an implied trust metric.
-#   follow/follower graph
-#   # follow/followers
-#   # comments / posts / favorites / favorited
-#   explicit karma
-# sources:
-#   Twitter
-#   FriendFeed
-#   Plurk (has explicit karma)
-#   Twine
-#   MetaFilter (also asked / answered numbers)
-#   Ma.gnolia.com
 #
 class DeliciousLink
   include DataMapper::Resource
@@ -57,7 +30,7 @@ end
 class Socialite
   include DataMapper::Resource
   property   :id,                    Integer,   :serial => true
-  property   :uniqname,              String,    :length => 100,  :nullable => false, :unique_index => :socialite_uniqname
+  property   :handle,              String,    :length => 100,  :nullable => false, :unique_index => :socialite_handle
   property   :following_count,       Integer
   property   :followers_count,       Integer
   property   :updates_count,         Integer

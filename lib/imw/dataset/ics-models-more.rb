@@ -6,7 +6,7 @@ require 'ics-models'
 class Search
   include DataMapper::Resource
   property      :id,                            Integer,        :serial => true
-  property      :uniqname,                      String,        :length      => 40,         nil          => false
+  property      :handle,                      String,        :length      => 40,         nil          => false
   property      :freetext,                      String,        :length      => 255
   property      :name,                          String,        :length      => 255
   property      :tags,                          String,        :length      => 255
@@ -25,7 +25,7 @@ class Info
   property      :updated_at,                    DateTime
   #
   property      :name,                          String
-  property      :uniqname,                      String,        :length      => 40,         nil          => false
+  property      :handle,                      String,        :length      => 40,         nil          => false
   property      :desc,                          Text
 end
 

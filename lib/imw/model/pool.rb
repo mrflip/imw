@@ -24,18 +24,18 @@ module IMW
     attr_reader :datasets
 
     include Enumerable
-    
+
     private
-    # Initialize this pool with the uniqnames of datsets culled from
+    # Initialize this pool with the handles of datsets culled from
     # the files in +paths+.
     #
     # Ex:
     #
     #   IMW::Pool.new "/path/to/dir_of_datasets", "/path/to/a_particular_dataset.instructions.yaml"
     def initialize *paths
-      @datasets = paths.flatten.map {|path| File.directory?(path) ? Find.uniqnames_in_directory(path) : File.uniqname(path) }.flatten
+      @datasets = paths.flatten.map {|path| File.directory?(path) ? Find.handles_in_directory(path) : File.handle(path) }.flatten
     end
-        
+
     public
     # Iterate over the items in this pool.
     def each
@@ -44,16 +44,16 @@ module IMW
 
     # Add a +dataset+ to the pool.
     def add dataset
-      @datasets.add(dataset.uniqname) unless @datasets.include?(dataset.uniqname)
+      @datasets.add(dataset.handle) unless @datasets.include?(dataset.handle)
     end
 
     # Delete +datset+ from the pool.
     def delete dataset
-      @datasets.delete(dataset.uniqname)
+      @datasets.delete(dataset.handle)
     end
-    
+
   end
-  
+
 end
 
 # puts "#{File.basename(__FILE__)}: You dip your Monkeywrench into the whirling maelstrom of Charybdis and pull out...a carton of tube socks! " # at bottom

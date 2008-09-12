@@ -1,15 +1,3 @@
-# -*- coding: utf-8 -*-
-require 'rubygems'
-require 'imw'; include IMW; IMW.verbose = true
-require 'imw/dataset/datamapper'
-require 'dm-ar-finders'
-require 'dm-aggregates'
-require 'dm-timestamps'
-require 'slug'
-
-#DataMapper::Logger.new(STDOUT, :debug)
-# DataSet.setup_remote_connection IMW::DEFAULT_DATABASE_CONNECTION_PARAMS.merge({ :dbname => 'imw_ics_scaffold' })
-DataSet.setup_remote_connection IMW::ICS_DATABASE_CONNECTION_PARAMS
 
 #
 # Datamapper interface to infochimps
@@ -18,8 +6,9 @@ DataSet.setup_remote_connection IMW::ICS_DATABASE_CONNECTION_PARAMS
 class Dataset
   include DataMapper::Resource
   include Sluggable;
-  slug_on :name
+  # Identity
   property      :id,                            Integer,        :serial => true
+  # Stamps
   property      :approved_at,                   DateTime
   property      :created_at,                    DateTime
   property      :updated_at,                    DateTime
@@ -28,9 +17,8 @@ class Dataset
   property      :updated_by,                    Integer
   #
   property      :name,                          String,         :length      => 255,          nil          => false, :default => ''
-  property      :uniqname,                      String,         :length      => 255,          nil          => false
+  property      :handle,                      String,         :length      => 255,          nil          => false
   property      :category,                      String,         :length      =>  40,          nil          => false, :default => ''
-  property      :url,                           String,         :length      => 255,          nil          => false, :default => ''
   property      :collection_id,                 Integer
   property      :is_collection,                 Boolean,        :default     => false
   property      :valuation,                     String,         :default     => "{}"
@@ -47,6 +35,18 @@ class Dataset
   has n,        :taggings,              :child_key => [:taggable_id]
   has n,        :tags,                  :through => :taggings,  :child_key => [:taggable_id]
 
+
+  #===============================================================================
+  #
+  # Macros
+  #
+  slug_on       :name
+
+
+  #===============================================================================
+  #
+  # Methods
+  #
   def description
     @description ||= self.notes.first({ :role => 'description' })
   end
@@ -101,7 +101,7 @@ class Dataset
   before :save, :insert_default_rights_statement
   def insert_default_rights_statement
     if !self.rights_statement
-      self.rights_statement = RightsStatement.create(:license => License.find_by_uniqname(:needs_rights))
+      self.rights_statement = RightsStatement.create(:license => License.find_by_handle(:needs_rights))
     end
   end
 
@@ -125,7 +125,7 @@ class Contributor
   property      :id,                            Integer,        :serial => true
   property      :created_at,                    DateTime
   property      :updated_at,                    DateTime
-  property      :uniqname,                      String,         :length      => 255,    nil => false
+  property      :handle,                      String,         :length      => 255,    nil => false
   #
   property      :url,                           String,         :length      => 255,    nil => false, :default => ''
   property      :name,                          String,         :length      => 150,    nil => false, :default => ''
@@ -285,7 +285,7 @@ class License
   property      :updated_at,                    DateTime
   #
   property      :name,                          String,         :length      => 150,    nil => false, :default => ''
-  property      :uniqname,                      String,         :length      => 150,    nil => false
+  property      :handle,                      String,         :length      => 150,    nil => false
   property      :url,                           String,         :length      => 255,    nil => false, :default => ''
   property      :desc,                          Text,                                   nil => false, :default => ''
   has n,        :rights_statements
@@ -367,3 +367,8 @@ class User
   property      :email_verified_at,             DateTime
   property      :roles,                         String,         :length  => 2048
 end
+
+
+# class Relationship
+#
+# end

@@ -10,7 +10,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require 'find'
 require 'imw/utils/extensions/hash'
@@ -56,7 +56,7 @@ module Find
 
   # Returns a list of absolute paths in +directory+ of the files (and
   # only the files) it contains.
-  # 
+  #
   # Options include:
   #
   # <tt>:include</tt>:: a regular expression that each path must
@@ -67,7 +67,7 @@ module Find
   def self.files_in_directory directory, opts = {}
     opts.reverse_merge!({:include => nil, :exclude => nil})
     directory = File.expand_path directory
-    raise IMW::PathError.new("#{directory} is not a valid directory") unless File.directory? directory    
+    raise IMW::PathError.new("#{directory} is not a valid directory") unless File.directory? directory
     files = []
     Find.find(directory) do |path|
       if File.exist?(path) && File.file?(path)
@@ -88,11 +88,11 @@ module Find
   end
 
   # Scan recursively through +directory+ and return a list of all
-  # unique uniqnames corresponding to files in +dir+.
-  def self.uniqnames_in_directory directory
-    files_in_directory(directory).map {|path| File.uniqname path}.uniq
+  # unique handles corresponding to files in +dir+.
+  def self.handles_in_directory directory
+    files_in_directory(directory).map {|path| File.handle path}.uniq
   end
-  
+
 end
 
 # puts "#{File.basename(__FILE__)}: Wise man say: it is easier to find a Monkeywrench in a haystack than a needle.  Likely this is because, you know, wrenches are large and needles are, well, small." # at bottom

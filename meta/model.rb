@@ -1,7 +1,7 @@
 #
 # h2. imw/tasks/db/schema -- desc lib
 #
-# action::    desc action     
+# action::    desc action
 #
 # == About
 #
@@ -9,20 +9,20 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 require 'active_record'
 
 class Tinyfucker         < ActiveRecord::Base
 end
 
 class Pool               < ActiveRecord::Base
-  # uniqname
+  # handle
   # name
   # created_at
   # updated_at
   # cached_tag_list
   #
-  
+
   # ------------ Relations ----------
   has_many      :datasets
   has_many      :fields,        :through    => :pool_fields
@@ -63,17 +63,17 @@ end
 
 class DatasetNote         < ActiveRecord::Base
   # ------------ Relations ----------
-  belongs_to    :dataset  
+  belongs_to    :dataset
 end
 
 class PoolNote            < ActiveRecord::Base
   # created_at
   # updated_at
-  # 
+  #
   # pool_id
-  # label   
-  # note    
-  
+  # label
+  # note
+
   # ------------ Relations ----------
-  belongs_to    :pool  
+  belongs_to    :pool
 end

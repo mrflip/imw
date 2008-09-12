@@ -7,7 +7,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require File.join(File.dirname(__FILE__),'../../../spec_helper')
 require IMW_SPEC_DIR + "/imw/matchers/without_regard_to_order_matcher"
@@ -100,14 +100,14 @@ describe Find do
 
   end
 
-  describe "when listing uniqnames in a directory" do
+  describe "when listing handles in a directory" do
 
-    it "should return a unique set of uniqnames" do
-      Find.uniqnames_in_directory(@root_directory, :include => /your/).should match_without_regard_to_order([:your_file4, :your_file5])
+    it "should return a unique set of handles" do
+      Find.handles_in_directory(@root_directory, :include => /your/).should match_without_regard_to_order([:your_file4, :your_file5])
     end
   end
-  
-    
+
+
 end
 
 # puts "#{File.basename(__FILE__)}: You throw your Monkeywrench backwards over your shoulder and run like mad to go find it.  Again, and again, and again." # at bottom

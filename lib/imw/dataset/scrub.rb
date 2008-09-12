@@ -117,7 +117,7 @@ module Scrub
   #
   # start with a letter, and contain only A-Za-z0-9_
   #
-  class Uniqname < Scrub::Generic
+  class Handle < Scrub::Generic
     self.complaint  = "should be an identifier: it should start with a letter, and contain only a-z, 0-9 and '_'."
     self.validator  = %r{a-z0-9_}u
     self.replacer   = '_'
@@ -125,8 +125,8 @@ module Scrub
     include Scrub::Lowercased
   end
 
-  # UNIQNAME_RE  = %r{\A[a-z][]*\z}i # ascii, not :alpha: etc.
-  # UNIQNAME_MSG = "should start with a letter, and contain only characters like a-z0-9_-."
+  # HANDLE_RE  = %r{\A[a-z][]*\z}i # ascii, not :alpha: etc.
+  # HANDLE_MSG = "should start with a letter, and contain only characters like a-z0-9_-."
   #
   # # "Domain names are restricted to the ASCII letters a through z
   # # (case-insensitive), the digits 0 through 9, and the hyphen, with some other

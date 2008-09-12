@@ -1,7 +1,7 @@
 #
 # h2. imw/tasks/db/schema -- desc lib
 #
-# action::    desc action     
+# action::    desc action
 #
 # == About
 #
@@ -9,7 +9,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 
 # This file is taken from the infochimps site code
@@ -17,38 +17,38 @@
 ActiveRecord::Schema.define(:version => 12) do
   do_migrate ||= IMWConfig::Config['migrate']
 
-  if do_migrate 
+  if do_migrate
     create_table "tinyfuckers", :force => true  do |t|
       t.integer   "ID #"
       t.string    "name"
       t.string    "car"
-    end 
-    
+    end
+
     create_table "pools",        :force => true do |t|
-      t.string   "uniqname",                                       :default => "", :null => false
+      t.string   "handle",                                       :default => "", :null => false
       t.string   "name",                                           :default => "", :null => false
       t.datetime "created_at"
       t.datetime "updated_at"
-      
+
       t.text     "formats",                                        :default => "", :null => false
       t.text     "cached_tag_list"
-      
+
       # has_many    :datasets
       # has_many    :fields,        :through => pool_fields        #( notes )
       # has_many    :contributors,  :through => pool_contributors  #( notes )
       # has_many    :pool_notes
       # serialize   :formats
       #
-    end 
-    add_index "pools", ["uniqname"],      :name => "idx_pool_uniqname", :unique => true
+    end
+    add_index "pools", ["handle"],      :name => "idx_pool_handle", :unique => true
 
     create_table "datasets", :force => true do |t|
-      t.string   "uniqname",                                       :default => "", :null => false
+      t.string   "handle",                                       :default => "", :null => false
       t.string   "name",                                           :default => "", :null => false
       t.datetime "created_at"
       t.datetime "updated_at"
-      
-      t.integer  "dnloaded_count",                                 :default => 0,  :null => false    
+
+      t.integer  "dnloaded_count",                                 :default => 0,  :null => false
       t.text     "cached_tag_list"
       t.text     "fileinfo",                                       :default => "", :null => false
       t.string   "collection_id",                                  :default => "", :null => false
@@ -61,24 +61,24 @@ ActiveRecord::Schema.define(:version => 12) do
       # serialize   :fileinfo
       #
     end
-    add_index "datasets", ["uniqname"],   :name => "idx_dataset_uniqname", :unique => true
+    add_index "datasets", ["handle"],   :name => "idx_dataset_handle", :unique => true
 
     create_table "contributors", :force => true do |t|
-      t.string   "uniqname",                                       :default => "", :null => false
+      t.string   "handle",                                       :default => "", :null => false
       t.string   "name",                                           :default => "", :null => false
       t.datetime "created_at"
       t.datetime "updated_at"
-      
+
       t.text     "desc",       :default => "",        :null => false
       t.string   "cite",       :default => "",        :null => false
       t.string   "url",        :default => ""
       t.string   "role"
-      
+
       # has_many    :pools,         :through =>    pool_contributors
       # has_many    :datasets,      :through => dataset_contributors
       #
     end
-    add_index "contributors", ["uniqname"], :name => "idx_contributor_uniqname", :unique => true
+    add_index "contributors", ["handle"], :name => "idx_contributor_handle", :unique => true
     add_index "contributors", ["url"],      :name => "idx_contributor_url"
     add_index "contributors", ["role"],     :name => "idx_contributor_role"
     create_table "dataset_contributors", :id => false, :force => true do |t|
@@ -97,21 +97,21 @@ ActiveRecord::Schema.define(:version => 12) do
     add_index "pool_contributors",    ["pool_id"],                      :name => "idx_pc_pool_id"
 
     create_table "fields", :force => true do |t|
-      t.string   "uniqname",   :default => "",        :null => false
+      t.string   "handle",   :default => "",        :null => false
       t.string   "name",       :default => "",        :null => false
       t.datetime "created_at"
       t.datetime "updated_at"
-      
+
       t.text     "desc",       :default => "",        :null => false
       t.string   "concepts",   :default => "",        :null => false
       t.string   "units",      :default => "",        :null => false
       t.string   "datatype",   :default => "",        :null => false
-      
+
       # has_many    :pools,         :through =>    pool_fields
       # has_many    :datasets,      :through => dataset_fields
       #
     end
-    add_index "fields", ["uniqname"], :name => "idx_field_uniqname"
+    add_index "fields", ["handle"], :name => "idx_field_handle"
     create_table "dataset_fields", :id => false, :force => true do |t|
       t.integer "field_id",     :default => "",       :null => false
       t.integer "dataset_id",   :default => "",       :null => false
@@ -130,30 +130,30 @@ ActiveRecord::Schema.define(:version => 12) do
     create_table "dataset_notes", :force => true do |t|
       t.datetime "created_at"
       t.datetime "updated_at"
-      
+
       t.integer  "dataset_id",                 :null => false
       t.string   "label",      :default => "", :null => false
       t.text     "note",       :default => "", :null => false
-      
+
       # belongs_to :dataset
       #
     end
     add_index "dataset_notes", ["dataset_id", "label"], :name => "idx_dsnote_dataset_notes", :unique => true
-    add_index "dataset_notes", ["label"],               :name => "idx_dsnote_uniqname"
+    add_index "dataset_notes", ["label"],               :name => "idx_dsnote_handle"
 
     create_table "pool_notes", :force => true do |t|
       t.datetime "created_at"
       t.datetime "updated_at"
-      
+
       t.integer  "pool_id",                    :null => false
       t.string   "label",      :default => "", :null => false
       t.text     "note",       :default => "", :null => false
-      
+
       # belongs_to :pool
       #
     end
     add_index "pool_notes", ["pool_id", "label"],    :name => "idx_plnote_dataset_notes", :unique => true
-    add_index "pool_notes", ["label"],               :name => "idx_plnote_uniqname"
+    add_index "pool_notes", ["label"],               :name => "idx_plnote_handle"
 
     create_table "tags", :force => true do |t|
       t.string   "name",          :limit => 150, :default => "", :null => false
