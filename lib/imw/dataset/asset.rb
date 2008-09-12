@@ -1,10 +1,12 @@
+require 'imw/dataset'
 require 'imw/dataset/link'
 
 #
 # A file to process
 #
-module Asset
-  class Base < Link
+#module Asset
+#  class Base < Link
+class Link
     include DataMapper::Resource
     property      :file_path,       String,    :length => 1024
     property      :file_date,       DateTime
@@ -24,7 +26,7 @@ module Asset
     #
     # Refresh cached properties from our copy of the asset.
     #
-    def update_from_file
+    def update_from_file!
       self.file_size = File.size( file_path)
       self.file_time = File.mtime(file_path)
       ripd.save
@@ -137,4 +139,4 @@ module Asset
   #   #   end
   #   # end
   # end
-end  
+# end  

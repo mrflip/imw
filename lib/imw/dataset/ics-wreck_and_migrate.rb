@@ -7,20 +7,18 @@ require 'fileutils'; include FileUtils
 
 DataMapper::Logger.new(STDOUT, :debug)
 # Dataset.setup_remote_connection IMW::DEFAULT_DATABASE_CONNECTION_PARAMS.merge({ :dbname => 'imw_ics_scaffold' })
-Dataset.setup_remote_connection IMW::ICS_DATABASE_CONNECTION_PARAMS
+DataMapper.setup_remote_connection IMW::ICS_DATABASE_CONNECTION_PARAMS
 
 
 # #
 # # Wipe DB and add new migration
 # #
-# DataMapper.auto_migrate!
-# Contributor,
-# [Dataset, Credit, Tagging, Tag, Field, Link, Note, Payload, Rating, License, LicenseInfo, User].each do |klass|
+DataMapper.auto_migrate!
+#
+# [Dataset, Contributor, Credit, Tagging, Tag, Field, Link, Note, Payload, Rating, License, LicenseInfo, User].each do |klass|
 #   puts klass.to_s
 #   klass.auto_migrate!
 # end
-
-Dataset.auto_migrate!
 
 # Destroy old
 announce "Destroying old"
