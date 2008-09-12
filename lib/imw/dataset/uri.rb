@@ -1,10 +1,11 @@
-
+require 'imw/dataset/uri/file_store'
+require 'imw/dataset/uuid'
 module Addressable
   #
   # Add the #scrubbed and #revhost calls
   #
-  class URI # < Addressable::URI
-    include IMW::URIScrubber
+  class URI
+    include IMW::URI::FileStore
 
     SAFE_CHARS      = %r{a-zA-Z0-9\-\._!\(\)\*\'}
     PATH_CHARS      = %r{#{SAFE_CHARS}\$&\+,:=@\/;}

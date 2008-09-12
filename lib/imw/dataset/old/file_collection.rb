@@ -1,5 +1,5 @@
-require 'imw/dataset/datamapper'
-require 'imw/dataset/datamapper/uri'
+require 'imw/dataset'
+require 'imw/dataset/uri'
 
 #
 # All the files associated with a given URL

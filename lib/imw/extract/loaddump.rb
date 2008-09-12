@@ -1,7 +1,7 @@
 require 'imw/utils/paths'
 
 module IMW
-  class DataSet
+  class Dataset
     #
     # Guess the file format of a given file
     #
@@ -41,7 +41,7 @@ module IMW
     def self.dump data, filename, format = nil
       filename = path_to(filename)
       announce "Dumping #{filename}"
-      format ||= DataSet.file_format(filename)
+      format ||= Dataset.file_format(filename)
       file     = File.open(filename, 'w')
       case format
       when :yaml
@@ -51,7 +51,7 @@ module IMW
       end
     end
     #
-    # dispatch to DataSet.dump
+    # dispatch to Dataset.dump
     def dump *args
       self.class.dump self.data, *args
     end

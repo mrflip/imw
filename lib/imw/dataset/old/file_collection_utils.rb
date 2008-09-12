@@ -55,7 +55,7 @@ end
 #   LEFT JOIN dm_uris url ON url.id = rfc.url_id
 
 db_params = IMW::DEFAULT_DATABASE_CONNECTION_PARAMS.merge({ :dbname => 'imw_weather_ncdc' })
-IMW::DataSet.setup_remote_connection db_params
+IMW::Dataset.setup_remote_connection db_params
 
 # Daily
 daily_dset_clxn  = DatasetFileCollection.find_or_create({ :category => 'weather/ncdc/daily' })

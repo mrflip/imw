@@ -5,7 +5,7 @@ require 'dm-ar-finders'
 require 'dm-aggregates'
 
 module IMW
-  class DataSet
+  class Dataset
     # Connect to a remote database
     def self.setup_remote_connection options
       options = { :handle => :default }.merge options

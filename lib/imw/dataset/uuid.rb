@@ -1,3 +1,4 @@
+require 'uuidtools'
 
 class UUID
 
