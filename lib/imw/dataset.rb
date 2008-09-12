@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 require 'imw/dataset/datamapper'
+require 'imw/dataset/datamapper/time_and_user_stamps'
 # Dir[File.dirname(__FILE__)+'/dataset/*'].each{|f| require f }
-
-puts "hi!!!"
+require 'imw/dataset/link'
+require 'ar-finders'
+require 'JSON'
 
 module Infochimps
   module Resource
@@ -11,14 +14,15 @@ module Infochimps
         property      :handle,                      String,         :length      => options[:length], nil => false
       end
       def has_time_and_user_stamps
+        include DataMapper::Timestamp
         property      :created_at,                  DateTime
         property      :updated_at,                  DateTime
-        property      :created_by,                  Integer
-        property      :updated_by,                  Integer
+        property      :created_by,                  String,         :length      => 512
+        property      :updated_by,                  String,         :length      => 512
       end
     end
     def self.included base
-      base.extend ClassMethods
+      base.extend  ClassMethods
       base.property  :uuid,                          String,         :length      =>  32,          nil => false, :unique => true
     end
   end
@@ -136,7 +140,7 @@ class Link
   include Infochimps::Resource
   property      :id,                            Integer,        :serial      => true
   property      :name,                          String,         :length      => 512,    nil => false, :default => ''
-  property      :full_url,                      Text,                                   nil => false, :default => ''
+  property      :full_url,                      String,         :length      => 512,    nil => false, :default => ''
   has_handle
   has_time_and_user_stamps
   #
@@ -148,6 +152,38 @@ class Link
   #
   belongs_to    :linkable, :class_name => 'Dataset', :child_key => [:linkable_id],       :polymorphic  => true
   before :save, :fake_polymorphism; def fake_polymorphism() self.linkable_type = 'Dataset' end
+
+#end
+#class Link
+#  include DataMapper::Resource
+
+  # Delegate methods to uri
+  def uri
+    @uri ||= Addressable::URI.heuristic_parse(self.full_url).normalize
+  end
+  # Dispatch anything else to the aggregated uri object
+  def method_missing method, *args
+    puts "missing #{method} - #{args.inspect}"
+    if self.uri.respond_to?(method)
+      self.uri.send(method, *args)
+    else
+      super method, *args
+    end
+  end
+
+  #
+  # find_or_creates from url
+  #
+  # url is heuristic_parse'd and normalized by Addressable before lookup:
+  #   "Converts an input to a URI. The input does not have to be a valid URI —
+  #   the method will use heuristics to guess what URI was intended. This is not
+  #   standards compliant, merely user-friendly.
+  #
+  def self.find_or_create_from_url url_str
+    u = Addressable::URI.heuristic_parse(url_str).normalize
+    puts [self.to_s, self.inspect, self.attributes].to_json
+    link = self.find_or_create_by_full_url(u.to_s)
+  end
 end
 
 class Note
