@@ -3,7 +3,8 @@ require 'imw/dataset/datamapper'
 require 'imw/dataset/datamapper/time_and_user_stamps'
 # Dir[File.dirname(__FILE__)+'/dataset/*'].each{|f| require f }
 require 'imw/dataset/link'
-require 'ar-finders'
+require 'dm-ar-finders'
+require 'dm-serializer'
 require 'JSON'
 
 module Infochimps
@@ -161,15 +162,15 @@ class Link
   def uri
     @uri ||= Addressable::URI.heuristic_parse(self.full_url).normalize
   end
-  # Dispatch anything else to the aggregated uri object
-  def method_missing method, *args
-    puts "missing #{method} - #{args.inspect}"
-    if self.uri.respond_to?(method)
-      self.uri.send(method, *args)
-    else
-      super method, *args
-    end
-  end
+  # # Dispatch anything else to the aggregated uri object
+  # def method_missing method, *args
+  #   puts "missing #{method} - #{args.inspect}"
+  #   if self.uri.respond_to?(method)
+  #     self.uri.send(method, *args)
+  #   else
+  #     super method, *args
+  #   end
+  # end
 
   #
   # find_or_creates from url
@@ -181,8 +182,8 @@ class Link
   #
   def self.find_or_create_from_url url_str
     u = Addressable::URI.heuristic_parse(url_str).normalize
-    puts [self.to_s, self.inspect, self.attributes].to_json
-    link = self.find_or_create_by_full_url(u.to_s)
+    puts [self.to_s, self.inspect, self].to_json
+    link = Link.all( :link_url => u.to_s )
   end
 end
 
