@@ -1,9 +1,7 @@
-require 'rubygems'
-require 'dm-ar-finders'
-require 'dm-aggregates'
-require 'dm-timestamps'
-Dir[File.dirname(__FILE__)+'/dataset/*'].each{|f| require f }
+require 'imw/dataset/datamapper'
+# Dir[File.dirname(__FILE__)+'/dataset/*'].each{|f| require f }
 
+puts "hi!!!"
 
 module Infochimps
   module Resource
@@ -286,3 +284,4 @@ end
 #
 # end
 
+puts "hi 222 !!!"
