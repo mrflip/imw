@@ -12,18 +12,13 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require 'imw/utils/config'
-
-def identify(obj)
-  obj.hash
-end
-
-def announce(*args)
-    $stderr.puts "%s: %s" % [Time.now, args.flatten.map(&:to_s).join("\t")]
-end
+# Removed by flip
+#
+# def identify(obj)
+#   obj.hash
+# end
 
 module IMW
-
   # Return a string representing the current UTC time in the IMW
   # format.
   def self.current_utc_time_string

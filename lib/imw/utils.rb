@@ -11,7 +11,7 @@
 
 require 'rubygems'
 require 'imw/utils/error'
-require 'imw/utils/announce'
+require 'imw/utils/log'
 require 'imw/utils/config'
 require 'imw/utils/paths'
 require 'imw/utils/misc'

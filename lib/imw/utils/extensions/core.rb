@@ -17,6 +17,8 @@ require 'imw/utils/extensions/hash'
 require 'imw/utils/extensions/dir'
 require 'imw/utils/extensions/symbol'
 require 'imw/utils/extensions/file_core'
+require 'ostruct'
+require 'set'
 
 module IMW
   # A replacement for the standard system call which raises an

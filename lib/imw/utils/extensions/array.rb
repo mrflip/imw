@@ -10,19 +10,21 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 #
-
-require "ostruct"
+require 'active_support/core_ext/array/extract_options'
+class Array #:nodoc:
+  include ActiveSupport::CoreExtensions::Array::ExtractOptions
+end
 
 class Array
 
   # Return all but the last  element
   # This will be [] for both an empty array and a length-1 array
-  def most() self[0..-2] end 
+  def most() self[0..-2] end
 
   # Return all but the first element.
   # This will be nil for an empty array and [] for a length-1 array
-  def rest() self[1..-1] end 
-  
+  def rest() self[1..-1] end
+
   # 'Un'-zip()s an array.  Returns an array of arrays: the first array has the
   # first element of each member, the second array has the second element of
   # each member, and so on.  Returns as many arrays as the first element in self
@@ -30,12 +32,12 @@ class Array
   #
   # foo, bar = foo.zip(bar).unzip should leave foo and bar with the same values
   # if foo and bar have the same length.
-  # 
+  #
   # Will fail on a not-array-of-arrays.
   def unzip()
     # An array of empty arrays, one for each vertical slot
     vslices = self[0].map{ Array.new }
-    self.each do |hslice| 
+    self.each do |hslice|
       # push the elements of each array onto its slice.
       vslices.zip(hslice).map{|vslice,h_el| vslice << h_el }
     end
@@ -56,10 +58,10 @@ class Array
 
   # Return the elements of this array in a pretty-printed string,
   # inserting +final_string+ between the last two items.
-  # 
+  #
   #   >> [:one, :two, :three].quote_items_with "or"
   #   `one', `two', or `three'
-  #   
+  #
   def quote_items_with final_string = nil
     string_items = self.map { |item| "`" + item.to_s + "'" }
     case string_items.length

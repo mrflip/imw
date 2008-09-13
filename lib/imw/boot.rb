@@ -56,4 +56,3 @@ end
 #
 IMW::Config.load_config
 
-
