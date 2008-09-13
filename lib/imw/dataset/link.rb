@@ -91,22 +91,31 @@ class Link
     # Set the file path
     self.file_path = self.to_file_path if self.file_path.blank?
     # FIXME -- kludge to ripd_root
-    disk_file = path_to(:ripd_root, self.file_path)
-    if ! File.exist?(disk_file)
+    if ! File.exist?(actual_path)
       self.fetched   = false
     else
       self.fetched   = self.tried_fetch = true
-      self.file_size = File.size( disk_file)
-      self.file_time = File.mtime(disk_file)
+      self.file_size = File.size( actual_path)
+      self.file_time = File.mtime(actual_path)
     end
     self.fetched
   end
+
+  def actual_path
+    path_to(:ripd_root, self.file_path)
+  end
+
+
+  # ===========================================================================
+  #
+  # Properly belongs in own module
+  #
 
   IMW_WGET_OPTIONS = {
     :root       => :ripd_root,
     :wait       => 2,
     :noretry    => true,
-    :log_level  => LOGGER::DEBUG,
+    :log_level  => Logger::DEBUG,
     :clobber    => false,
   }
   #
@@ -119,7 +128,7 @@ class Link
         IMW.log.add options[:log_level], "Skipping #{file_path}"; return
       end
       # Do the fetch
-      cmd = %Q{wget -nv "#{full_url}" -O"#{self.file_path}"}
+      cmd = %Q{wget -nv "#{full_url}" -O"#{actual_path}"}
       IMW.log.add(options[:log_level], cmd)
       IMW.log.add(options[:log_level], `#{cmd}`)
       self.tried_fetch = true
@@ -127,6 +136,16 @@ class Link
       self.save
       sleep options[:wait] # please hammer don't hurt em
       return self.fetched
+    end
+  end
+
+  #
+  #
+  #
+  def contents options={}
+    wget options
+    if fetched
+      File.open actual_path
     end
   end
 
@@ -234,7 +253,3 @@ class Link
   end
   public
 end
-
-
-# :host, :scheme, :port, :user, :password
-# :path, :query, :fragment

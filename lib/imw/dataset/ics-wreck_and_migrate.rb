@@ -12,8 +12,10 @@ DataMapper.setup_remote_connection IMW::ICS_DATABASE_CONNECTION_PARAMS
 #
 # Wipe DB and add new migration
 #
-DataMapper.auto_migrate!
+#DataMapper.auto_migrate!
 #DataMapper.auto_upgrade!
+
+Processing.auto_upgrade!
 
 # # Destroy old
 # announce "Destroying old"

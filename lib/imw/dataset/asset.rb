@@ -1,88 +1,89 @@
-require 'imw/dataset'
-require 'imw/dataset/link'
 
+require 'imw/dataset/datamapper'
 #
 # A file to process
 #
-#module Asset
-#  class Base < Link
-# class Link
-#    include DataMapper::Resource
-#  end
-  
-  
-  #
-  # Track, in an arbitrary context, whether an asset has been processed
-  #
-  class Processing
-    include DataMapper::Resource      
-    property      :context,        String,    :length => 40,    :key => true
-    property      :asset_id,       Integer,   :length => 40,    :key => true
-    property      :processed_at,   DateTime
-    property      :success,        Boolean,                     :default => false
-  end
 
-  
+#
+# Track, in an arbitrary context, whether an asset has been processed
+#
+class Processing
+  include DataMapper::Resource      
+  property      :context,        String,    :length => 40,    :key => true
+  property      :asset_id,       Integer,                     :key => true
+  property      :asset_type,     String,    :length => 40,    :key => true
+  property      :processed_at,   DateTime
+  property      :success,        Boolean,                     :default => false
+end
+
+module Asset
   #
   # Help track assets being processed.
   #
   module Processor
     def processed asset, success
-      processing = self.processings.find_or_create :context => self.processing_context, :asset_id => asset
+      processing = self.processings.find_or_create :context => self.processing_context, :asset_id => asset, :asset_type => asset.class.to_s
       processing.success      = success
       processing.processed_at = Time.now.utc
-      processings << processing
+      # self.processings << processing
       processing.save
+    end
+    
+    def processed_successfully? asset
+      processing = self.processings.fiirst :context => self.processing_context, :asset_id => asset, :asset_type => asset.class.to_s
+      processing.success
     end
     
     module ClassMethods
       def processes context
         cattr_accessor :processing_context
         self.processing_context = context
-        base.has n, :processings
+        
       end
+
     end
     
-    def included base
+    def self.included base
       base.extend ClassMethods
     end
-  end    
-  
-  # #
-  # # The filestore cache of an asset.
-  # #
-  # class FileAsset
-  #   
-  #   # property      :rippable_type,   String,    :length =>  10,    :nullable => false, :index => :rippable_param,     :index => :rippable_user
-  #   # property      :rippable_param,  String,    :length => 255,                    :index => :rippable_param
-  #   # property      :rippable_user,   String,    :length =>  50,                    :index => :rippable_user
-  #   # property      :ripped_page,     Integer
-  #   # 
-  #   # # FIXME -- make it before_save; denormalize.
-  #   # def set_rippable_info_from_url!
-  #   #   # pull page from query string
-  #   #   _, page = %r{page=(\d+)}.match(self.query).to_a
-  #   #   page ||= 1
-  #   #   # pull type, param from path
-  #   #   _, type, param = %r{^/([^/]+)(?:/(.*?))?$}.match(self.path).to_a
-  #   #   case
-  #   #   when ['tag', 'url'].include?(type)  then type, user, param = [type,       nil,  param]
-  #   #   when ['search'].include?(type)      then type, user, param = [type,       nil,  self.query]
-  #   #   when param.blank?                   then type, user, param = ['user',     type, nil]
-  #   #   else                                     type, user, param = ['user_tag', type, param] end
-  #   #   # save grokked result
-  #   #   self.rippable_type, self.rippable_param, self.rippable_user, self.ripped_page = [type, param, user, page]
-  #   #   self.save
-  #   #   self
-  #   # end
-  #   # def description
-  #   #   case self.rippable_type
-  #   #   when 'tag', 'url', 'search' then "page %3d for %-4s %s"        % [self.ripped_page, self.rippable_type+':',  self.rippable_param]
-  #   #   when 'user'                 then "page %3d for %-4s %s"        % [self.ripped_page, self.rippable_type,      self.rippable_user]
-  #   #   when 'user_tag'             then "page %3d for user %-20s tag %s" % [self.ripped_page, self.rippable_user+"'s", self.rippable_param]
-  #   #   else
-  #   #     self.to_s
-  #   #   end
-  #   # end
-  # end
+  end
+end
+
+# #
+# # The filestore cache of an asset.
+# #
+# class FileAsset
+#   
+#   # property      :rippable_type,   String,    :length =>  10,    :nullable => false, :index => :rippable_param,     :index => :rippable_user
+#   # property      :rippable_param,  String,    :length => 255,                    :index => :rippable_param
+#   # property      :rippable_user,   String,    :length =>  50,                    :index => :rippable_user
+#   # property      :ripped_page,     Integer
+#   # 
+#   # # FIXME -- make it before_save; denormalize.
+#   # def set_rippable_info_from_url!
+#   #   # pull page from query string
+#   #   _, page = %r{page=(\d+)}.match(self.query).to_a
+#   #   page ||= 1
+#   #   # pull type, param from path
+#   #   _, type, param = %r{^/([^/]+)(?:/(.*?))?$}.match(self.path).to_a
+#   #   case
+#   #   when ['tag', 'url'].include?(type)  then type, user, param = [type,       nil,  param]
+#   #   when ['search'].include?(type)      then type, user, param = [type,       nil,  self.query]
+#   #   when param.blank?                   then type, user, param = ['user',     type, nil]
+#   #   else                                     type, user, param = ['user_tag', type, param] end
+#   #   # save grokked result
+#   #   self.rippable_type, self.rippable_param, self.rippable_user, self.ripped_page = [type, param, user, page]
+#   #   self.save
+#   #   self
+#   # end
+#   # def description
+#   #   case self.rippable_type
+#   #   when 'tag', 'url', 'search' then "page %3d for %-4s %s"        % [self.ripped_page, self.rippable_type+':',  self.rippable_param]
+#   #   when 'user'                 then "page %3d for %-4s %s"        % [self.ripped_page, self.rippable_type,      self.rippable_user]
+#   #   when 'user_tag'             then "page %3d for user %-20s tag %s" % [self.ripped_page, self.rippable_user+"'s", self.rippable_param]
+#   #   else
+#   #     self.to_s
+#   #   end
+#   # end
+# end
 # end  
