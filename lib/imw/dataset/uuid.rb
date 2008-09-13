@@ -24,4 +24,10 @@ class UUID
   def self.parse_hex str
     parse(UUID.hex_to_str(str))
   end
+
+  # Overrides UUIDTools -- force 32 hex digits (leading zeros)
+  def hexdigest
+    "%032x" % self.to_i
+  end
+
 end

@@ -5,8 +5,6 @@ module Addressable
   # Add the #scrubbed and #revhost calls
   #
   class URI
-    include IMW::URI::FileStore
-
     SAFE_CHARS      = %r{a-zA-Z0-9\-\._!\(\)\*\'}
     PATH_CHARS      = %r{#{SAFE_CHARS}\$&\+,:=@\/;}
     RESERVED_CHARS  = %r{\$&\+,:=@\/;\?\%}
@@ -19,7 +17,7 @@ module Addressable
     end
 
     def path_valid?
-      !!(path =~ %r{\A[#{PATH_CHARS}]*\z})
+      !!(path =~ %r{\A[#{PATH_CHARS}%]*\z})
     end
 
     #
@@ -28,7 +26,8 @@ module Addressable
     def simple?
       host_valid? &&
         path_valid? &&
-        self.to_hash.values_at(:query, :port, :fragment, :password, :user).join.blank?
+        (scheme == 'http' && port == 80)  &&
+        self.to_hash.values_at(:password, :user).join.blank?
     end
 
     #
@@ -46,13 +45,7 @@ module Addressable
     # See
     #   http://www.faqs.org/rfcs/rfc4122.html
     #
-    def uuid
-      uuid_raw.hexdigest
-    end
-    def uuid_path
-      uuid_raw.to_path
-    end
-    def uuid_raw
+    def url_uuid
       UUID.sha1_create(UUID_URL_NAMESPACE, self.normalize.to_s)
     end
   end

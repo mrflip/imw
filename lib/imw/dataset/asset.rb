@@ -6,63 +6,9 @@ require 'imw/dataset/link'
 #
 #module Asset
 #  class Base < Link
-class Link
-    include DataMapper::Resource
-    property      :file_path,       String,    :length => 1024
-    property      :file_date,       DateTime
-    property      :file_size,       Integer
-    property      :fetched,         Boolean
-
-    #
-    # The standard file path for this url's ripped cache
-    #
-    def ripd_file
-      return @ripd_file if @ripd_file
-      @ripd_file = File.join(host, path).gsub(%r{/+$},'') # kill terminal '/'
-      @ripd_file = File.join(@ripd_file, 'index.html') if File.directory?(@ripd_file)
-      @ripd_file
-    end
-
-    #
-    # Refresh cached properties from our copy of the asset.
-    #
-    def update_from_file!
-      self.file_size = File.size( file_path)
-      self.file_time = File.mtime(file_path)
-      ripd.save
-    end
-
-    #
-    # Fetch from the web
-    #
-    def wget options={}
-      options = {
-        :root       => path_to(:ripd_root),
-        :wait       => 2,
-        :noretry    => true,
-        :noisy      => true,
-        :clobber    => false,
-      }.merge(options)
-      cd path_to(options[:root]) do
-        if (not options[:clobber]) && File.file?(ripd_file) then
-          puts "Skipping #{ripd_file}" if options[:noisy]; return
-        end
-        # Do the fetch
-        cmd = %Q{wget -nv "#{full_url}" -O"#{ripd_file}"}
-        puts cmd if options[:noisy]
-        print `#{cmd}`
-        success = File.exists?(ripd_file)
-        if !success && options[:noretry]
-          puts "wget failed; leaving a turd in #{ripd_file}"
-          FileUtils.mkdir_p File.dirname(ripd_file)
-          FileUtils.touch ripd_file
-        end
-        # Sleep for a bit -- no hammer.
-        sleep options[:wait]
-        return success
-      end
-    end
-  end
+# class Link
+#    include DataMapper::Resource
+#  end
   
   
   #

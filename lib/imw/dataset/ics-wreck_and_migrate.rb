@@ -3,31 +3,25 @@ $: << File.dirname(__FILE__)+'/.'
 require 'rubygems'
 require 'imw'; include IMW
 require 'imw/dataset'
-require 'fileutils'; include FileUtils
+require 'fileutils'; include FileUtils::Verbose
 
-DataMapper::Logger.new(STDOUT, :debug)
-# Dataset.setup_remote_connection IMW::DEFAULT_DATABASE_CONNECTION_PARAMS.merge({ :dbname => 'imw_ics_scaffold' })
+DataMapper::Logger.new(STDOUT, :debug) # uncomment to debug
 DataMapper.setup_remote_connection IMW::ICS_DATABASE_CONNECTION_PARAMS
 
 
-# #
-# # Wipe DB and add new migration
-# #
+#
+# Wipe DB and add new migration
+#
 DataMapper.auto_migrate!
+#DataMapper.auto_upgrade!
+
+# # Destroy old
+# announce "Destroying old"
 #
 # [Dataset, Contributor, Credit, Tagging, Tag, Field, Link, Note, Payload, Rating, License, LicenseInfo, User].each do |klass|
 #   puts klass.to_s
-#   klass.auto_migrate!
+#   klass.all.each(&:destroy)
 # end
-
-# Destroy old
-announce "Destroying old"
-
-# Info, Search, Talk,
-#[Contributor, Credit, Dataset, Tagging, Tag, Field, Link, Note, Payload, Rating, RightsStatement, License, User].each do |klass|
-#   klass.all.each{ |l| l.destroy }
-# end
-
 
 # raise "Skipped! Uncomment!"
 
