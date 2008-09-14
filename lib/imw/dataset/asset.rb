@@ -15,8 +15,8 @@ end
 class Processing
   include DataMapper::Resource
   property      :id,             Serial
-  property      :context,        String,    :length => 40,    :unique_index => :asset_context
   property      :asset_id,       Integer,                     :unique_index => :asset_context
+  property      :context,        String,    :length => 40,    :unique_index => :asset_context
   property      :asset_type,     String,    :length => 40,    :unique_index => :asset_context
   property      :processed_at,   DateTime
   property      :success,        Boolean,                     :default => false
@@ -71,7 +71,7 @@ module Asset
           rescue Exception => e
             result = nil
             processed asset, context, nil
-            warn "Couldn't parse #{asset.attributes}: #{e}"
+            raise "Couldn't parse #{asset.attributes.to_yaml[0..5000]}: #{e}"
           end
         else
           announce "skipping #{asset}"

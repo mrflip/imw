@@ -103,13 +103,13 @@ module Linkish
       # Do the fetch
       mkdir_p File.dirname(actual_path)
       # defaults are --connect-timeout=infinity --read-timeout=900 --tries=20 acc. to man page
-      cmd = %Q{wget -nv "#{full_url}" -O"#{actual_path}" --connect-timeout=5 --read-timeout=10 --tries=1}
+      cmd = %Q{wget -nv "#{full_url}" -O"#{actual_path}" --connect-timeout=5 --read-timeout=10 --tries=1 &}
       IMW.log.add(options[:log_level], cmd)
       IMW.log.add(options[:log_level], `#{cmd}`)
       self.tried_fetch = true
+      sleep options[:wait] # please hammer don't hurt em
       update_from_file!
       self.save
-      sleep options[:wait] # please hammer don't hurt em
       return self.fetched
     end
   end
