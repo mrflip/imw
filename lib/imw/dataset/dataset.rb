@@ -1,11 +1,42 @@
 class Dataset
   include DataMapper::Resource
+  include Infochimps::Resource
+  # Identity
+  property      :id,                            Integer,        :serial      => true
+  property      :name,                          String,         :length      => 255,          :nullable => false, :default => ''
+  has_handle
+  alias_method  :handle_generator, :name
+  has_time_and_user_stamps
+  #
+  property      :category,                      String,         :length      =>  50,          :nullable => false, :default => ''
+  property      :collection_id,                 Integer
+  property      :is_collection,                 Boolean,        :default     => false
+  #
+  property      :valuation,                     Text,           :default     => "{}"
+  property      :metastats,                     Text,           :default     => "{}"
+  property      :facts,                         String,         :default     => "{}"
+  #
+  has n,        :credits
+  has n,        :contributors, :through     => :credits
+  has n,        :notes,                                     :child_key   => [:noteable_id]
+  has n,        :payloads
+  has n,        :ratings,                                   :child_key   => [:rateable_id]
+  has 1,        :license_info
+  has 1,        :license,     :through     => :license_info
+  has n,        :taggings,                                  :child_key => [:taggable_id]
+  has n,        :tags,        :through => :taggings,        :child_key => [:taggable_id]
+  has n,        :taggers,     :through => :taggings,        :child_key => [:taggable_id], :class_name => 'Contributor'
+  has n,        :linkings,                                  :child_key => [:linkable_id]
+  has n,        :links,       :through => :linkings,        :child_key => [:linkable_id]
+
   #===============================================================================
   #
   # Macros
   #
   # slug_on       :name
-
+  # before :save, :force_approval
+  # before :save, :insert_default_rights_statement
+  # before :save, :insert_default_link
 
   #===============================================================================
   #
@@ -15,9 +46,10 @@ class Dataset
     @description ||= self.notes.first({ :role => 'description' })
   end
   def description=(text)
-    @description = self.notes.find_or_create({ :role => 'description' })
+    @description = self.notes.find_or_create({ :role => 'description', :noteable_id => self.id })
     self.notes << @description
     @description.desc = text
+    @description.save
   end
   # tags are ',' separated
   def tag_with(context, tags_list)
@@ -53,7 +85,6 @@ class Dataset
     self.credits << self.credits.find_or_create({ :contributor_id => contributor.id, }, attrs)
   end
 
-  before :save, :force_approval
   def force_approval
     [:approved_by, :created_by, :updated_by,].each do |actor|
       self.send("#{actor}=", User.find_by_login('flip').id)
@@ -61,15 +92,12 @@ class Dataset
     self.approved_at ||= Time.now
   end
 
-
-  before :save, :insert_default_rights_statement
   def insert_default_rights_statement
     if !self.rights_statement
       self.rights_statement = RightsStatement.create(:license => License.find_by_handle(:needs_rights))
     end
   end
 
-  before :save, :insert_default_link
   def insert_default_link
     if links.empty?
       l = links.find_or_create({:role => :main}, :full_url => url, :name => description.desc)
@@ -77,5 +105,16 @@ class Dataset
     end
   end
 
+  attr_accessor :fact_hash
+  def fact_hash
+    @fact_hash ||= self.facts.blank? ? { } : YAML.load(self.facts)
+  end
+  before :save, :serialize_facts
+  def serialize_facts
+    self.facts = @fact_hash.to_yaml if @fact_hash
+  end
 
+  def set_fact attr, key, val
+    self.fact_hash[key] = val
+  end
 end

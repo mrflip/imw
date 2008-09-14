@@ -5,6 +5,7 @@ require 'imw/dataset/datamapper/time_and_user_stamps'
 require 'imw/dataset/infochimps_resource'
 require 'imw/dataset/link'
 require 'imw/dataset/asset'
+require 'imw/dataset/dataset'
 require 'dm-ar-finders'
 require 'dm-serializer'
 require 'JSON'
@@ -13,35 +14,6 @@ require 'JSON'
 #
 # Datamapper interface to infochimps
 #
-class Dataset
-  include DataMapper::Resource
-  include Infochimps::Resource
-  # include Sluggable;
-  # Identity
-  property      :id,                            Integer,        :serial      => true
-  property      :name,                          String,         :length      => 255,          :nullable => false, :default => ''
-  has_handle
-  has_time_and_user_stamps
-  #
-  property      :category,                      String,         :length      =>  50,          :nullable => false, :default => ''
-  property      :collection_id,                 Integer
-  property      :is_collection,                 Boolean,        :default     => false
-  #
-  property      :valuation,                     String,         :default     => "{}"
-  property      :metastats,                     String,         :default     => "{}"
-  property      :facts,                         String,         :default     => "{}"
-  #
-  has n,        :credits
-  has n,        :contributors, :through     => :credits
-  has n,        :notes,                                     :child_key   => [:noteable_id]
-  has n,        :links,                                     :child_key   => [:linkable_id]
-  has n,        :payloads
-  has n,        :ratings,                                   :child_key   => [:rateable_id]
-  has 1,        :license_info
-  has 1,        :license,     :through     => :license_info
-  has n,        :taggings,                                  :child_key => [:taggable_id]
-  has n,        :tags,        :through => :taggings,        :child_key => [:taggable_id]
-end
 
 class Contributor
   include DataMapper::Resource
@@ -50,6 +22,7 @@ class Contributor
   property      :id,                            Integer,        :serial      => true
   property      :name,                          String,         :length      => 255,          :nullable => false, :default => ''
   has_handle
+  alias_method  :handle_generator, :name
   has_time_and_user_stamps
   #
   property      :url,                           String,         :length      => 255,    :nullable => false, :default => ''
@@ -60,6 +33,7 @@ class Contributor
   has n,        :datasets,    :through => :credits
   has n,        :taggings,                            :child_key => [:tagger_id]
   has n,        :tags,        :through => :taggings,  :child_key => [:tagger_id]
+  has n,        :taggables,   :through => :taggings,  :child_key => [:tagger_id], :class_name => 'Dataset'
   #
   # Macros
   #
@@ -71,6 +45,8 @@ class Credit
   include Infochimps::Resource
   property      :id,                            Integer,        :serial      => true
   has_time_and_user_stamps
+  has_handle
+  def handle_generator()  [dataset_id, contributor_id, role].join '-' end
   #
   property      :dataset_id,                    Integer
   property      :contributor_id,                Integer
@@ -83,11 +59,29 @@ class Credit
   belongs_to    :contributor
 end
 
+class Linking
+  include DataMapper::Resource
+  include Infochimps::Resource
+  property      :id,                            Integer,        :serial      => true
+  has_handle
+  def handle_generator()  [linkable_type, linkable_id, link_id, role].join '-' end
+  has_time_and_user_stamps
+  #
+  property      :linkable_id,                   Integer,                                                                        :index => :linkable_index
+  property      :link_id,                       Integer,                                                                        :index => :linkable_index
+  property      :role,                          String,         :length      =>  40,    :nullable => false, :default => '',     :index => :linkable_index
+  property      :linkable_type,                 String,         :length      =>  40,    :nullable => false,                     :index => :linkable_index
+  #
+  belongs_to    :linkable, :class_name => 'Dataset', :child_key => [:linkable_id],       :polymorphic  => true
+  belongs_to    :link
+end
+
 class Tagging
   include DataMapper::Resource
   include Infochimps::Resource
   property      :id,                            Integer,        :serial      => true
   has_handle
+  def handle_generator()  [taggable_type, taggable_id, tagger_type, tagger_id, tag_id].join '-' end
   has_time_and_user_stamps
   #
   property      :context,                       String,         :length      =>  40,    :nullable => false, :default => ''
@@ -98,9 +92,10 @@ class Tagging
   property      :tagger_id,                     Integer
   property      :tagger_type,                   String,         :length      =>  40,    :nullable => false
   #
-  belongs_to    :taggable, :class_name => 'Dataset', :child_key => [:taggable_id]
+  belongs_to    :tagger,   :class_name => 'Contributor', :child_key => [:tagger_id],        :polymorphic  => true
+  belongs_to    :taggable, :class_name => 'Dataset',     :child_key => [:taggable_id],       :polymorphic  => true
   belongs_to    :tag
-  before :save, :fake_tagger_polymorphism; def fake_tagger_polymorphism() self.tagger_type = 'Contributor' end
+  before :save, :fake_tagger_polymorphism; def fake_tagger_polymorphism() self.tagger_type ||= 'Contributor' end
 end
 
 class Tag
@@ -109,6 +104,7 @@ class Tag
   property      :id,                            Integer,        :serial      => true
   property      :name,                          String,         :length      => 255,    :nullable => false, :default => ''
   has_handle                                                    :length      => 255
+  alias_method  :handle_generator, :name
   has_time_and_user_stamps
   #
   has n,        :taggings
@@ -122,8 +118,11 @@ class Note
   property      :id,                            Integer,        :serial => true
   property      :name,                          String,         :length      => 255,    :nullable => false, :default => ''
   has_handle
+  def handle_generator()  [noteable_type, noteable_id, role].join '-' end
   has_time_and_user_stamps
   #
+  property      :noteable_id,                   Integer
+  property      :noteable_type,                 String,         :length      =>  40,    :nullable => false
   property      :role,                          String,         :length      =>  40,    :nullable => false, :default => ''
   property      :desc,                          Text,                                   :nullable => false, :default => ''
   #
@@ -135,6 +134,8 @@ class Rating
   include DataMapper::Resource
   include Infochimps::Resource
   property      :id,                            Integer,        :serial => true
+  has_handle
+  def handle_generator()  [rateable_type, rateable_id, context].join '-' end
   has_time_and_user_stamps
   #
   property      :user_id,                       Integer
@@ -144,8 +145,8 @@ class Rating
   property      :rating,                        Integer,                                                    :default => 0
   property      :context,                       String,         :length      =>  40,    :nullable => false, :default => "overall"
   #
-  belongs_to    :dataset,                                       :polymorphic  => true
-  belongs_to    :rateable, :class_name => 'Dataset', :child_key => [:rateable_id],       :polymorphic  => true
+  belongs_to    :dataset,                                                               :polymorphic  => true
+  belongs_to    :rateable, :class_name => 'Dataset', :child_key => [:rateable_id],      :polymorphic  => true
   belongs_to    :user
   before :save, :fake_polymorphism; def fake_polymorphism() self.rateable_type = 'Dataset' end
 end
@@ -156,6 +157,7 @@ class License
   property      :id,                            Integer,        :serial => true
   property      :name,                          String,         :length      => 255,    :nullable => false, :default => ''
   has_handle
+  alias_method  :handle_generator, :name
   has_time_and_user_stamps
   #
   property      :url,                           String,         :length      => 255,    :nullable => false, :default => ''
@@ -169,6 +171,8 @@ class LicenseInfo
   include DataMapper::Resource
   include Infochimps::Resource
   property      :id,                            Integer,        :serial => true
+  has_handle
+  def handle_generator()  [dataset_id, license_id].join '-' end
   has_time_and_user_stamps
   #
   property      :dataset_id,                    Integer
@@ -188,6 +192,7 @@ class Payload
   property      :file_name,                     String,         :length      => 150,    :nullable => false, :default => ''
   property      :file_path,                     String,         :length      => 2048,   :nullable => false, :default => ''
   has_handle
+  alias_method  :handle_generator, :file_path
   has_time_and_user_stamps
   #
   property      :file_date,                     DateTime
@@ -207,6 +212,8 @@ class Field
   include DataMapper::Resource
   include Infochimps::Resource
   property      :id,                            Integer,        :serial => true
+  has_handle
+  def handle_generator()  [dataset_id, name].join '-' end
   has_time_and_user_stamps
   #
   property      :dataset_id,                    Integer
@@ -228,16 +235,17 @@ class User
   property      :id,                            Integer,        :serial  => true
   property      :login,                         String,         :length  =>  40,        :nullable => false
   has_handle
+  alias_method  :handle_generator, :login
   has_time_and_user_stamps
   #
-  property      :prefs,                         String,         :length  => 2048
+  property      :prefs,                         Text
   #
   property      :identity_url,                  String,         :length  => 255,        :nullable => false, :unique      => true
   property      :name,                          String,         :length  => 100,        :nullable => false
   property      :email,                         String,         :length  => 100,        :nullable => false
   property      :email_is_public,               Boolean,                                              :default => false
   property      :homepage_link,                 String,         :length  => 255,        :nullable => false, :default     => ''
-  property      :blurb,                         Text,           :length  => 255,        :nullable => false, :default     => ''
+  property      :blurb,                         Text,           :length  =>2048,        :nullable => false, :default     => ''
   #
   property      :public_key,                    Text
   property      :email_verification_code,       String,         :length  => 40

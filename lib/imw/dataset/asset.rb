@@ -1,48 +1,87 @@
-
 require 'imw/dataset/datamapper'
+require 'imw/dataset/link/linkish'
 #
 # A file to process
 #
+class LinkAsset
+  UUID_INFOCHIMPS_ASSETS_NAMESPACE = UUID.sha1_create(UUID_URL_NAMESPACE, 'http://infochimps.org/assets') unless defined?(UUID_INFOCHIMPS_ASSETS_NAMESPACE)
+  include Linkish
+end
+
 
 #
 # Track, in an arbitrary context, whether an asset has been processed
 #
 class Processing
-  include DataMapper::Resource      
-  property      :context,        String,    :length => 40,    :key => true
-  property      :asset_id,       Integer,                     :key => true
-  property      :asset_type,     String,    :length => 40,    :key => true
+  include DataMapper::Resource
+  property      :id,             Serial
+  property      :context,        String,    :length => 40,    :unique_index => :asset_context
+  property      :asset_id,       Integer,                     :unique_index => :asset_context
+  property      :asset_type,     String,    :length => 40,    :unique_index => :asset_context
   property      :processed_at,   DateTime
   property      :success,        Boolean,                     :default => false
+  property      :result,         Text
 end
+
 
 module Asset
   #
   # Help track assets being processed.
   #
   module Processor
-    def processed asset, success
-      processing = self.processings.find_or_create :context => self.processing_context, :asset_id => asset, :asset_type => asset.class.to_s
-      processing.success      = success
+
+    def processed asset, context, result
+      processing = Processing.find_or_create :context => context, :asset_id => asset.id, :asset_type => asset.class.to_s
+      processing.result       = result
+      processing.success      = !! result
       processing.processed_at = Time.now.utc
-      # self.processings << processing
       processing.save
     end
-    
-    def processed_successfully? asset
-      processing = self.processings.fiirst :context => self.processing_context, :asset_id => asset, :asset_type => asset.class.to_s
-      processing.success
-    end
-    
-    module ClassMethods
-      def processes context
-        cattr_accessor :processing_context
-        self.processing_context = context
-        
-      end
 
+    # reset -- clear all processings from the given context
+    def unprocess_all context
+      Processing.all(:context => context).each(&:destroy) # Clear all out
     end
-    
+
+    def processed_successfully? asset, context
+      processing = Processing.first :context => context, :asset_id => asset.id, :asset_type => asset.class.to_s
+      processing && processing.success
+    end
+
+    def load_pool_from_disk root, path
+      assets = []
+      cd path_to(root) do
+        announce "Loading from #{path.inspect}"
+        Dir[path_to(path)].reject{|f| ! File.file?(f)}.each do |ripd_file|
+          assets << LinkAsset.find_or_create_from_file_path(ripd_file)
+        end
+      end
+      assets
+    end
+
+    def process assets, context, parser
+      results = []
+      assets.each do |asset|
+        unless processed_successfully?(asset, context)
+          announce "processing #{asset}"
+          begin
+            result = parser.parse(asset)
+            processed asset, context, result.to_yaml
+            results << result
+          rescue Exception => e
+            result = nil
+            processed asset, context, nil
+            warn "Couldn't parse #{asset.attributes}: #{e}"
+          end
+        else
+          announce "skipping #{asset}"
+        end
+      end
+      results
+    end
+
+    module ClassMethods
+    end
     def self.included base
       base.extend ClassMethods
     end
@@ -53,12 +92,12 @@ end
 # # The filestore cache of an asset.
 # #
 # class FileAsset
-#   
+#
 #   # property      :rippable_type,   String,    :length =>  10,    :nullable => false, :index => :rippable_param,     :index => :rippable_user
 #   # property      :rippable_param,  String,    :length => 255,                    :index => :rippable_param
 #   # property      :rippable_user,   String,    :length =>  50,                    :index => :rippable_user
 #   # property      :ripped_page,     Integer
-#   # 
+#   #
 #   # # FIXME -- make it before_save; denormalize.
 #   # def set_rippable_info_from_url!
 #   #   # pull page from query string
@@ -86,4 +125,5 @@ end
 #   #   end
 #   # end
 # end
-# end  
+# end
+

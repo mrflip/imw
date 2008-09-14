@@ -12,10 +12,10 @@ module DataMapper
     TIMESTAMP_PROPERTIES = {
       :updated_at => lambda { |r| r.updated_at = DateTime.now },
       :updated_on => lambda { |r| r.updated_on = Date.today   },
-      :updated_by => lambda { |r| r.updated_by = IMW::USER_INFO[:handle] },
+      :updated_by => lambda { |r| r.updated_by = IMW::USER_INFO[:id] },
       :created_at => lambda { |r| r.created_at = DateTime.now            if r.new_record? && r.created_at.nil? },
       :created_on => lambda { |r| r.created_on = Date.today              if r.new_record? && r.created_on.nil?},
-      :created_by => lambda { |r| r.created_by = IMW::USER_INFO[:handle] if r.new_record? && r.created_by.blank?},
+      :created_by => lambda { |r| r.created_by = IMW::USER_INFO[:id]     if r.new_record? && r.created_by.blank?},
     }
 
     def self.included(model)
