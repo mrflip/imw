@@ -17,4 +17,12 @@ module DataMapper
     params = options.values_at(:protocol, :dbpath, :dbname)
     DataMapper.setup(options[:handle], "%s://%s/%s" % options)
   end
+
+  # KLUDGE
+  def open_repositories repository_dbnames, params
+    repository_dbnames.each do |handle, dbname|
+      repo_params = params.merge({ :handle => handle, :dbname => dbname })
+      DataMapper.setup_remote_connection repo_params
+    end
+  end
 end

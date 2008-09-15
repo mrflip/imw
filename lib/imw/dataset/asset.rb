@@ -31,7 +31,8 @@ module Asset
   module Processor
 
     def processed asset, context, result
-      processing = Processing.find_or_create :context => context, :asset_id => asset.id, :asset_type => asset.class.to_s
+      asset_id = result.respond_to?(:attributes) ? asset.id : asset.hash
+      processing = Processing.find_or_create :context => context, :asset_id => asset_id, :asset_type => asset.class.to_s
       processing.result       = result
       processing.success      = !! result
       processing.processed_at = Time.now.utc
@@ -63,7 +64,7 @@ module Asset
       results = []
       assets.each do |asset|
         unless processed_successfully?(asset, context)
-          announce "processing #{asset}"
+          announce "#{context} - processing #{asset}"
           begin
             result = parser.parse(asset)
             processed asset, context, result.to_yaml
@@ -71,10 +72,11 @@ module Asset
           rescue Exception => e
             result = nil
             processed asset, context, nil
-            raise "Couldn't parse #{asset.attributes.to_yaml[0..5000]}: #{e}"
+            processed asset, :error, nil
+            warn "Couldn't parse #{asset.attributes.to_yaml[0..5000]}: #{e}"
           end
         else
-          announce "skipping #{asset}"
+          announce "#{context} - skipping #{asset}"
         end
       end
       results
@@ -87,43 +89,3 @@ module Asset
     end
   end
 end
-
-# #
-# # The filestore cache of an asset.
-# #
-# class FileAsset
-#
-#   # property      :rippable_type,   String,    :length =>  10,    :nullable => false, :index => :rippable_param,     :index => :rippable_user
-#   # property      :rippable_param,  String,    :length => 255,                    :index => :rippable_param
-#   # property      :rippable_user,   String,    :length =>  50,                    :index => :rippable_user
-#   # property      :ripped_page,     Integer
-#   #
-#   # # FIXME -- make it before_save; denormalize.
-#   # def set_rippable_info_from_url!
-#   #   # pull page from query string
-#   #   _, page = %r{page=(\d+)}.match(self.query).to_a
-#   #   page ||= 1
-#   #   # pull type, param from path
-#   #   _, type, param = %r{^/([^/]+)(?:/(.*?))?$}.match(self.path).to_a
-#   #   case
-#   #   when ['tag', 'url'].include?(type)  then type, user, param = [type,       nil,  param]
-#   #   when ['search'].include?(type)      then type, user, param = [type,       nil,  self.query]
-#   #   when param.blank?                   then type, user, param = ['user',     type, nil]
-#   #   else                                     type, user, param = ['user_tag', type, param] end
-#   #   # save grokked result
-#   #   self.rippable_type, self.rippable_param, self.rippable_user, self.ripped_page = [type, param, user, page]
-#   #   self.save
-#   #   self
-#   # end
-#   # def description
-#   #   case self.rippable_type
-#   #   when 'tag', 'url', 'search' then "page %3d for %-4s %s"        % [self.ripped_page, self.rippable_type+':',  self.rippable_param]
-#   #   when 'user'                 then "page %3d for %-4s %s"        % [self.ripped_page, self.rippable_type,      self.rippable_user]
-#   #   when 'user_tag'             then "page %3d for user %-20s tag %s" % [self.ripped_page, self.rippable_user+"'s", self.rippable_param]
-#   #   else
-#   #     self.to_s
-#   #   end
-#   # end
-# end
-# end
-
