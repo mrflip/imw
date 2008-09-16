@@ -31,7 +31,7 @@ module Asset
   module Processor
 
     def processed asset, context, result
-      asset_id = result.respond_to?(:attributes) ? asset.id : asset.hash
+      asset_id = asset.respond_to?(:attributes) ? asset.id : asset.hash
       processing = Processing.find_or_create :context => context, :asset_id => asset_id, :asset_type => asset.class.to_s
       processing.result       = result
       processing.success      = !! result
@@ -64,7 +64,7 @@ module Asset
       results = []
       assets.each do |asset|
         unless processed_successfully?(asset, context)
-          announce "#{context} - processing #{asset}"
+          announce "#{context} - processing #{asset.id} #{asset}"
           begin
             result = parser.parse(asset)
             processed asset, context, result.to_yaml

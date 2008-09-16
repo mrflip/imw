@@ -15,6 +15,8 @@ class Dataset
   property      :valuation,                     Text,           :default     => "{}"
   property      :metastats,                     Text,           :default     => "{}"
   property      :facts,                         String,         :default     => "{}"
+  property      :num_delicious_savers,  Integer,                     :index => :num_delicious_savers
+  property      :skip_me,               Integer
   #
   has n,        :credits
   has n,        :contributors, :through     => :credits
@@ -44,6 +46,14 @@ class Dataset
   #
   def description
     @description ||= self.notes.first({ :role => 'description' })
+  end
+  def set_note(role, text, name)
+    a_note = self.notes.find_or_create({ :role => role, :noteable_id => self.id })
+    self.notes << a_note
+    a_note.name = name
+    a_note.desc = text
+    a_note.save
+    a_note
   end
   def description=(text)
     @description = self.notes.find_or_create({ :role => 'description', :noteable_id => self.id })

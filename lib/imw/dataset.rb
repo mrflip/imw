@@ -90,10 +90,10 @@ class Tagging
   property      :taggable_type,                 String,         :length      =>  40,    :nullable => false
   #
   property      :tagger_id,                     Integer
-  property      :tagger_type,                   String,         :length      =>  40,    :nullable => false
+  property      :tagger_type,                   String
   #
   belongs_to    :tagger,   :class_name => 'Contributor', :child_key => [:tagger_id],        :polymorphic  => true
-  belongs_to    :taggable, :class_name => 'Dataset',     :child_key => [:taggable_id],       :polymorphic  => true
+  belongs_to    :taggable, :class_name => 'Dataset',     :child_key => [:taggable_id],      :polymorphic  => true
   belongs_to    :tag
   before :save, :fake_tagger_polymorphism; def fake_tagger_polymorphism() self.tagger_type ||= 'Contributor' end
 end
@@ -105,7 +105,6 @@ class Tag
   property      :name,                          String,         :length      => 255,    :nullable => false, :default => ''
   has_handle                                                    :length      => 255
   alias_method  :handle_generator, :name
-  has_time_and_user_stamps
   #
   has n,        :taggings
   has n,        :taggables, :through => :taggings
@@ -145,7 +144,6 @@ class Rating
   property      :rating,                        Integer,                                                    :default => 0
   property      :context,                       String,         :length      =>  40,    :nullable => false, :default => "overall"
   #
-  belongs_to    :dataset,                                                               :polymorphic  => true
   belongs_to    :rateable, :class_name => 'Dataset', :child_key => [:rateable_id],      :polymorphic  => true
   belongs_to    :user
   before :save, :fake_polymorphism; def fake_polymorphism() self.rateable_type = 'Dataset' end
@@ -195,6 +193,8 @@ class Payload
   alias_method  :handle_generator, :file_path
   has_time_and_user_stamps
   #
+  property      :dataset_id,                    Integer
+  #
   property      :file_date,                     DateTime
   property      :format,                        String,         :length      => 40,     :nullable => false, :default => ''
   property      :shape,                         String
@@ -232,11 +232,11 @@ end
 class User
   include DataMapper::Resource
   include Infochimps::Resource
+  include DataMapper::Timestamp
   property      :id,                            Integer,        :serial  => true
   property      :login,                         String,         :length  =>  40,        :nullable => false
   has_handle
   alias_method  :handle_generator, :login
-  has_time_and_user_stamps
   #
   property      :prefs,                         Text
   #
