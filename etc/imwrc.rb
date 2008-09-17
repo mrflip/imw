@@ -103,6 +103,14 @@ module IMW
     } unless defined? ::IMW::Files::EXTENSIONS
   end
 
+  # Default settings for uploading datasets to
+  # archive.org[http://archive.org].
+  ARCHIVE_ORG_UPLOAD_SETTINGS = {
+    :server => "items-uploads.archive.org",
+    :collection => "Infochimps",
+    :mediatype => "Data"
+  }
+
 
 end
 
