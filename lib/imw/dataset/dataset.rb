@@ -15,8 +15,11 @@ class Dataset
   property      :valuation,                     Text,           :default     => "{}"
   property      :metastats,                     Text,           :default     => "{}"
   property      :facts,                         String,         :default     => "{}"
-  property      :num_delicious_savers,  Integer,                     :index => :num_delicious_savers
-  property      :skip_me,               Integer
+  property      :delicious_taggings,            Integer
+  property      :base_trust,                    Integer
+  property      :trust_value,                   Integer,                                :index => :trust_value
+  property      :num_delicious_savers,          Integer,                                :index => :num_delicious_savers
+  property      :skip_me,                       Boolean
   #
   has n,        :credits
   has n,        :contributors, :through     => :credits
