@@ -7,7 +7,7 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 class Symbol
 
@@ -19,10 +19,10 @@ class Symbol
 
   # Returns the symbol itself (for compatibility with
   # <tt>String.uniqnae</tt> and so on.
-  def uniqname
+  def handle
     self
   end
-  
+
 end
 
 # puts "#{File.basename(__FILE__)}: You whisper a word of power and smile as the the Ruby Palace thunders with the sound of falling blocks." # at bottom

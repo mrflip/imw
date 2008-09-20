@@ -16,20 +16,20 @@ require 'imw/utils/extensions/string'
 class File
 
   # Returns the name of the path given:
-  # 
+  #
   #   File.name_of_file("/path/to/somefile.txt") => "somefile".
   def self.name_of_file path
     basename(path)[0,basename(path).length - extname(path).length]
   end
 
-  # Returns what would be the uniqname of a source or dataset
+  # Returns what would be the handle of a source or dataset
   # described by a file at +path+:
   #
-  #   File.uniqname "/path/to/a_particular_dataset.instructions.yaml"  #=> :a_particular_dataset
-  def self.uniqname path
-    File.basename(path).split('.').first.uniqname
+  #   File.handle "/path/to/a_particular_dataset.instructions.yaml"  #=> :a_particular_dataset
+  def self.handle path
+    File.basename(path).split('.').first.handle
   end
-  
+
   # Returns a unique (non-existing) version of the given +path+ by
   # appending successive intgers, useful for copying files ito
   # directories without clobbering existing files (a la <tt>wget
@@ -41,7 +41,7 @@ class File
   #   File.uniquify("/path/to/data.txt") #=> "/path/to/data.txt"</tt>
   #
   # If <tt>data.txt</tt> were to already exist in that directory, then
-  # 
+  #
   #   File.uniquify("/path/to/data.txt") #=> "/path/to/data.txt.1"
   #
   # If <tt>data.txt.1</tt> were to already exist then
@@ -58,7 +58,7 @@ class File
     end
     path
   end
-  
+
 end
 
 # puts "#{File.basename(__FILE__)}: You add a bit of glitter and jazz to all the folders in the cabinet.  It makes you feel happier when you have to sort through them." # at bottom

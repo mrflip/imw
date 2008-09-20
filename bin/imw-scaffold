@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 $: << File.join(File.dirname(__FILE__), '../lib/')
-require 'imw/utils'
+require 'imw'
 require 'imw/workflow/scaffold'
 require 'fileutils'; include FileUtils::Verbose; # or include FileUtils::DryRun
 include IMW

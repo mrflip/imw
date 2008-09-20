@@ -11,8 +11,7 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 
-require "ostruct"
-require 'set'
+require 'active_support/core_ext/hash/reverse_merge'
 
 class Hash
   # Return the elements of this hash in a pretty-printed string,

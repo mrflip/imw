@@ -19,18 +19,18 @@ describe File do
     File.name_of_file("/path/to/some_file.txt").should eql("some_file")
   end
 
-  describe "when finding the uniqname corresponding to a path" do
+  describe "when finding the handle corresponding to a path" do
 
     it "should correctly identify paths with the processing instruction suffix" do
-      File.uniqname("/path/to/the_uniqname#{IMW::PROCESSING_INSTRUCTION_SUFFIX}.yaml").should eql(:the_uniqname)
+      File.handle("/path/to/the_handle#{IMW::PROCESSING_INSTRUCTION_SUFFIX}.yaml").should eql(:the_handle)
     end
 
     it "should correctly identify paths with the metadata instruction suffix" do
-      File.uniqname("/path/to/the_uniqname#{IMW::METADATA_SUFFIX}.yaml").should eql(:the_uniqname)
+      File.handle("/path/to/the_handle#{IMW::METADATA_SUFFIX}.yaml").should eql(:the_handle)
     end
 
-    it "should raise an error if the path does not correspond to a uniqname" do
-      lambda {File.uniqname("/path/to/the_uniqname.txt")}.should raise_error(IMW::PathError)
+    it "should raise an error if the path does not correspond to a handle" do
+      lambda {File.handle("/path/to/the_handle.txt")}.should raise_error(IMW::PathError)
     end
   end
 
@@ -64,7 +64,7 @@ describe File do
     end
 
   end
-  
+
 end
 
 

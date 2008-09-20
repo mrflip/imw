@@ -15,13 +15,13 @@ require 'imw/workflow'
 module IMW
 
   # The basic unit in IMW is the dataset.  Each dataset has a
-  # +uniqname+ which is meant to be unique (at least in the context of
+  # +handle+ which is meant to be unique (at least in the context of
   # a particular pool of datasets, see <tt>IMW::Pool</tt>).
   #
   # Each dataset also has an +origin+.  If the +origin+ of a dataset
   # is a +String+ (such as <tt>"local_disk"</tt> or
   # <tt>edu.myuniversity</tt>) then it refers to where the data
-  # actually came from.  
+  # actually came from.
   #
   # If it is a +Symbol+ then it is assumed to refer to another
   # dataset.  It is through this latter construction that datasets can
@@ -33,16 +33,16 @@ module IMW
   # dependencies.
   class Dataset
 
-    attr_reader :uniqname, :workflow
+    attr_reader :handle, :workflow
     attr_accessor :origin
 
     # Locations where this dataset keeps its instructions, logging
     # output, or temporary files, respectively.
     PLACES = [:instructions,:log,:dump]
 
-    # Create a new dataset with the given +uniqname+.
-    def initialize uniqname
-      @uniqname = uniqname.to_sym
+    # Create a new dataset with the given +handle+.
+    def initialize handle
+      @handle = handle.to_sym
       @workflow = IMW::Workflow.new
       create_directory_structure
     end
@@ -53,9 +53,9 @@ module IMW
     # <tt>IMW::Dataset::PLACES</tt>).
     def path_to place
       if IMW::Workflow::STEPS.include?(place) then
-        File.join(IMW::DIRECTORIES[place], @uniqname.to_s)
+        File.join(IMW::DIRECTORIES[place], @handle.to_s)
       elsif PLACES.include?(place) then
-        File.join(IMW::DIRECTORIES[place],@uniqname.to_s)
+        File.join(IMW::DIRECTORIES[place],@handle.to_s)
       else
         raise IMW::PathError.new("There is no directory for this dataset corresponding to `#{place}'.")
       end
@@ -74,7 +74,7 @@ module IMW
         end
       end
     end
-    
+
   end
 end
 
