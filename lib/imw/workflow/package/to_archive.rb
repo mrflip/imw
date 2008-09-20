@@ -91,9 +91,7 @@ module IMW
       # <tt>IMW::Package::ArchiveOrgPackager::FILE_FORMATS</tt> then
       # use this file format.
       DEFAULT_FILE_FORMAT = "Text"
-
       
-
       attr_reader :connection
 
       private
@@ -137,6 +135,12 @@ module IMW
         xml.write(path,2)
       end
 
+      # Create a local directory in which to store metadata files
+      # required by archive.org.
+      def create_local_archive_dir dir
+        FileUtils.mkdir_p dir
+      end
+        
       # Establish a connection to archive.org via FTP.
       def connect
         @connection = Net::FTP.new IMW::ARCHIVE_ORG_UPLOAD_SETTINGS[:server],IMW::ARCHIVE_ORG_UPLOAD_SETTINGS[:username],IMW::ARCHIVE_ORG_UPLOAD_SETTINGS[:password]
