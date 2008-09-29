@@ -54,7 +54,7 @@ module IMW
     # two XML files it can be uploaded via FTP to the server
     # <tt>items-uploads.archive.org</tt> using an approved username
     # and password.
-    module Archive
+    class ArchiveOrgPackager
 
       attr_reader :connection
 
