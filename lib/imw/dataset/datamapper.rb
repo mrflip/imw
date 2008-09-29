@@ -2,7 +2,8 @@ require 'rubygems'
 require 'dm-core'
 require 'dm-ar-finders'
 require 'dm-aggregates'
-# require 'dm-timestamps'
+require 'dm-serializer'
+
 
 module DataMapper
   # Connect to a remote database
@@ -23,6 +24,20 @@ module DataMapper
     repository_dbnames.each do |handle, dbname|
       repo_params = params.merge({ :handle => handle, :dbname => dbname })
       DataMapper.setup_remote_connection repo_params
+    end
+  end
+
+
+  module Model
+    # find or creat the resource matching search attributes
+    # and in either case set the updateable attributes
+    def update_or_create(search_attributes, updateable_attributes = {})
+      if (resource = first(search_attributes))
+        resource.attributes = updateable_attributes
+      else
+        resource = create(search_attributes.merge(updateable_attributes))
+      end
+      resource
     end
   end
 end

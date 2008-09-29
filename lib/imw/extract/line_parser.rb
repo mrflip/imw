@@ -1,48 +1,48 @@
-
 module IMW
-
   class LineOrientedFileParser
-    attr_accessor :fields, :skip_head
+    attr_accessor :skip_head
     # the Struct factory each record will be mapped to
-    attr_accessor :struct
+    attr_accessor :factory
 
     #
     #
-    # +:fields+         List of symbols giving field names of resultant struct.
+    # +:fields+         List of symbols giving field names produced by each line.
+    # +:factory+        -OR- a class to act as factory for each record
     # +:skip_head+      Initial lines to skip in file
     #
     def initialize(options)
       self.skip_head = options[:skip_head] || 0
-      self.struct = Struct.new(*options[:fields].map{ |f| f.to_sym })
+      case
+      when options.include?(:factory)
+        self.factory = options[:factory]
+      when options.include?(:fields)
+        self.factory = Struct.new(*options[:fields].map(&:to_sym))
+      else
+        raise "Need either a factory (can be nil) or field names"
+      end
     end
 
+    #
+    #
+    def parse lines, &block
+      skip_lines lines, self.skip_head
+      case
+      when block && factory
+        lines.map{|line| yield self.factory.new(line) }
+      when block && !factory
+        lines.map{|line| yield line }
+      else # no block -- better be a factory
+        lines.map{|line|       self.factory.new(line) }
+      end
+    end
+
+  protected
     #
     # Skip (unconditionally) a given number of lines in the file
     #
     def skip_lines file, n_lines
       return unless file
-      #self.file.lineno = self.file.lineno + n_lines # KLUDGE why doesn't this work?
       n_lines.times do file.gets end
     end
-
-    #
-    #
-    #
-    def parse iter, &block
-      line_num = 0
-      iter.map do |line|
-
-      end
-      rows = []
-      while line = self.file.gets do
-        rows << decode_line(line)
-      end
-      rows
-    end
-
-    def records
-      rows.map{|row| Hash.zip(self.fields, row) }
-    end
-
   end
 end

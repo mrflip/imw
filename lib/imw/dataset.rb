@@ -6,9 +6,6 @@ require 'imw/dataset/infochimps_resource'
 require 'imw/dataset/link'
 require 'imw/dataset/asset'
 require 'imw/dataset/dataset'
-require 'dm-ar-finders'
-require 'dm-serializer'
-require 'JSON'
 
 
 #

@@ -73,7 +73,7 @@ module IMW
     PROGRESS_COUNTERS[tracker] ||= 0
     PROGRESS_COUNTERS[tracker]  += 1
     chunk = every * (PROGRESS_COUNTERS[tracker]/every).to_i
-    track_progress "counter_#{tracker}", chunk
+    track_progress "count_of_#{tracker}", chunk
   end
 end
 
