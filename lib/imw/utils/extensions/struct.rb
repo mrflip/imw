@@ -5,6 +5,13 @@ Struct.class_eval do
     hsh
   end
 
+  #
+  # values_at like a hash
+  #
+  def values_of *attrs
+    slice(*attrs).values_at(*attrs)
+  end
+
   def merge *args
     self.dup.merge! *args
   end
@@ -14,4 +21,5 @@ Struct.class_eval do
     self
   end
   alias_method :update, :merge!
+
 end

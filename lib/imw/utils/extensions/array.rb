@@ -85,6 +85,14 @@ class Array
       string
     end
   end
+
+  def in_groups_of(number, fill_with = nil, &block)
+    require 'enumerator'
+    collection = dup
+    collection << fill_with until collection.size.modulo(number).zero?
+    collection.each_slice(number, &block)
+  end
+
 end
 
 # puts "#{File.basename(__FILE__)}: I have a loooong list of complaints.  Firstly, ..." # at bottom
