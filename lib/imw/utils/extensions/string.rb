@@ -27,15 +27,15 @@ class String
     self[0, prefix.length] == prefix
   end
 
-  # Downcases a string and replaces spaces with underscores.  This
-  # works slightly differently than
-  # <tt>ActiveSupport::CoreExtensions::String::Inflections.underscore</tt>
-  # which is intended to be used for camel-cased Ruby constants.
-  #
-  #   "A long and unwieldy phrase".underscore #=> "a_long_and_unwieldy_phrase"
-  def underscore
-    self.to_s.tr("-", "_").tr(" ","_").downcase
-  end
+  # # Downcases a string and replaces spaces with underscores.  This
+  # # works slightly differently than
+  # # <tt>ActiveSupport::CoreExtensions::String::Inflections.underscore</tt>
+  # # which is intended to be used for camel-cased Ruby constants.
+  # #
+  # #   "A long and unwieldy phrase".underscore #=> "a_long_and_unwieldy_phrase"
+  # def underscore
+  #   self.to_s.tr("-", "_").tr(" ","_").downcase
+  # end
 
   # Returns the handle corresponding to this string as a symbol:
   #

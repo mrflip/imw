@@ -5,11 +5,22 @@ Struct.class_eval do
     hsh
   end
 
+  def to_hash
+    slice(*self.class.members)
+  end
+  def self.from_hash(hsh)
+    self.new *hsh.values_at(*self.members.map(&:to_sym))
+  end
+
+
   #
   # values_at like a hash
   #
   def values_of *attrs
     slice(*attrs).values_at(*attrs)
+  end
+  def each_pair *args, &block
+    self.to_hash.each_pair(*args, &block)
   end
 
   def merge *args
