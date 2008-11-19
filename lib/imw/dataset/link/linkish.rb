@@ -155,6 +155,12 @@ module Linkish
     raise "crapsticks: uri doesn't roundtrip #{file_path_str} to #{uri.to_s}: #{return_trip_url}" if return_trip_url != uri
     file_path_str
   end
+  def file_timestamp
+    file_time.strftime("%Y%m%d-%H%M%S")
+  end
+  def to_file_path_with_timestamp
+    to_file_path + file_timestamp
+  end
   #
   # revhost_scheme:port:user@password -- omitting _scheme if it's http, and
   # omitting :port:user@password if all three are blank.
