@@ -94,7 +94,7 @@ class HTMLParser
     when selector.is_a?(String) && target.is_a?(Array)  then :flatten_list
     when selector.is_a?(String) && target.is_a?(Symbol) then :inner_html
     else
-      raise "Can't classify mapping: " + [data.inspect, content.to_s[0..200], selector, target].join(" - ")
+      raise "Can't classify mapping: " + [selector, target].join(" - ")
     end
   end
 
@@ -102,6 +102,13 @@ class HTMLParser
   def parse link
     begin       hdoc = Hpricot(link.contents)
     rescue;     warn "can't hpricot #{link.to_s}" ; return false;  end
+    raw_taggings = extract_tree hdoc, hdoc, self.mapping
+  end
+
+  # use #mapping to parse file
+  def parse_file filename
+    begin       hdoc = Hpricot(File.open(filename))
+    rescue;     warn "can't hpricot #{filename}" ; return false;  end
     raw_taggings = extract_tree hdoc, hdoc, self.mapping
   end
 end
