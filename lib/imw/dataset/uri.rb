@@ -9,8 +9,8 @@ module Addressable
     PATH_CHARS      = %r{#{SAFE_CHARS}\$&\+,:=@\/;}
     RESERVED_CHARS  = %r{\$&\+,:=@\/;\?\%}
     UNSAFE_CHARS    = %r{\\ \"\#<>\[\]\^\`\|\~\{\}}
-    HOST_HEAD     = '(?:[A-Z0-9\-]+\.)+'
-    HOST_TLD      = '(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'
+    HOST_HEAD     = '(?:[a-z0-9\-]+\.)+'
+    HOST_TLD      = '(?:[a-z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'
 
     def path_with_strip
       path_str = path_without_strip

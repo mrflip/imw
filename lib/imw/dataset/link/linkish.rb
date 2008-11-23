@@ -138,21 +138,12 @@ module Linkish
   # * uuid formed from the
   #
   def to_file_path
-    path_part     = uri.path.to_s
     file_path_str = ""
     file_path_str << to_file_path_root_part
-    file_path_str << path_part
-    file_path_str << "?#{uri.query}"        unless uri.query.nil?
-    file_path_str << "##{uri.fragment}"     unless uri.fragment.nil?
-    file_path_str << "-#{self.uuid}"
+    file_path_str << to_file_path_path_part
+    file_path_str << to_file_path_file_part
     file_path_str = self.class.path_str_encode(file_path_str)
-    #
-    # It's really bad if you can't roundtrip --
-    # since saving is the rare case we insist on checking.
-    # uu = self.class.url_from_file_path(file_path_str)
-    # puts "*"*75, uri.to_hash.inspect, ['path str', file_path_str, 'uri', uri.to_s, 'rt', uu.to_s].inspect
-    return_trip_url = Addressable::URI.parse(self.class.url_from_file_path(file_path_str))
-    raise "crapsticks: uri doesn't roundtrip #{file_path_str} to #{uri.to_s}: #{return_trip_url}" if return_trip_url != uri
+    self.class.validate_roundtrip(file_path_str)
     file_path_str
   end
   def file_timestamp
@@ -167,10 +158,20 @@ module Linkish
   #
   def to_file_path_root_part
     root_part_str = ""
+    tld_host_frag = self.class.tier_path_segment(revhost, /^([^\.]+)\.([^\.]{1,2})/)
     root_part_str << revhost
     root_part_str << "_#{uri.scheme}"                           unless uri.scheme == 'http'
     root_part_str << ":#{uri.port}:#{uri.user}@#{uri.password}" unless uri.simple?
     root_part_str
+  end
+  def to_file_path_path_part
+    uri.path.to_s
+  end
+  def to_file_path_file_part
+    file_path_str = ""
+    file_path_str << "?#{uri.query}"        unless uri.query.nil?
+    file_path_str << "##{uri.fragment}"     unless uri.fragment.nil?
+    file_path_str << "-#{self.uuid}"
   end
   public
 
@@ -211,12 +212,14 @@ module Linkish
     def url_from_file_path fp
       fp = path_str_decode(fp)
       m = (%r{\A
-            ([^/\:_]+)
-        (?:_([^/\:]+))?                  # _scheme
-        (?::(\d*):([^/]*)@([^@/]*?))?    # :port:user@password
-           /(?:(.*?)/)?                  # /dirs/
-            ([^/]*)                      #  file
-           -([a-f0-9]{32})               # -uuid
+            (#{Addressable::URI::HOST_TLD})  # tld tier
+           /(..?)                            # revhost tier
+           /([^/\:_]+)                       # revhost
+        (?:_([^/\:]+))?                      # _scheme
+        (?::(\d*):([^/]*)@([^@/]*?))?        # :port:user@password
+           /(?:(.*?)/)?                      # /dirs/
+            ([^/]*)                          #  file
+           -([a-f0-9]{32})                   # -uuid
                                 \z}x.match(fp))
       raise "Can't extract url from file path #{fp}" if !m
       fp_host, fp_scheme, fp_port, fp_user, fp_pass, fp_path, fp_file, fp_uuid = m.captures
@@ -227,6 +230,36 @@ module Linkish
       fp_port     = ":#{fp_port}"             unless fp_port.blank?
       fp_path     = File.join(*[fp_path, fp_file].compact)
       "#{fp_scheme}://#{fp_userpass}#{fp_host}#{fp_port}/#{fp_path}"
+    end
+    #
+    # to control files-per-directory madness, take a path segment like "foobar" in
+    #   blah.com/top/foobar/directory
+    # and transform into
+    #   blah.com/top/fo/foobar/directory
+    #
+    # Ex.
+    #   self.class.tier_path_segment('a_username')
+    #   # => 'a_/a_username'
+    #   self.class.tier_path_segment('1')
+    #   # => '1/1'
+    #   self.class.tier_path_segment('com.twitter', /^([^\.]+)\.([^\.]{1,2})/)
+    #   # => 'com/tw/com.twitter'
+    #
+    def self.tier_path_segment(path_seg, re=/(..?)/)
+      frag_seg = re.match(path_seg).captures
+      raise "Can't tier path_seg #{path_seg} using #{re}" if frag_seg.blank?
+      File.join(* [frag_seg, path_seg].flatten )
+    end
+    #
+    #
+    # It's really bad if you can't roundtrip --
+    # since saving is the rare case (only done once!) we insist on checking.
+    #
+    def self.validate_roundtrip file_path_str
+      # uu = self.class.url_from_file_path(file_path_str)
+      # puts "*"*75, uri.to_hash.inspect, ['path str', file_path_str, 'uri', uri.to_s, 'rt', uu.to_s].inspect
+      return_trip_url = Addressable::URI.parse(self.class.url_from_file_path(file_path_str))
+      raise "crapsticks: uri doesn't roundtrip #{file_path_str} to #{uri.to_s}: #{return_trip_url}" if return_trip_url != uri
     end
     #
     # Uses a similar scheme as the 'Quoted Printable' encoding, but more strict

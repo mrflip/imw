@@ -226,7 +226,7 @@ class Field
   belongs_to    :dataset
 end
 
-class User
+class InfochimpsUser
   include DataMapper::Resource
   include Infochimps::Resource
   include DataMapper::Timestamp

@@ -89,3 +89,24 @@ module Asset
     end
   end
 end
+
+
+
+class LinkAsset
+  UUID_INFOCHIMPS_ASSETS_NAMESPACE = UUID.sha1_create(UUID_URL_NAMESPACE, 'http://infochimps.org/assets') unless defined?(UUID_INFOCHIMPS_ASSETS_NAMESPACE)
+  include Linkish
+end
+
+class OldFormatAsset < LinkAsset
+  def to_file_path_host_part
+    tiered_host_part = super
+    m = %r{\A
+          (#{Addressable::URI::HOST_TLD})   # tld tier
+          /(..?)                            # revhost tier
+          /(.+)                             # revhost
+    \z}x.match(tiered_host_part)
+    raise "Can't extract url from tiered host path part #{tiered_host_part}" if !m
+    revhost_only = m.captures(2)
+    revhost_only
+  end
+end
