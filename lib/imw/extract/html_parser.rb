@@ -1,4 +1,185 @@
 require 'imw/extract/hpricot'
+
+#
+# h4. HTML Extractor
+#
+# * map repeating HTML elements to intermediate ruby data structure
+# * optimize all the common cases for expressive brevity
+# * output structure will come from HTML structure; map to desired output objects in transform stage.
+# * spec shouldn't be allowed to get too much more complicated than this; again, transform stage exists
+#
+# If this doesn't yield satisfaction you may enjoy
+# * http://blog.labnotes.org/2006/07/11/scraping-with-style-scrapi-toolkit-for-ruby/
+# * http://scrubyt.org/
+# Note of course that these have quite different goals.  For example, we don't
+# have any interest in "interactive" crawling, eg form submission, or at least
+# that goes elsewhere.
+#
+#
+# == Sample HTML (http://twitter.com:
+#
+#   <ul class="about vcard entry-author">
+#     <li         ><span class="label">Name</span>     <span class="fn" >MarsPhoenix       </span> </li>
+#     <li         ><span class="label">Location</span> <span class="adr">Mars, Solar System</span> </li>
+#     <li id="bio"><span class="label">Bio</span>      <span class="bio">I dig Mars!       </span> </li>
+#     <li         ><span class="label">Web</span>
+#        <a href="http://tinyurl.com/5wwaru" class="url" rel="me nofollow">http://tinyurl.co...</a></li>
+#   </ul>
+#
+# == Parser Spec:
+#   :hcard        => m_one('//ul.vcard.about',
+#     {
+#       :name     => 'li/span.fn',
+#       :location => 'li/span.adr',
+#       :url      => m_attr('li/a.url[@href]', 'href'),
+#       :bio      => 'li#bio/span.bio',
+#     }
+#   )
+#
+# == Example return:
+#   { :hcard => { :name => 'Mars Phoenix', :location => 'Mars, Solar System', :bio => 'I dig Mars!', :url => 'http://tinyurl.com/5wwaru' } }
+#
+# == Sample HTML (http://delicious.com):
+#   <ul id="bookmarklist" class="bookmarks NOTHUMB">
+#     <li class="post" id="item-...">
+#       <div class="bookmark NOTHUMB">
+#         <div class="dateGroup">         <span title="23 APR 08">23 APR 08</span>     </div>
+#         <div class="data">
+#           <h4>                          <a rel="nofollow" class="taggedlink" href="http://www.cs.biu.ac.il/~koppel/BlogCorpus.htm">Blog Authorship Corpus (Blogger.com 1994)</a>
+#                                         <a class="inlinesave" href="...">SAVE</a> </h4>
+#           <h5 class="savers-label">     PEOPLE</h5>
+#           <div class="savers savers2">  <a class="delNav" href="/url/7df6661946fca61863312644eb071953"><span class="delNavCount">26</span></a>  </div>
+#           <div class="description">     The Blog Authorship Corpus consists of the collected posts of 19,320 bloggers gathered from blogger.com in August 2004. The corpus incorporates a total of 681,288 posts and over 140 million words - or approximately 35 posts and 7250 words per person. </div>
+#         </div>
+#         <div class="meta"></div>
+#         <h5 class="tag-chain-label">TAGS</h5>
+#         <div class="tagdisplay">
+#           <ul class="tag-chain">
+#             <li class="tag-chain-item off first"><a class="tag-chain-item-link" rel="tag" href="/infochimps/blog"     ><span class="tag-chain-item-span">blog</span>    </a></li>
+#             <li class="tag-chain-item off">      <a class="tag-chain-item-link" rel="tag" href="/infochimps/corpus"   ><span class="tag-chain-item-span">corpus</span>  </a></li>
+#             <li class="tag-chain-item off">      <a class="tag-chain-item-link" rel="tag" href="/infochimps/analysis" ><span class="tag-chain-item-span">analysis</span></a></li>
+#             <li class="tag-chain-item off">      <a class="tag-chain-item-link" rel="tag" href="/infochimps/nlp"      ><span class="tag-chain-item-span">nlp</span>     </a></li>
+#             <li class="tag-chain-item on  last"> <a class="tag-chain-item-link" rel="tag" href="/infochimps/dataset"  ><span class="tag-chain-item-span">dataset</span> </a></li>
+#           </ul>
+#         </div>
+#         <div class="clr"></div>
+#       </div>
+#     </li>
+#   </ul>
+#
+# == Parser Specification:
+#   :bookmarks            => [ 'ul#bookmarklist/li.post/.bookmark',
+#     {
+#       :date                     => hash(    '.dateGroup/span',
+#          [:year, :month, :day]  => regexp(  '', /(\d{2}) ([A-Z]{3}) (\d{2})/),
+#          ),
+#       :title                    =>          '.data/h4/a.taggedlink',
+#       :url                      => attr(    '.data/h4/a.taggedlink', 'href'),
+#       :del_link_url             => href(    '.data/.savers/a.delNav),
+#       :num_savers               => to_i(    '.data/.savers//span.delNavCount'),
+#       :description              =>          '.data/.description',
+#       :tags                     =>         ['.tagdisplay//tag-chain-item-span']
+#     }
+#   ]
+#
+# == Example output:
+#   { :bookmarks => [
+#     { :date             => { :year => '08', :month => 'APR', :day => '23' },
+#       :title            => 'Blog Authorship Corpus (Blogger.com 1994)',
+#       :url              => 'http://www.cs.biu.ac.il/~koppel/BlogCorpus.htm',
+#       :del_link_url     => '/url/7df6661946fca61863312644eb071953',
+#       :num_savers       => 26,
+#       :description      => 'The Blog ... ',
+#       :tags             => ['blog', 'corpus', 'analysis', 'nlp', 'dataset'],
+#      }
+#    ]}
+#
+# == Implementation:
+#
+# Internally, we take the spec and turn it into a recursive structure of Matcher
+# objects.  These consume Hpricot Elements and return the appropriately extracted
+# object.
+#
+# Note that the /default/ is for a bare selector to match ONE element, and to not
+# complain if there are many.
+#
+# Missing elements are silently ignored -- for example if
+#   :foo => 'li.missing'
+# there will simply be no :foo element in the hash (as opposed to having hsh[:foo]
+# set to nil -- hsh.include?(foo) will be false)
+#
+#
+# == List of Matchers:
+#     { :field => /spec/, ... }           # hash          hash, each field taken from spec.
+#     [ "hpricot_path" ]                  # 1-el array    array: for each element matching
+#                                                         hpricot_path, the inner_html
+#     [ "hpricot_path", /spec/ ]          # 2-el array    array: for each element matching
+#                                                         hpricot_path, pass to spec
+#     "hpricot_path"                      # string        same as one("hpricot_path")
+#     one("hpricot_path")                 # one           first match to hpricot_path
+#     one("hpricot_path", /spec/)         # one           applies spec to first match to hpricot_path
+#     (these all match on one path:)
+#     regexp("hpricot_path", /RE/)        # regexp        capture groups from matching RE against
+#                                                         inner_html of first match to hpricot_path
+#     attr("hpricot_path", 'attr_name')   # attr
+#     href("hpricot_path")                # href          shorthand for attr(foo, 'href')
+#     no_html                             #               strip tags from contents
+#     html_encoded                        #               html encode contents
+#     to_i, to_f, etc                     # convert
+#     lambda{|doc| ... }                  # proc          calls proc on current doc
+#
+# == Complicated HCard example:
+#     :hcards                     =>      [ '//ul.users/li.vcard',
+#       {
+#         :name                   =>      '.fn',
+#         :address                =>      one('.adr',
+#           :street               =>      '.street',
+#           :city                 =>      '.city',
+#           :zip                  =>      '.postal'
+#         )
+#         :tel                    =>      [ 'span.tel',
+#           {
+#             :type               =>      'span.type',
+#             [:cc, :area, :num]  =>      hp.regexp('span.value', /+(\d+).(\d{3})-(\d{3}-\d{4})/),
+#           }
+#         ]
+#         :tags                   =>      [ '.tag' ],
+#       }
+#     ]
+#
+# == Resulting Parser
+#     MatchHash({:hcards  =>      MatchArray('//ul.users/li.hcard',
+#       MatchHash({
+#         :name                   =>      MatchFirst('.fn'),
+#         :address                =>      MatchFirst('.adr',
+#           MatchHash({
+#             :street             =>      MatchFirst('.street'),
+#             :city               =>      MatchFirst('.locality),
+#             :state              =>      MatchFirst('.region),
+#             :zip                =>      MatchFirst('.postal'),
+#           }))
+#         :tel                    =>      MatchArray('span.tel',
+#           MatchHash({
+#             :type               =>      MatchFirst('span.type'),
+#             [:cc, :area, :num]  =>      RegexpMatcher('span.value', /+(\d+).(\d{3})-(\d{3}-\d{4})/),
+#           })
+#         )
+#         :tags                   =>      MatchArray('.tag'),
+#       })
+#     )
+#
+# == Example output
+#     [
+#       {:tel     => [ {:type => 'home', :cc => '49', :area => '305', :num => '555-1212'},
+#                      {:type => 'work', :cc => '49', :area => '305', :num => '555-6969'}, ],
+#        :name    => "Bob Dobbs, Jr.",
+#        :tags    => ["church"] },
+#       {:tel     => [ {:type => 'fax',  :cc => '49', :area => '305', :num => '867-5309'}, ],
+#        :name    => "Jenny",
+#        :address => { :street => "53 Evergreen Terr.", :city => "Springfield" },
+#        :tags    => ["bathroom", "wall"] },
+#     ]
+
 class HTMLParser
   attr_accessor :mapping
 

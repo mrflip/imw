@@ -267,18 +267,18 @@ module Linkish
     # recognizably store URLs to disk with names that (apart from path) do not
     # need to be further escaped in filesystem, URL, database or HTML.
     #
-    # The only characters in a path_encoded string are alpha-numeric /_-.=
+    # The only characters in a path_encoded string are alpha-numeric /_-.+
     #
     # Rules:
     # * Any character that is not alphanumeric, and is not /_-.  is encoded as an
-    #   equals sign = followed by its upper-case hex encoding.
+    #   plus sign + followed by its upper-case hex encoding.
     #
     # * Furthermore, in any sequence of repeated '.' characters, all after the
     #   first are hex encoded; same with '/'.
     #
     # Ex.
     #   path_encode("www.measuringworth.com/datasets/consumer/result.php?use[]=VCB&use[]=CU&use[]=SZ&year_source=1900&year_result=2007"
-    #   # => www.measuringworth.com/datasets/consumer/result.php=3Fuse=5B=5D=3DVCB=26use=5B=5D=3DCU=26use=5B=5D=3DSZ=26year_source=3D1900=26year_result=3D2007
+    #   # => www.measuringworth.com/datasets/consumer/result.php+3Fuse+5B+5D+3DVCB+26use+5B+5D+3DCU+26use+5B+5D+3DSZ+26year_source+3D1900+26year_result+3D2007
     #
     # Code inspired by "Glenn Parker's response to ruby quiz #23"http://www.rubyquiz.com/quiz23.html
     #
@@ -295,7 +295,7 @@ module Linkish
     end
     protected
     def path_encode_chars(chars) # :nodoc:
-      # send each character to an equals sign followed by its uppercase hex encoding
+      # send each character to a plus sign followed by its uppercase hex encoding
       encoded = "";
       chars.each_byte{|c| encoded << "+%02X" % c }
       encoded
