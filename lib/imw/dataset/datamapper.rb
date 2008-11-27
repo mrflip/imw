@@ -33,7 +33,7 @@ module DataMapper
     # and in either case set the updateable attributes
     def update_or_create(search_attributes, updateable_attributes = {})
       if (resource = first(search_attributes))
-        resource.attributes = updateable_attributes
+        resource.update_attributes updateable_attributes
       else
         resource = create(search_attributes.merge(updateable_attributes))
       end

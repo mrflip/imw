@@ -1,23 +1,27 @@
 require 'hpricot'
 
-class Hpricot::Elem
+module Hpricot::IMWExtensions
   def contents_of path
     cnts = self.at path
     cnts.inner_html if cnts
   end
-  def class_of path
+  def path_attr path, attr
     cnts = self.at path
-    cnts.attributes['class'] if cnts
+    cnts.attributes[attr] if cnts
+  end
+  def class_of path
+    self.path_attr_safely(path, 'class')
   end
 end
 
+class Hpricot::Elem
+  include Hpricot::IMWExtensions
+end
+
 class Hpricot::Elements
-  def contents_of path
-    cnts = self.at path
-    cnts.inner_html if cnts
-  end
-  def class_of path
-    cnts = self.at path
-    cnts.attributes['class'] if cnts
-  end
+  include Hpricot::IMWExtensions
+end
+
+class Hpricot::Doc
+  include Hpricot::IMWExtensions
 end
