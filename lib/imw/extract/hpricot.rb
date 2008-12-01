@@ -25,3 +25,7 @@ end
 class Hpricot::Doc
   include Hpricot::IMWExtensions
 end
+
+class Hpricot::BogusETag
+  include Hpricot::IMWExtensions
+end

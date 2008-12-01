@@ -40,4 +40,10 @@ module DataMapper
       resource
     end
   end
+
+  # watch SQL log -- must be BEFORE call to db setup
+  def self.logging=(verbosity)
+    verbosity = :debug if (verbosity == true)
+    DataMapper::Logger.new(STDERR, verbosity) if verbosity
+  end
 end
