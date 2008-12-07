@@ -16,7 +16,7 @@ module DataMapper
   def self.setup_local_connection options
     options = { :handle => :default }.merge options
     params = options.values_at(:protocol, :dbpath, :dbname)
-    DataMapper.setup(options[:handle], "%s://%s/%s" % options)
+    DataMapper.setup(options[:handle], "%s://%s/%s" % params)
   end
 
   # KLUDGE
