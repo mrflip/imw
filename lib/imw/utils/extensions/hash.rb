@@ -181,6 +181,7 @@ class Hash
   # remove all key-value pairs where the value is nil
   def compact
     reject{|k,v| v.nil? }
+  end
 
   # Replaces the hash with its compacted self
   def compact!
