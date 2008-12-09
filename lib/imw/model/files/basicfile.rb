@@ -19,7 +19,7 @@ module IMW
 
   module Files
 
-    class File
+    class BasicFile
 
       attr_reader :path, :dirname, :basename, :extname, :name
 
