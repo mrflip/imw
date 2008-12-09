@@ -11,7 +11,7 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/model/files/file'
+require 'imw/model/files/basicfile'
 require 'imw/model/files/archive'
 
 require 'imw/utils'
@@ -20,7 +20,7 @@ module IMW
 
   module Files
 
-    class Zip < IMW::Files::File
+    class Zip < IMW::Files::BasicFile
 
       include IMW::Files::Archive
 
