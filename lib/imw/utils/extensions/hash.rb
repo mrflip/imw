@@ -179,7 +179,15 @@ class Hash
     replace(slice(*keys))
   end
 
-
+  # Works like <tt>Enumerable::find</tt> but loops over the keys of
+  # this Hash instead of of arrays of [key,value] and, in the absence
+  # of a matching key, doesn't call the default argument, merely
+  # returns it instead.
+  def dispatch(default=nil, &block)
+    match = self.keys.find(nil,&block)
+    match ? self[match] : default
+  end
+  
 end
 
 # puts "#{File.basename(__FILE__)}: To each improvement there corresponds another, yes?" # at bottom
