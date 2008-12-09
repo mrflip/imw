@@ -11,7 +11,7 @@
 # following instance variables:
 #
 # <tt>@file</tt>:: an object to be compressed which is a subclass of
-# <tt>IMW::Files::File</tt>.
+# <tt>IMW::Files::BasicFile</tt>.
 #
 # <tt>@copy_of_original_path</tt>:: a string giving a path where a
 # copy of <tt>@file</tt> can be made for comparison purposes.

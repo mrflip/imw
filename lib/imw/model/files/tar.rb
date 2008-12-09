@@ -11,7 +11,7 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/model/files/file'
+require 'imw/model/files/basicfile'
 require 'imw/model/files/archive'
 require 'imw/model/files/compressible'
 
@@ -21,7 +21,7 @@ module IMW
 
   module Files
 
-    class Tar < IMW::Files::File
+    class Tar < IMW::Files::BasicFile
 
       # The default flags used creating, appending to, listing, and
       # extracting a tar archive.

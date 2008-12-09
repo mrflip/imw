@@ -18,6 +18,7 @@ require 'rubygems'
 require 'YAML' unless defined?('YAML') # some stupid collision with datamapper makes it double include
 require 'imw/boot'
 require 'imw/utils'
+require 'imw/model'
 
 #
 # Gem Dependencies:

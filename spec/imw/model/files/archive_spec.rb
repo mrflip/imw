@@ -10,7 +10,7 @@
 # by the spec of an archive class.  This spec must also define the
 # following instance variables:
 #
-# <tt>@archive</tt>:: a subclass of <tt>IMW::Files::File</tt> which
+# <tt>@archive</tt>:: a subclass of <tt>IMW::Files::BasicFile</tt> which
 # has the <tt>IMW::Files::Archive</tt> module mixed in.
 #
 # <tt>@root_directory</tt>: a string specifying the path where all the

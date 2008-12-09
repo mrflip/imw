@@ -11,16 +11,20 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/model/files/file'
+require 'imw/model/files/basicfile'
 require 'imw/model/files/compressible'
 
 module IMW
   module Files
 
-    class Text < IMW::Files::File
+    class Text < IMW::Files::BasicFile
 
       include IMW::Files::Compressible
-      
+
+      def read
+        File.read(File.expand_path(@path))
+      end
+
     end
   end
 end

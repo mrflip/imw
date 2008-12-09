@@ -11,7 +11,7 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/model/files/file'
+require 'imw/model/files/basicfile'
 require 'imw/model/files/archive'
 
 require 'imw/utils'
@@ -20,7 +20,7 @@ module IMW
 
   module Files
 
-    class Rar < IMW::Files::File
+    class Rar < IMW::Files::BasicFile
 
       # The default flags used creating, appending to, listing, and
       # extracting a rar archive.

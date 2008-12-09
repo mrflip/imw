@@ -31,7 +31,7 @@
 
 require 'fileutils'
 
-require 'imw/model/files/file'
+require 'imw/model/files/basicfile'
 require 'imw/model/files/identify'
 
 require 'imw/utils'
@@ -40,7 +40,7 @@ module IMW
 
   module Files
 
-    class CompressedFile < IMW::Files::File
+    class CompressedFile < IMW::Files::BasicFile
 
       attr_reader :compression
       
