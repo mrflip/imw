@@ -19,5 +19,6 @@ require 'YAML' unless defined?('YAML') # some stupid collision with datamapper m
 
 require 'imw/utils'
 require 'imw/boot'
+require 'imw/model'
 
 
