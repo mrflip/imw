@@ -4,7 +4,7 @@
 # == About
 #
 # Module used for compression of files.  An including
-# <tt>IMW::Files::File</tt> object gains +compress+ and
+# <tt>IMW::Files::BasicFile</tt> object gains +compress+ and
 # <tt>compress!</tt> methods.
 #
 # By default, bzip2 is used for compression though gzip can also be
