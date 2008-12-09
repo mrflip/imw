@@ -9,8 +9,8 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
+# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+
 
 require ''
-
-# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
