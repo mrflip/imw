@@ -24,8 +24,6 @@
 require 'fileutils'
 
 require 'imw/utils'
-require 'imw/model/files/bz2'
-require 'imw/model/files/gz'
 
 module IMW
 
@@ -40,12 +38,6 @@ module IMW
       COMPRESSION_EXTS = {
         :bzip2 => '.bz2',
         :gzip => '.gz'
-      }
-
-      # Classes corresponding to each compression program.
-      COMPRESSION_FILE_CLASSES = {
-        :bzip2 => IMW::Files::Bz2,
-        :gzip => IMW::Files::Gz
       }
 
       # Compression flags for each program
@@ -69,10 +61,9 @@ module IMW
 
       # Return the object representing this file compressed with
       # +program+.
-      def compressed_file program
+      def compressed_file_path program
         ensure_valid_compression_program program
-        path = self.dirname + '/' + self.basename + COMPRESSION_EXTS[program]
-        COMPRESSION_FILE_CLASSES[program].new(path)
+        path = File.join(self.dirname,self.basename + COMPRESSION_EXTS[program])
       end
       
       public
@@ -89,7 +80,7 @@ module IMW
       def compress! program = :bzip2
         raise IMW::PathError.new("cannot compress #{@path}, doesn't exist!") unless exist?
         FileUtils.cd(@dirname) { IMW.system(self.compression_command(program)) }
-        self.compressed_file program
+        self.compressed_file_path program
       end
 
       # Compress this file in its present directory, overwriting any
@@ -109,7 +100,7 @@ module IMW
         ensure
           FileUtils.mv(self.path + 'copy',self.path)
         end
-        self.compressed_file program        
+        self.compressed_file_path program        
       end
       
     end
