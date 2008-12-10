@@ -27,24 +27,26 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
+# puts "#{File.basename(__FILE__)}: Have you ever folded up the wrapper of a soda straw into a little accordian shape and let a drop of water soak into it?" # at bottom
 
 require 'fileutils'
-
 require 'imw/model/files/basicfile'
 require 'imw/model/files/identify'
-
 require 'imw/utils'
 
 module IMW
-
   module Files
-
-    class CompressedFile < IMW::Files::BasicFile
+    # A module which provides methods for decompressing a compressed
+    # file.  An including should define an instance variable
+    # <tt>@compression</tt> with two keys:
+    #
+    #  <tt>:program</tt>:: a symbol from <tt>IMW::EXTERNAL_PROGRAMS</tt>
+    #  <tt>:decompression_flags</tt>:: a string specifying flags to pass to the decompression program
+    module CompressedFile
 
       attr_reader :compression
       
-      private
       # Construct the command passed to the shell to decompress this
       # file.
       def decompression_command
@@ -82,4 +84,4 @@ module IMW
 end
 
 
-# puts "#{File.basename(__FILE__)}: Have you ever folded up the wrapper of a soda straw into a little accordian shape and let a drop of water soak into it?" # at bottom
+
