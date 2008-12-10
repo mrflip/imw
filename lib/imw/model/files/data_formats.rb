@@ -14,7 +14,6 @@
 
 
 require 'imw/model/files/csv'
-require 'imw/model/files/tsv'
 require 'imw/model/files/xml'
 require 'imw/model/files/yaml'
 
