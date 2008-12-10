@@ -19,13 +19,14 @@ require 'hpricot'
 module IMW
   module Files
 
-    class Xml < IMW::Files::Text
+    class Xml < Hpricot::Doc
 
-      # Iterate over the elements matched by +xpath+.
-      def foreach xpath="*"
-        (Hpricot(File.new(@path).read)/xpath).each do |el|
-          yield el
-        end
+      include IMW::Files::BasicFile
+      include IMW::Files::Compressible
+
+      def initialize path,options = {}
+        set_path path
+        super Hpricot.make(File.new(@path).read),options
       end
       
     end

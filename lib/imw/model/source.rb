@@ -19,26 +19,33 @@ require 'uri'
 
 module IMW
 
-  # The <tt>IMW::Source</tt> module's +open+ method returns an IMW
-  # object appropriate for reading a source.
+  # Parse +source+ and return an appropriate data object.
+  #
+  #   IMW.open("/tmp/test.csv") # => IMW::Files::Csv("/tmp/test.csv')
+  #
+  # The objects returned by <tt>IMW.open</tt> present a uniform
+  # interface across the different source data formats they handle.
+  def self.open source
+    uri = URI.parse(source)
+    method = {
+      "file" => :open_file,
+      "http" => :open_http
+    }.dispatch(:open_file) {|scheme| uri.scheme == scheme}
+    IMW::Source.send(method,uri)
+  end
+  
+
+  # The <tt>IMW::Source</tt> module contains functions which wrap the
+  # various kinds of data sources.
   module Source
 
-    # Parse +uri+ and return the appropriate source object.  The
-    # object should implement a common set of data query, retrieval,
-    # and manipulation methods.
-    def self.open string
-      uri = URI.parse(string)
-      method = {
-        "file" => :open_file,
-        "http" => :open_http
-      }.dispatch(:open_file) {|scheme| uri.scheme == scheme}
-      self.send(method,uri)
-    end
-    
+    protected
     # Open a file at the given +uri+.
     def self.open_file(uri)
       require 'imw/model/files'
       class_name = IMW::Files::FILE_REGEXPS.dispatch("Text") {|regexp| regexp.match(uri.path)}
+      # FIXME this use of 'eval' can't be the right way to do what i
+      # want?
       eval("IMW::Files::#{class_name}.new(\"#{uri.path}\")")
     end
   end
