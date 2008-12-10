@@ -19,9 +19,14 @@ require 'imw/model/files/basicfile'
 module IMW
   module Files
 
-    class Binary < IMW::Files::BasicFile
-
+    class Binary
+      
+      include IMW::Files::BasicFile
       include IMW::Files::Compressible
+
+      def initialize path
+        set_path path
+      end
 
     end
     

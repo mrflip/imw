@@ -17,9 +17,14 @@ require 'imw/model/files/compressible'
 module IMW
   module Files
 
-    class Text < IMW::Files::BasicFile
+    class Text
 
+      include IMW::Files::BasicFile
       include IMW::Files::Compressible
+
+      def initialize path
+        set_path path
+      end
 
       def read
         File.read(File.expand_path(@path))
