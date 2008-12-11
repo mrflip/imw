@@ -13,4 +13,9 @@
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
 
-require ''
+require 'imw/utils'
+require 'imw/model/files/text'
+require 'imw/model/files/binary'
+require 'imw/model/files/data_formats'
+require 'imw/model/files/compressed_files_and_archives'
+
