@@ -11,10 +11,9 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'yaml'
-
-require 'imw/model/files/text'
 require 'imw/utils'
+require 'yaml'
+require 'imw/model/files/text'
 
 module IMW
 
@@ -22,15 +21,8 @@ module IMW
 
     class Yaml < IMW::Files::Text
 
-      def initialize path
-        super
-
-        raise IMW::ArgumentError.new("#{@extname} is not a valid extension for a YAML file") unless /\.yaml$|\.yml$/.match @extname
-      end
-      
       # Load the content from this YAML file.
-      def load
-        raise IMW::PathError.new("can't load YAML, file doesn't exist!") unless exist?
+      def read
         YAML::load_file @path
       end
       

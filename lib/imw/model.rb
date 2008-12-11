@@ -14,5 +14,6 @@
 require 'imw/model/dataset'
 require 'imw/model/source'
 require 'imw/model/directory'
+require 'imw/model/files'
 
 # puts "#{File.basename(__FILE__)}: Though powerful, your Monkeywrench is delicate enough to fold origami with." # at bottom

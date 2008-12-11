@@ -1,37 +1,34 @@
 #
-# h2. lib/imw/model/files/xml.rb -- XML files
+# h2. lib/imw/model/files/binary.rb -- binary files
 #
 # == About
 #
-# For XML files.
+# Class for handling binary data.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
+
 require 'imw/utils'
-require 'imw/model/files/text'
-require 'hpricot'
+require 'imw/model/files/basicfile'
 
 module IMW
   module Files
 
-    class Xml < Hpricot::Doc
-
+    class Binary
+      
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path,options = {}
+      def initialize path
         set_path path
-        super Hpricot.make(File.new(@path).read),options
       end
-      
+
     end
+    
   end
 end
-
-
-

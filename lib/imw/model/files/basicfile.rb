@@ -19,15 +19,11 @@ module IMW
 
   module Files
 
-    class File
+    module BasicFile
 
       attr_reader :path, :dirname, :basename, :extname, :name
 
-      private 
-      def initialize path
-        set_path path
-      end
-
+      protected
       def set_path(path)
         path = ::File.expand_path path
         raise IMW::PathError.new("#{path} is a directory") if ::File.directory? path
@@ -36,7 +32,6 @@ module IMW
         @basename = ::File.basename @path
         @extname = find_extname @path
         @name = @basename[0,@basename.length - @extname.length]
-                                                                   
       end
 
       # Some files (like <tt>.tar.gz</tt>) have an extension which is

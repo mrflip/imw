@@ -1,9 +1,9 @@
 #
-# h2. spec/imw/model/files/file_spec.rb -- spec for a file object
+# h2. spec/imw/model/files/basicfile_spec.rb -- spec for a file object
 #
 # == About
 #
-# RSpec test code for <tt>IMW::Files::File</tt>.
+# RSpec test code for <tt>IMW::Files::BasicFile</tt>.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -14,9 +14,9 @@ require File.join(File.dirname(__FILE__),'../../../spec_helper')
 require IMW_SPEC_DIR+'/imw/matchers/file_contents_matcher'
 
 require 'imw/utils/random'
-require 'imw/model/files/file'
+require 'imw/model/files/basicfile'
 
-describe IMW::Files::File do
+describe IMW::Files::BasicFile do
 
   include Spec::Matchers::IMW
 
@@ -31,7 +31,7 @@ describe IMW::Files::File do
     @path = @root_directory + "/file.ext"
     @copy_of_original_path = @root_directory + "/file_copy.ext"
 
-    @file = IMW::Files::File.new(@path)
+    @file = IMW::Files::BasicFile.new(@path)
 
     @new_path_same_extension = @root_directory + "/file_new.ext"
     @new_path_different_extension = @root_directory + "/file_new.next"
