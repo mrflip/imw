@@ -22,18 +22,20 @@ module IMW
     # * :sleep_time -- Amount to sleep after a request.  If the file is not
     #   requested the method (for instance, if it exists) does not sleep.
     #
+    # * :log_level -- verbosity
+    #
     def wget options={ }
-      options = options.reverse_merge :sleep_time => 1
+      options = options.reverse_merge :sleep_time => 1, :log_level => Logger::DEBUG
       if should_fetch?
         mkdir_p File.dirname(ripd_file), :verbose => false
-        # `#{WGET_COMMAND} #{wget_command_args(options).join(' ')}`
+        @exists = nil
         system(WGET_COMMAND, *wget_command_args(options))
         self.result_status = $?.to_i
-        #IMW.log << "Sleeping #{options[:sleep_time]}\n"
+        IMW.log.add(options[:log_level], "Sleeping #{options[:sleep_time]}\n")
         sleep options[:sleep_time]
       else
         self.result_status = 0
-        IMW.log << "Skipping #{rip_uri}\n"
+        IMW.log.add(options[:log_level], "Skipping #{rip_uri}\n")
       end
       return (self.result_status == 0) && is_healthy?
     end
@@ -65,7 +67,8 @@ module IMW
     # #is_healthy?
     #
     def exists?
-      @exists ||= File.exists?(ripd_file)
+      return @exists unless @exists.nil?
+      @exists = File.exists?(ripd_file)
     end
 
     #
