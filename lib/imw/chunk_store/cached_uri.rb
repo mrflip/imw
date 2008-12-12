@@ -157,7 +157,7 @@ module IMW
     end
 
     def timestamp
-      @timestamp || Time.now
+      @timestamp ||= Time.now
     end
 
     # Regular expression to match a file extension part
