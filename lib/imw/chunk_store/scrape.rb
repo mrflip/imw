@@ -31,11 +31,11 @@ module IMW
         @exists = nil
         system(WGET_COMMAND, *wget_command_args(options))
         self.result_status = $?.to_i
-        IMW.log.add(options[:log_level], "Sleeping #{options[:sleep_time]}\n")
+        IMW.log.add(options[:log_level], "Sleeping #{options[:sleep_time]}") unless options[:sleep_time] == 0
         sleep options[:sleep_time]
       else
         self.result_status = 0
-        IMW.log.add(options[:log_level], "Skipping #{rip_uri}\n")
+        IMW.log.add(options[:log_level], "Skipping #{rip_uri}")
       end
       return (self.result_status == 0) && is_healthy?
     end

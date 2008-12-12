@@ -5,11 +5,12 @@ module IMW
   class CachedUri
     attr_accessor :uri
     attr_accessor :timestamp
-    def initialize new_uri
+    def initialize new_uri, timestamp=nil
       self.uri = case new_uri
                  when Addressable::URI  then new_uri
                  when String            then Addressable::URI.parse(new_uri)
                  end
+      self.timestamp = timestamp
     end
 
 
@@ -38,7 +39,7 @@ module IMW
           file_extension_part ].join('')
         ].reject(&:blank?)
       # self.class.validate_roundtrip(fp)
-      fp.join('/')
+      @file_path = fp.join('/')
     end
 
     #
