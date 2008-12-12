@@ -10,11 +10,10 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
-require 'rake'
+# require 'rake'
 require 'ostruct'
-
 require 'imw/utils'
 
 module IMW
@@ -56,7 +55,7 @@ module IMW
     # must be taken in order: <tt>:rip</tt>, <tt>parse</tt>,
     # <tt>munge</tt>, <tt>fix</tt>, and <tt>package</tt>.  Each task
     # is a <tt>Rake::Task</tt> which depends on the one before it.
-    # 
+    #
     # Each task does nothing by default other than create directories
     # to hold files for this dataset as it undergoes the workflow.
     def set_default_tasks
@@ -78,7 +77,7 @@ module IMW
       self[:fix].comment = "Fix and format dataset"
       self[:package].comment = "Package dataset into a final format"
     end
-    
+
   end
 end
 

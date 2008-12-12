@@ -63,7 +63,7 @@ module IMW
     # # => "_/_/"
     #
     def file_root_part
-      tld, sld, _ = encode_path_part(revhost).split(/\./)
+      tld, sld, _ = encode_path_part(uri.revhost).split(/\./)
       sld_prefix = sld.to_s[0..1]
       "_#{tld}/_#{sld_prefix}"
     end
@@ -83,7 +83,7 @@ module IMW
     #
     def file_host_part
       # encoding should be unneccessary but hey
-      encode_path_part(revhost)
+      encode_path_part(uri.revhost)
     end
 
     #
@@ -126,7 +126,7 @@ module IMW
       # Need to preserve a trailing slash on the last element path
       if (m = %r{\A(.*)(/)\z}.match(pth)) then pth = $1; trailing = '%2F' else trailing = '' end
       # Discard leading slash (it will be supplied when path is joined)
-      pth = path.gsub(%r{^/}, '')
+      pth = uri.path.gsub(%r{^/}, '')
       # Split into dirs
       file_parts = pth.split(%r{/})
       # encode each segment (including leading underscore)
@@ -157,7 +157,7 @@ module IMW
     end
 
     def timestamp
-      @timestamp || Time.now
+      @timestamp ||= Time.now
     end
 
     # Regular expression to match a file extension part
@@ -178,7 +178,7 @@ module IMW
     #
     # Decode url from its file_path
     #
-    def url_from_file_path fp
+    def self.url_from_file_path fp
       m = (%r{\A
             _(?:#{Addressable::URI::HOST_TLD})?   # tld cascade
            /_\w{0,2}                         # revhost tier
@@ -209,10 +209,6 @@ module IMW
         *[ decode_path_part("#{fp_scheme}:#{fp_connection}"), decode_path_part(fp_path) ].reject(&:blank?) )
     end
 
-    def decode_path_part(str)
-      Addressable::URI.unencode_segment(str)
-    end
-
     #
     # Apply standard URI encoding, allowing only alphanumeric plus underscore
     # dot and dash to survive.
@@ -220,31 +216,41 @@ module IMW
     def encode_path_part path_part
       Addressable::URI.encode_segment(path_part, "a-zA-Z0-9_\\.\\-") || ""
     end
-
-
-    # ===========================================================================
     #
-    # It's really bad if you can't roundtrip --
-    # since saving is the rare case (only done once!) we insist on checking.
+    # decode segment.  We can do this regardless of what character subset was encoded.
     #
-    def self.validate_roundtrip file_path_str
-      # uu = self.class.url_from_file_path(file_path_str)
-      # puts "*"*75, uri.to_hash.inspect, ['path str', file_path_str, 'uri', uri.to_s, 'rt', uu.to_s].inspect
-      return_trip_url = Addressable::URI.parse(self.class.url_from_file_path(file_path_str))
-      raise "crapsticks: uri doesn't roundtrip #{file_path_str} to #{uri.to_s}: #{return_trip_url}" if return_trip_url != uri
+    def self.decode_path_part(str)
+      Addressable::URI.unencode_segment(str)
     end
 
-    # ===========================================================================
-    #
-    # Delegate methods to uri
-    #
-    def method_missing method, *args
-      if self.uri.respond_to?(method)
-        self.uri.send(method, *args)
-      else
-        super method, *args
-      end
-    end
+  end
+end
+
+    # # ===========================================================================
+    # #
+    # # It's really bad if you can't roundtrip --
+    # # since saving is the rare case (only done once!) we insist on checking.
+    # #
+    # def self.validate_roundtrip file_path_str
+    #   # uu = self.class.url_from_file_path(file_path_str)
+    #   # puts "*"*75, uri.to_hash.inspect, ['path str', file_path_str, 'uri', uri.to_s, 'rt', uu.to_s].inspect
+    #   return_trip_url = Addressable::URI.parse(self.class.url_from_file_path(file_path_str))
+    #   raise "crapsticks: uri doesn't roundtrip #{file_path_str} to #{uri.to_s}: #{return_trip_url}" if return_trip_url != uri
+    # end
+
+    # # ===========================================================================
+    # #
+    # # Delegate methods to uri
+    # #
+    # def method_missing method, *args
+    #   if self.uri.respond_to?(method)
+    #     self.uri.send(method, *args)
+    #   else
+    #     super method, *args
+    #   end
+    # end
+
+
 
     # def uri
     #   @uri ||= Addressable::URI.parse(self.full_url)
@@ -262,6 +268,3 @@ module IMW
     #   resource, prefix, suffix, page = m.captures
     #   "_com/_tw/com.twitter/#{resource}/_#{prefix.downcase}/#{prefix}#{suffix}%3Fpage%3D#{page}"
     # end
-
-  end
-end

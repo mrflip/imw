@@ -9,14 +9,14 @@
 # end
 #
 #
-module ScrapeRequest
+module BaseScrapeRequest
   def scraped?
     !!scraped_at
   end
 
-  class ClassMethods   
+  module ClassMethods
   end
- 
+
   def self.included base
     base.class_eval do
       include DataMapper::Resource
