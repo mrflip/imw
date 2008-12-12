@@ -26,14 +26,14 @@ module IMW
       options = options.reverse_merge :sleep_time => 1
       if should_fetch?
         mkdir_p File.dirname(ripd_file), :verbose => false
-        #system(WGET_COMMAND, *wget_command_args(options))
-        `#{WGET_COMMAND} #{wget_command_args(options).join(' ')}`
-        self.result_status = 0 # $?.to_i
+        # `#{WGET_COMMAND} #{wget_command_args(options).join(' ')}`
+        system(WGET_COMMAND, *wget_command_args(options))
+        self.result_status = $?.to_i
         #IMW.log << "Sleeping #{options[:sleep_time]}\n"
         sleep options[:sleep_time]
       else
         self.result_status = 0
-        # IMW.log << "Skipping #{rip_uri}\n"
+        IMW.log << "Skipping #{rip_uri}\n"
       end
       return (self.result_status == 0) && is_healthy?
     end
@@ -46,10 +46,10 @@ module IMW
       cmd << "--no-verbose"
       cmd << "--timeout=8"
       cmd << "--tries=1"
-      cmd << "--http-user='#{options[:http_user]}'"     if options[:http_user]
-      cmd << "--http-passwd='#{options[:http_passwd]}'" if options[:http_passwd]
-      cmd << "-O'#{ripd_file}'"
-      cmd << "'#{rip_uri}'"
+      cmd << "--http-user=#{options[:http_user]}"     if options[:http_user]
+      cmd << "--http-passwd=#{options[:http_passwd]}" if options[:http_passwd]
+      cmd << "-O#{ripd_file}"
+      cmd << "#{rip_uri}"
     end
 
     #
@@ -65,7 +65,7 @@ module IMW
     # #is_healthy?
     #
     def exists?
-      File.exists?(ripd_file)
+      @exists ||= File.exists?(ripd_file)
     end
 
     #
@@ -74,7 +74,7 @@ module IMW
     # Is the race condition here worth worrying about?
     #
     def is_healthy?
-      File.exists?(ripd_file) && File.size(ripd_file) != 0
+      exists? && File.size(ripd_file) != 0
     end
 
     # insert accessors for result status
