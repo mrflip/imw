@@ -1,8 +1,6 @@
 require 'imw/dataset/datamapper'
 require 'imw/dataset/link/linkish'
-#
-# A file to process
-#
+
 class LinkAsset
   UUID_INFOCHIMPS_ASSETS_NAMESPACE = UUID.sha1_create(UUID_URL_NAMESPACE, 'http://infochimps.org/assets') unless defined?(UUID_INFOCHIMPS_ASSETS_NAMESPACE)
   include Linkish
