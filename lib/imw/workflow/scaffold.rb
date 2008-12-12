@@ -1,8 +1,5 @@
-require 'imw/utils/paths'
-require 'fileutils'
-include FileUtils
-
 module IMW
+  include FileUtils
 
   def scaffold_script_dirs
     mkdir_p path_to(:me)
