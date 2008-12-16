@@ -1,4 +1,3 @@
-
 module IMW
   #
   #
@@ -77,7 +76,9 @@ module IMW
     # Is the race condition here worth worrying about?
     #
     def is_healthy?
-      exists? && File.size(ripd_file) != 0
+      begin
+        exists? && File.size(ripd_file) != 0
+      rescue ; nil ; end
     end
 
     # insert accessors for result status
