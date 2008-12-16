@@ -22,7 +22,7 @@ module Addressable
     def simple_connection_part?
       ( ['http', nil].include?(scheme) &&
         [80,     nil].include?(port) &&
-        (self.to_hash.values_at(:password, :user).join.blank?)
+        (self.to_hash.values_at(:password, :user).join.blank?) )
     end
 
     #
@@ -53,3 +53,7 @@ module Addressable
   end
 end
 
+class << Addressable::URI
+  alias_method :encode_segment,   :encode_component    if ! defined?(encode_segment)
+  alias_method :unencode_segment, :unencode_component  if ! defined?(unencode_segment)
+end
