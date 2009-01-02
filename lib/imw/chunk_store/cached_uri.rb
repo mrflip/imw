@@ -150,7 +150,7 @@ module IMW
     #
     # Note that +
     def file_timestamp_part
-      timestamp ? timestamp.strftime("+%Y%m%d-%H%M%S") : ""
+      timestamp ? timestamp.strftime("+%Y%m%d%H%M%S") : ""
     end
     def file_timestamp_dir_part
       timestamp ? timestamp.strftime("_%Y%m%d") : ""
@@ -189,7 +189,7 @@ module IMW
            _([a-zA-Z0-9%]*)  )?              # _password
            /_\d{8}                           # scrape date cascade
            /([\w%\./\-]*?)                   # /path
-          \+(\d{8}-\d{6})?                   # +timestamp
+          \+(\d{14})?                   # +timestamp
             (\.[a-zA-Z0-9]{1,7})?            # .extension
                                 \z}x.match(fp))
            # /(?:([\w%\./\-]*?)/)?             # /dirs/
@@ -225,46 +225,3 @@ module IMW
 
   end
 end
-
-    # # ===========================================================================
-    # #
-    # # It's really bad if you can't roundtrip --
-    # # since saving is the rare case (only done once!) we insist on checking.
-    # #
-    # def self.validate_roundtrip file_path_str
-    #   # uu = self.class.url_from_file_path(file_path_str)
-    #   # puts "*"*75, uri.to_hash.inspect, ['path str', file_path_str, 'uri', uri.to_s, 'rt', uu.to_s].inspect
-    #   return_trip_url = Addressable::URI.parse(self.class.url_from_file_path(file_path_str))
-    #   raise "crapsticks: uri doesn't roundtrip #{file_path_str} to #{uri.to_s}: #{return_trip_url}" if return_trip_url != uri
-    # end
-
-    # # ===========================================================================
-    # #
-    # # Delegate methods to uri
-    # #
-    # def method_missing method, *args
-    #   if self.uri.respond_to?(method)
-    #     self.uri.send(method, *args)
-    #   else
-    #     super method, *args
-    #   end
-    # end
-
-
-
-    # def uri
-    #   @uri ||= Addressable::URI.parse(self.full_url)
-    # end
-
-    # RIPD_FILE_RE = %r{_com/_tw/com.twitter/(\w+/\w+)/_\w[\w\.]/(\w+)\.json%3Fpage%3D(\d+)}
-    # def self.info_from_ripd_file ripd_file
-    #   m = RIPD_FILE_RE.match(ripd_file)
-    #   unless m then warn "Can't grok filename #{ripd_file}"; return nil; end
-    #   resource, name, page = m.captures
-    #   [ resource, name, page, "http://twitter.com/#{resource}/#{name}.json?page=#{page}" ]
-    # end
-    # def ripd_file
-    #   m = %r{http://twitter.com/([^/]+/[^/]+)/(..?)([^?]*?)\?page=(.*)}.match(uri) or raise "Can't grok url #{uri}"
-    #   resource, prefix, suffix, page = m.captures
-    #   "_com/_tw/com.twitter/#{resource}/_#{prefix.downcase}/#{prefix}#{suffix}%3Fpage%3D#{page}"
-    # end
