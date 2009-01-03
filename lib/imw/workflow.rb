@@ -19,25 +19,40 @@ require 'imw/utils'
 
 module IMW
 
-  # The <tt>IMW::Workflow</tt> object leverages the functionality of
-  # the Rake module for IMW.  It mixes in the
-  # <tt>Rake::TaskManager</tt> module which allows an including class
-  # to manipulate collections of tasks.
-  #
-  # The <tt>Rake::TaskManager</tt> class requires an including class
-  # <tt>Example</tt> to define an <tt>OpenStruct</tt> object
-  # <tt>Example.options</tt> which individual <tt>Rake::Task</tt>'s
-  # check before performing their actions.
+  # <tt>IMW::Workflow</tt> is a class for managing the collection of
+  # interdependent tasks involved in processing a dataset.  It uses
+  # <tt>Rake</tt> (the <tt>Rake::TaskManager</tt> class, specifically)
+  # to handle dependency management.
   class Workflow
 
     include Rake::TaskManager
 
     # The steps in the IMW workflow, in order from first to last.
-    STEPS = [:rip, :parse, :munge, :fix, :package]
+    #   <tt>:rip</tt>:: Data is collected from some source and
+    #   deposited in the <tt>:ripd</tt> directory named by the URI for
+    #   that source.
+    #   
+    #   <tt>:peel</tt>:: Data is uncompressed and extracted (if
+    #   necessary) from source(s') <tt>:ripd</tt> directory(ies) and
+    #   unprocessed files are placed in this dataset's <tt>:rawd</tt>
+    #   directory.
+    #
+    #   <tt>:munge</tt>:: Data is transformed.
+    #
+    #   <tt>:fix</tt>:: Global quantities (i.e. - averages) are
+    #   calculated and records are reconciled.
+    #
+    #   <tt>:package</tt>:: Data is packaged and compressed (if
+    #   necessary) into a delivery format.
+    #
+    # I think better names might be <tt>:harvest</tt>, <tt>:peel</tt>,
+    # <tt>:chew</tt>, <tt>:digest</tt>, and <tt>:shit_out</tt>.  Well,
+    # maybe we should stick to <tt>:package</tt>, but still...
+    STEPS = [:rip, :peel, :munge, :fix, :package]
 
     attr_reader :options
 
-    # Default options
+    # Default options passed to <tt>Rake</tt>.
     DEFAULT_OPTIONS = {
       :dry_run => false,
       :trace => false,
@@ -46,23 +61,27 @@ module IMW
 
     def initialize
       super
+      # The <tt>Rake::TaskManager</tt> class requires an including class
+      # <tt>Example</tt> to define an <tt>OpenStruct</tt> object
+      # <tt>Example.options</tt> which individual <tt>Rake::Task</tt>'s
+      # check before performing their actions.
       @options = OpenStruct.new(DEFAULT_OPTIONS)
       set_default_tasks
     end
 
-    # Sets the default tasks in this workflow.
+    # Sets the default tasks for this workflow.
     #
-    # The default tasks constitute a set of consecutive actions that
-    # must be taken in order: <tt>:rip</tt>, <tt>parse</tt>,
-    # <tt>munge</tt>, <tt>fix</tt>, and <tt>package</tt>.  Each task
-    # is a <tt>Rake::Task</tt> which depends on the one before it.
+    # The  of actions that depend upon
+    # one another in a consecutive way (see
+    # <tt>IMW::Workflow::STEPS</tt>).  Each task is a
+    # <tt>Rake::Task</tt> which depends on the one before it.
     # 
     # Each task does nothing by default other than create directories
     # to hold files for this dataset as it undergoes the workflow.
     def set_default_tasks
       define_task(Rake::Task, {:rip => []})
-      define_task(Rake::Task, {:parse => :rip})
-      define_task(Rake::Task, {:munge => :parse})
+      define_task(Rake::Task, {:peel => :rip})
+      define_task(Rake::Task, {:munge => :peel})
       define_task(Rake::Task, {:fix => :munge})
       define_task(Rake::Task, {:package => :fix})
 
@@ -72,10 +91,10 @@ module IMW
 
     # Set the initial comments for each of the default tasks.
     def comment_default_tasks
-      self[:rip].comment = "Rip dataset from an origin"
-      self[:parse].comment = "Parse dataset into intermediate form"
-      self[:munge].comment = "Munge dataset's structure into desired form"
-      self[:fix].comment = "Fix and format dataset"
+      self[:rip].comment = "Obtain a dataset from an origin"
+      self[:peel].comment = "Extract a dataset and prepare it for processing."
+      self[:munge].comment = "Munge dataset's records into desired form"
+      self[:fix].comment = "Reconcile records in a dataset"
       self[:package].comment = "Package dataset into a final format"
     end
     
