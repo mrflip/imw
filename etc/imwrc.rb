@@ -30,7 +30,7 @@ module IMW
     :super_root => File.expand_path(File.join(File.dirname(__FILE__), '../..')),
 
     # Data processing scripts
-    :scripts_root => [:super_root, 'pool'],
+    :scripts_root => [:super_root, 'infochimps-data'],
 
     # the imw library
     :imw_bin   => [:imw_root, 'bin'],
