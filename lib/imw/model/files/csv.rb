@@ -27,8 +27,21 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
+      # Default options to be passed to
+      # FasterCSV[http://fastercsv.rubyforge.org/]; see its
+      # documentation for more information.
+      DEFAULT_OPTIONS = {
+        :col_sep        => ',',
+        :headers        => false,
+        :return_headers => false,
+        :write_headers  => true,
+        :skip_blanks    => false,
+        :force_quotes   => false
+      }
+        
       def initialize path, mode='r', options = {}
         self.path= path
+        options.reverse_merge!(DEFAULT_OPTIONS)
         super File.new(@path,mode),options
       end
     end # CSV
@@ -41,10 +54,21 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
+      # Default options to be passed to
+      # FasterCSV[http://fastercsv.rubyforge.org/]; see its
+      # documentation for more information.
+      DEFAULT_OPTIONS = {
+        :col_sep        => '\t',
+        :headers        => false,
+        :return_headers => false,
+        :write_headers  => true,
+        :skip_blanks    => false,
+        :force_quotes   => false
+      }
+
       def initialize path, mode='r', options = {}
         self.path= path
-        defaults = {:col_sep => "\t"}
-        options.reverse_merge!(defaults)
+        options.reverse_merge!(DEFAULT_OPTIONS)
         super File.new(@path,mode),options
       end
       
