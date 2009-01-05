@@ -102,6 +102,13 @@ module IMW
       end
     end
 
+    # Creates a task <tt>:initialize</tt> which does nothing but
+    # depends upon all the tasks required to initialize the dataset.
+    def create_initialize_task
+      @last_description = "Set everything up to begin processing the dataset."
+      define_task(IMW::Task, :initialize => [:create_directories, :create_symlinks])
+    end
+
     # Removes all data for this dataset from the data directories.
     def create_delete_data_task
       @last_description = "Deletes all data and directories for this dataset for the peel through package steps."
@@ -110,6 +117,14 @@ module IMW
           FileUtils.remove_dir(path_to(step)) if File.exist?(path_to(step))
         end
       end
+    end
+
+    # Creates a task <tt>:destroy</tt> which does nothing but depends
+    # upon all the tasks required to delete the dataset's data and
+    # remove its footprint from IMW.
+    def create_destroy_task
+      @last_description = "Get rid of all traces of this dataset."
+      define_task(IMW::Task, :destroy => [:delete_data])
     end
     
   end
