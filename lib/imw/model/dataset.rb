@@ -74,8 +74,17 @@ module IMW
     WORKFLOW_STEPS = [:rip, :peel, :munge, :fix, :package]
 
     # Hash to convert between the name of a workflow step and the
-    # directory which stores data for that step.  Not every step in
-    # the workflow has a corresponding data directory.
+    # corresponding directory.
+    WORKFLOW_STEP_DIRS = {
+      :rip     => :ripd,      
+      :peel    => :peeld,
+      :munge   => :mungd,
+      :fix     => :fixd,
+      :package => :pkgd
+    }
+
+    # Hash to convert between the name of a workflow step and the name
+    # of the root of the directory stores data for that step.
     WORKFLOW_STEP_ROOTS = {
       :rip     => :ripd_root,      
       :peel    => :peeld_root,
@@ -93,10 +102,22 @@ module IMW
       :verbose => false
     }
 
-    # Create a new dataset with the given +handle+.
-    def initialize handle
-      @handle = handle
-      @taxon = DEFAULT_TAXON
+    # Create a new dataset.  Arguments include
+    #
+    #   <tt>:taxon</tt> (+DEFAULT_TAXON+):: a string or sequence
+    #   giving the taxonomic classification of the dataset.  See
+    #   <tt>IMW::Dataset.taxon=</tt> for more details on how this
+    #   argument is interpreted.
+    def initialize handle, options = {}
+      defaults = {
+        :taxon => DEFAULT_TAXON
+      }
+      options.reverse_merge! defaults
+
+      # FIXME is this how the attribute writer functions should be
+      # called?
+      self.handle= handle
+      self.taxon= options[:taxon]
 
       # for rake
       @tasks = Hash.new
@@ -108,7 +129,7 @@ module IMW
     end
 
     def handle= thing
-      thing.is_a?(String) ? thing.to_handle : thing
+      @handle = thing.is_a?(String) ? thing.to_handle : thing
     end
 
     # If the +taxon+ given is a sequence then it is directly
@@ -135,10 +156,21 @@ module IMW
 
     # If +place+ is one of the steps in +WORKFLOW_STEP_ROOTS+ then
     # return the directory corresponding to this dataset's files, as
-    # determined by the step and this dataset's taxon, otherwise just
-    # return whatever <tt>IMW.path_to</tt> would return.
+    # determined by the step and this dataset's taxon.
+    #
+    # If +place+ is <tt>:script</tt> then return the directory
+    # corresponding to this dataset's script's.
+    #
+    # Otherwise just return whatever <tt>IMW.path_to</tt> would
+    # return.
     def path_to place
-      WORKFLOW_STEP_ROOTS.key?(place) ? IMW.path_to(WORKFLOW_STEP_ROOTS[place], @taxon) : IMW.path_to(place)
+      if WORKFLOW_STEP_ROOTS.key?(place) then
+        IMW.path_to(WORKFLOW_STEP_ROOTS[place], @taxon, @handle.to_s)
+      elsif place == :script then
+        IMW.path_to(:scripts_root, @taxon, @handle.to_s)
+      else
+        IMW.path_to(place)
+      end
     end
   end
 end
