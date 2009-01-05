@@ -43,7 +43,7 @@ module IMW
       }
       
       def initialize path
-        set_path path
+        self.path= path
         @archive = {
           :program => DEFAULT_FLAGS[:program],
           :create_flags => DEFAULT_FLAGS[:create],
@@ -77,7 +77,7 @@ module IMW
       }
 
       def initialize path
-        set_path path
+        self.path= path
         @compression = {
           :program => DEFAULT_FLAGS[:decompression_program],
           :decompression_flags => DEFAULT_FLAGS[:decompression_flags]
@@ -122,7 +122,7 @@ module IMW
       }
 
       def initialize path
-        set_path path
+        self.path= path
         @compression = {
           :program => DEFAULT_FLAGS[:decompression_program],
           :decompression_flags => DEFAULT_FLAGS[:decompression]
@@ -165,7 +165,7 @@ module IMW
       }
       
       def initialize path
-        set_path path
+        self.path= path
         @archive = {
           :program => :rar,
           :create_flags => DEFAULT_FLAGS[:create],
@@ -199,7 +199,7 @@ module IMW
       }
       
       def initialize path
-        set_path path
+        self.path= path
         @archive = {
           :program => :zip,
           :create_flags => DEFAULT_FLAGS[:create],
@@ -261,7 +261,7 @@ module IMW
       }
 
       def initialize path
-        set_path path
+        self.path= path
         @compression = {
           :program => DEFAULT_FLAGS[:program],
           :decompression_flags => DEFAULT_FLAGS[:decompression]
@@ -291,7 +291,7 @@ module IMW
       }
 
       def initialize path
-        set_path path
+        self.path= path
         raise IMW::Error.new("#{@extname} is not a valid extension for a bzip2 compressed file.") unless @extname == '.bz2'
         @compression = {
           :program => DEFAULT_FLAGS[:program],

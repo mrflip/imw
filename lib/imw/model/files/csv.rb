@@ -27,9 +27,9 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path, options = {}
-        set_path path
-        super File.new(@path),options
+      def initialize path, mode='r', options = {}
+        self.path= path
+        super File.new(@path),mode,options
       end
     end # CSV
 
@@ -41,11 +41,11 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path, options = {}
-        set_path path
+      def initialize path, mode='r', options = {}
+        self.path= path
         defaults = {:col_sep => "\t"}
         options.reverse_merge!(defaults)
-        super File.new(@path), options
+        super File.new(@path),mode,options
       end
       
     end # TSV

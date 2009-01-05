@@ -25,7 +25,7 @@ module IMW
       include IMW::Files::Compressible
 
       def initialize path
-        set_path path
+        self.path= path
       end
 
     end

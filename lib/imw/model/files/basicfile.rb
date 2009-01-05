@@ -24,7 +24,7 @@ module IMW
       attr_reader :path, :dirname, :basename, :extname, :name
 
       protected
-      def set_path(path)
+      def path=(path)
         path = ::File.expand_path path
         raise IMW::PathError.new("#{path} is a directory") if ::File.directory? path
         @path = path      

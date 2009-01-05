@@ -25,7 +25,7 @@ module IMW
       include IMW::Files::Compressible
 
       def initialize path,options = {}
-        set_path path
+        self.path= path
         super Hpricot.make(File.new(@path).read),options
       end
       
