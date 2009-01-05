@@ -18,9 +18,11 @@
 #
 # puts "#{File.basename(__FILE__)}: POST NO BILLS.  Is that funny to anyone but me?  No?" # at bottom
 
+require 'rake'
+require 'fileutils'
 
 require 'imw/utils'
-require 'fileutils'
+
 include FileUtils
 
 module IMW
@@ -72,10 +74,59 @@ module IMW
   ################################################################
   ## DHRUV's CODE -- uses IMW::Dataset and Rake
   ################################################################
-  class Workflow
+  module Workflow
 
-    # Creates a workflow task <tt>:scaffold</tt> to scaffold the
-    # directory & symlink structure for this dataset.
-    def scaffold_dirs
+    # Creates a workflow task <tt>:create_directories</tt> to create
+    # the directory structure for this dataset.
+    def create_directories_task
+      @last_description = "Creates directories for this dataset in the peel through package steps."
+      define_task(Rake::Task, {:create_directories => []}) do
+        [:peel, :munge, :fix, :package].each do |step|
+          puts "I am going to create a path to #{path_to step}"
+        end
+      end
+    end
 
+    # Creates a workflow task <tt>:create_symlinks</tt> to create
+    # the directory structure for this dataset.
+    def create_symlinks_task
+      @last_description = "Creates symlinks pointing from the directory containing scripts for this dataset to the directories for the peel through package steps."
+      define_task(Rake::Task, {:create_symlinks => [:create_directories]})
+    end
+
+  end
 end
+
+
+      
+
+    # Sets the default tasks for this workflow.
+    #
+    # The  of actions that depend upon
+    # one another in a consecutive way (see
+    # <tt>IMW::Workflow::STEPS</tt>).  Each task is a
+    # <tt>Rake::Task</tt> which depends on the one before it.
+    # 
+    # Each task does nothing by default other than create directories
+    # to hold files for this dataset as it undergoes the workflow.
+#     def set_default_tasks
+#       define_task(Rake::Task, {:rip => []})
+#       define_task(Rake::Task, {:peel => :rip})
+#       define_task(Rake::Task, {:munge => :peel})
+#       define_task(Rake::Task, {:fix => :munge})
+#       define_task(Rake::Task, {:package => :fix})
+
+#       comment_default_tasks
+
+#     end
+
+    # Set the initial comments for each of the default tasks.
+#     def comment_default_tasks
+#       self[:rip].comment = "Obtain a dataset from an origin"
+#       self[:peel].comment = "Extract a dataset and prepare it for processing."
+#       self[:munge].comment = "Munge dataset's records into desired form"
+#       self[:fix].comment = "Reconcile records in a dataset"
+#       self[:package].comment = "Package dataset into a final format"
+#     end
+    
+
