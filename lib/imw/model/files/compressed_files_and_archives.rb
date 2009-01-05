@@ -304,7 +304,18 @@ module IMW
         @path.gsub /\.bz2$/, ""
       end
     end # Bz2
-  end
-end
+
+    FILE_REGEXPS[Regexp.new("\.bz2$")]      = IMW::Files::Bz2
+    FILE_REGEXPS[Regexp.new("\.gz$")]       = IMW::Files::Gz
+    FILE_REGEXPS[Regexp.new("\.tar$")]      = IMW::Files::Tar
+    FILE_REGEXPS[Regexp.new("\.tar\.bz2$")] = IMW::Files::TarBz2
+    FILE_REGEXPS[Regexp.new("\.tbz2$")]     = IMW::Files::TarBz2
+    FILE_REGEXPS[Regexp.new("\.tar\.gz$")]  = IMW::Files::TarGz
+    FILE_REGEXPS[Regexp.new("\.tgz$")]      = IMW::Files::TarGz
+    FILE_REGEXPS[Regexp.new("\.rar$")]      = IMW::Files::Rar
+    FILE_REGEXPS[Regexp.new("\.zip$")]      = IMW::Files::Zip
+    
+  end # Files
+end # IMW
 
 

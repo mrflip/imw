@@ -31,6 +31,10 @@ module IMW
       end
 
     end
+
+    FILE_REGEXPS[Regexp.new("\.txt$")] = IMW::Files::Text
+    FILE_REGEXPS[Regexp.new("\.dat$")] = IMW::Files::Text
+    FILE_REGEXPS[Regexp.new("\.ascii$")] = IMW::Files::Text        
   end
 end
 

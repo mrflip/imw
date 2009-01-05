@@ -50,5 +50,8 @@ module IMW
       
     end # TSV
 
+    FILE_REGEXPS[Regexp.new("\.csv$")] = IMW::Files::Csv
+    FILE_REGEXPS[Regexp.new("\.tsv$")] = IMW::Files::Tsv
+
   end
 end

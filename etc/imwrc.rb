@@ -85,22 +85,6 @@ module IMW
     # <tt>IMW::Files::Bz2</tt> should be referenced by the string
     # <tt>"Bz2"</tt>.
     FILE_REGEXPS = {
-      /\.bz2$/      => "Bz2",
-      /\.gz$/       => "Gz",
-      /\.tar\.bz2$/ => "TarBz2",
-      /\.tbz2$/     => "TarBz2",
-      /\.tar\.gz$/  => "TarGz",
-      /\.tgz$/      => "TarGz",
-      /\.rar$/      => "Rar",
-      /\.zip$/      => "Zip",
-      /\.txt$/      => "Text",
-      /\.ascii$/    => "Text",
-      /\.csv$/      => "Csv",
-      /\.tsv$/      => "Tsv",      
-      /\.xml$/      => "Xml",
-      /\.html$/     => "Html",
-      /\.yaml$/     => "Yaml",
-      /\.yml$/      => "Yaml"
     } unless defined? ::IMW::Files::FILE_REGEXPS
   end
 

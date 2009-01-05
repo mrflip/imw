@@ -28,8 +28,10 @@ module IMW
         self.path= path
         super Hpricot.make(File.new(@path).read),options
       end
-      
+
     end
+
+    FILE_REGEXPS["\.xml$"] = IMW::Files::Xml
   end
 end
 

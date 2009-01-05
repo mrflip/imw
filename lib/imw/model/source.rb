@@ -42,11 +42,8 @@ module IMW
     protected
     # Open a file at the given +uri+.
     def self.open_file uri, mode='r', options = {}
-      require 'imw/model/files'
       class_name = IMW::Files::FILE_REGEXPS.dispatch("Text") {|regexp| regexp.match(uri.path)}
-      # FIXME this use of 'eval' can't be the right way to do what i
-      # want?
-      eval("IMW::Files::#{class_name}.new(\"#{uri.path}\",mode,options)")
+      class_name.new(uri.path,mode,options)
     end
   end
 end

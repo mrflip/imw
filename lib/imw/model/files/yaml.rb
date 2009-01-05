@@ -27,6 +27,10 @@ module IMW
       end
       
     end
+
+    FILE_REGEXPS[Regexp.new("\.yaml$")] = IMW::Files::Yaml
+    FILE_REGEXPS[Regexp.new("\.yml$")]  = IMW::Files::Yaml    
+    
   end
 end
 
