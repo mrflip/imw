@@ -13,6 +13,7 @@
 # 
 
 require 'imw/workflow/scaffold'
+require 'imw/workflow/task'
 
 module IMW
 
@@ -21,11 +22,30 @@ module IMW
   # dataset.
   module Workflow
 
+    # The functions called here define the default tasks associated
+    # with each dataset.
     def create_default_tasks
       create_directories_task
       create_symlinks_task
       create_delete_data_task
+      create_workflow_tasks
     end
+
+    # Creates the task dependency chain <tt>:package => :fix => :munge
+    # => :peel => :rip</tt>.
+    def create_workflow_tasks
+      @last_description = "Obtain data from some source."
+      define_task(IMW::Task, :rip     => [])
+      @last_description = "Extract datafiles from ripped data."      
+      define_task(IMW::Task, :peel    => [:rip])
+      @last_description = "Transform records in a dataset."      
+      define_task(IMW::Task, :munge   => [:peel])
+      @last_description = "Reconcile records."      
+      define_task(IMW::Task, :fix     => [:munge])
+      @last_description = "Package dataset in final form."      
+      define_task(IMW::Task, :package => [:fix])
+    end
+      
   end
 end
 
