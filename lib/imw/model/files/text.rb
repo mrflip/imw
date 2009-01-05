@@ -17,19 +17,15 @@ require 'imw/model/files/compressible'
 module IMW
   module Files
 
-    class Text
+    class Text < File
 
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path
+      def initialize path, mode='r', options = {}
         self.path= path
+        super path, mode
       end
-
-      def read
-        File.read(File.expand_path(@path))
-      end
-
     end
 
     FILE_REGEXPS[Regexp.new("\.txt$")] = IMW::Files::Text
