@@ -27,15 +27,17 @@ module IMW
     def create_default_tasks
       create_directories_task
       create_symlinks_task
+      create_initialize_task
       create_delete_data_task
+      create_destroy_task
       create_workflow_tasks
     end
 
     # Creates the task dependency chain <tt>:package => :fix => :munge
-    # => :peel => :rip</tt>.
+    # => :peel => :rip => :initialize</tt>.
     def create_workflow_tasks
       @last_description = "Obtain data from some source."
-      define_task(IMW::Task, :rip     => [])
+      define_task(IMW::Task, :rip     => [:initialize])
       @last_description = "Extract datafiles from ripped data."      
       define_task(IMW::Task, :peel    => [:rip])
       @last_description = "Transform records in a dataset."      
