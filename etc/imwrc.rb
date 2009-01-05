@@ -41,6 +41,7 @@ module IMW
     :data_root  => [:super_root, 'data'],
     :ripd_root  => [:data_root, 'ripd'],
     :peeld_root => [:data_root, 'peeld'],
+    :mungd_root => [:data_root, 'mungd'],    
     :temp_root  => [:data_root, 'temp'],
     :fixd_root  => [:data_root, 'fixd'],
     :pkgd_root  => [:data_root, 'pkgd'],
