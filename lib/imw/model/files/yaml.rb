@@ -11,21 +11,29 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/utils'
 require 'yaml'
+
+require 'imw/utils'
 require 'imw/model/files/text'
 
 module IMW
-
   module Files
 
     class Yaml < IMW::Files::Text
 
-      # Load the content from this YAML file.
-      def read
-        YAML::load_file @path
+      attr_reader :contents
+
+      def initialize path, mode='r', options = {}
+        super path, mode
+        unless mode == 'w' then
+          @contents = YAML.load_file @path
+        end
       end
-      
+
+      # FIXME should a `<<' method be implemented which forces
+      # non-literal content to be converted to yaml before being
+      # written to file?
+
     end
 
     FILE_REGEXPS[Regexp.new("\.yaml$")] = IMW::Files::Yaml
