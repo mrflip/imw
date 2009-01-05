@@ -38,13 +38,13 @@ module IMW
     :imw_lib   => [:imw_root, 'lib'],
 
     # Data
-    :data_root => [:super_root,  'data'],
-    :ripd_root => [:data_root, 'ripd'],
-    :rawd_root => [:data_root, 'rawd'],
-    :temp_root => [:data_root, 'temp'],
-    :fixd_root => [:data_root, 'fixd'],
-    :pkgd_root => [:data_root, 'pkgd'],
-    :log_root  => [:data_root, 'log'],
+    :data_root  => [:super_root, 'data'],
+    :ripd_root  => [:data_root, 'ripd'],
+    :peeld_root => [:data_root, 'peeld'],
+    :temp_root  => [:data_root, 'temp'],
+    :fixd_root  => [:data_root, 'fixd'],
+    :pkgd_root  => [:data_root, 'pkgd'],
+    :log_root   => [:data_root, 'log'],
   }
   PATHS[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
 

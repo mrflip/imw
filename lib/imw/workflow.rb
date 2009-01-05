@@ -50,9 +50,21 @@ module IMW
     # maybe we should stick to <tt>:package</tt>, but still...
     STEPS = [:rip, :peel, :munge, :fix, :package]
 
+    # Hash to convert between the name of a workflow step and the
+    # directory which stores data for that step.  Not every step in
+    # the workflow has a corresponding data directory.
+    STEP_ROOTS = {
+      :rip => :ripd_root,
+      :peel => :peeld_root,
+      :fix => :fixd_root,
+      :package =>:pkgd_root
+    }
+
     attr_reader :options
 
-    # Default options passed to <tt>Rake</tt>.
+    # Default options passed to <tt>Rake</tt>.  Any class including
+    # the <tt>Rake::TaskManager</tt> module must define a constant by
+    # this name.
     DEFAULT_OPTIONS = {
       :dry_run => false,
       :trace => false,

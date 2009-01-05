@@ -18,14 +18,10 @@ module IMW
   # +handle+ which is meant to be unique (at least in the context of
   # a particular pool of datasets, see <tt>IMW::Pool</tt>).
   #
-  # Each dataset also has an +origin+.  If the +origin+ of a dataset
-  # is a +String+ (such as <tt>"local_disk"</tt> or
-  # <tt>edu.myuniversity</tt>) then it refers to where the data
-  # actually came from.
-  #
-  # If it is a +Symbol+ then it is assumed to refer to another
-  # dataset.  It is through this latter construction that datasets can
-  # be built from one another.
+  # Each dataset also has a given a taxonomic classification (or
+  # taxon, which defaults to the value of
+  # <tt>IMW::Dataset::DEFAULT_TAXON</tt>) which determines where files
+  # are kept during processing.
   #
   # Each dataset also has a +workflow+ which leverages the
   # functionality of Rake[http://rake.rubyforge.org/] to manage tasks
@@ -33,45 +29,50 @@ module IMW
   # dependencies.
   class Dataset
 
-    attr_reader :handle, :workflow
-    attr_accessor :origin
+    # The default taxon assigned to a dataset.
+    DEFAULT_TAXON = ["misc"]
 
-    # Locations where this dataset keeps its instructions, logging
-    # output, or temporary files, respectively.
-    PLACES = [:instructions,:log,:dump]
+    attr_reader :handle, :workflow, :taxon
 
     # Create a new dataset with the given +handle+.
     def initialize handle
       @handle = handle.to_sym
       @workflow = IMW::Workflow.new
-      create_directory_structure
+      @taxon = DEFAULT_TAXON
     end
 
-    # Returns the path to the directory corresponding to +place+.
-    # +place+ can be a step in the workflow (see
-    # <tt>IMW::Workflow::STEPS</tt>) or a specific place (see
-    # <tt>IMW::Dataset::PLACES</tt>).
-    def path_to place
-      if IMW::Workflow::STEPS.include?(place) then
-        File.join(IMW::DIRECTORIES[place], @handle.to_s)
-      elsif PLACES.include?(place) then
-        File.join(IMW::DIRECTORIES[place],@handle.to_s)
+    # If the +taxon+ given is a sequence then it is directly
+    # interpreted as a taxon.
+    #
+    # If it is a string, then an attempt is made to interpret it as a
+    # pathname of a file within the <tt>IMW::PATHS[:scripts_root]</tt>
+    # directory from which the taxon can be determined.  This makes it
+    # simple to declare the taxon from a file by passing in the
+    # +__FILE__+ variable.  If the string does not represent such a
+    # path, then it itself is taken as the taxon.
+    def taxon= thing
+      if thing.is_a? String then
+        if thing.include?(IMW.path_to(:scripts_root)) then
+          scripts_dir_length = IMW.path_to(:scripts_root).length
+          @taxon = File.dirname(thing).slice(scripts_dir_length,thing.length - scripts_dir_length).split("/")
+        else
+          @taxon = [thing]
+        end
       else
-        raise IMW::PathError.new("There is no directory for this dataset corresponding to `#{place}'.")
+        @taxon = thing
       end
     end
 
-    # Create workflow tasks to create the basic directory structure
-    # for this dataset.
-    #
-    # Note: no directories will actually be created until the workflow
-    # for this dataset is invoked.
-    def create_directory_structure
-      IMW::Workflow::STEPS.each do |step|
-        @workflow[step].enhance do
-          FileUtils.mkdir_p(path_to(step)) unless File.exist?(path_to(step))
-          FileUtils.ln_s(path_to(step),File.join(path_to(:instructions),step.to_s)) unless File.exist?(File.join(path_to(:instructions),step.to_s))
-        end
+    # If +place+ is one of the steps in
+    # <tt>IMW::Workflow::STEP_ROOTS</tt> then return the directory
+    # corresponding to this dataset's files, as determined by the step
+    # and this dataset's taxon, otherwise just return whatever
+    # <tt>IMW.path_to</tt> would return.
+    def path_to place
+      if IMW::Workflow::STEP_ROOTS.key?(place) then
+        IMW.path_to IMW::Workflow::STEP_ROOTS[place], @taxon
+      else
+        IMW.path_to place
       end
     end
 
