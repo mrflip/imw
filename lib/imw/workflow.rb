@@ -24,6 +24,7 @@ module IMW
     def create_default_tasks
       create_directories_task
       create_symlinks_task
+      create_delete_data_task
     end
   end
 end
