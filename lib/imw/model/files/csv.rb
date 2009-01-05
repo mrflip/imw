@@ -29,7 +29,7 @@ module IMW
 
       def initialize path, mode='r', options = {}
         self.path= path
-        super File.new(@path),mode,options
+        super File.new(@path,mode),options
       end
     end # CSV
 
@@ -45,7 +45,7 @@ module IMW
         self.path= path
         defaults = {:col_sep => "\t"}
         options.reverse_merge!(defaults)
-        super File.new(@path),mode,options
+        super File.new(@path,mode),options
       end
       
     end # TSV
