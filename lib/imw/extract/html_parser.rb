@@ -1,4 +1,4 @@
-require 'imw/extract/hpricot'
+require 'imw/utils/extensions/hpricot'
 require 'imw/extract/html_parser/matcher'
 #
 # h4. HTML Extractor
