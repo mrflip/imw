@@ -1,4 +1,4 @@
-require 'imw/extract/line_parser'
+require 'imw/parsers/line_parser'
 module IMW
   class FlatFileParser < LineOrientedFileParser
     attr_accessor :cartoon, :cartoon_re

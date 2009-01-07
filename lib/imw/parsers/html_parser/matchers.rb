@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/extract/html_parser/matcher.rb -- utility classes for html parser
+# h2. lib/imw/parsers/html_parser/matcher.rb -- utility classes for html parser
 #
 # == About
 #
@@ -186,6 +186,7 @@ module IMW
         matcher ? matcher.match(val) : val
       end
     end
+
     
     class MatchRegexpRepeatedly < Matcher
       attr_accessor :re

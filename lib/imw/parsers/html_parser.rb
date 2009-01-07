@@ -1,5 +1,7 @@
-require 'imw/utils/extensions/hpricot'
-require 'imw/extract/html_parser/matcher'
+#
+# h2. lib/imw/parsers/html_parser.rb -- html parser
+#
+# == About
 #
 # h4. HTML Extractor
 #
@@ -179,9 +181,22 @@ require 'imw/extract/html_parser/matcher'
 #        :address => { :street => "53 Evergreen Terr.", :city => "Springfield" },
 #        :tags    => ["bathroom", "wall"] },
 #     ]
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+#
+# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+
+require 'imw/parsers/html_parser/matcher'
+
 class IMW::HTMLParser
+
   include IMW::HTMLParserMatcher
+
   attr_accessor :parse_tree
+
   #
   # Parse Tree
   #
@@ -197,6 +212,7 @@ class IMW::HTMLParser
   def self.parser_spec
     raise "Override this to create your own parser spec"
   end
+
   #
   # Walk
   #
@@ -244,7 +260,7 @@ class IMW::HTMLParser
     MatchRegexp.new(selector, re)
   end
   def self.re selector, re
-    MatchRegexp.new(selector, re, nil, :one => true)
+    MatchRegexp.new(selector, re, nil, :capture => 1)
   end
   def self.re_all selector, re, matcher=nil
     MatchRegexpRepeatedly.new(selector, re)
