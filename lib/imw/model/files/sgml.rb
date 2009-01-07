@@ -1,9 +1,9 @@
 #
-# h2. lib/imw/model/files/xml.rb -- XML files
+# h2. lib/imw/model/files/sgml.rb -- SGML files
 #
 # == About
 #
-# For XML files.
+# For SGML-derived files, including XML, HTML, &c..
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -24,15 +24,31 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path,options = {}
+      def initialize path,mode='r',options = {}
         self.path= path
         super Hpricot.make(File.new(@path).read),options
       end
 
     end
 
-    FILE_REGEXPS["\.xml$"] = IMW::Files::Xml
+    FILE_REGEXPS[Regexp.new("\.xml$")] = IMW::Files::Xml
+
+    class Html < Hpricot::Doc
+
+      include IMW::Files::BasicFile
+      include IMW::Files::Compressible
+
+      def initialize path,mode='r',options = {}
+        self.path= path
+        super Hpricot.make(File.new(@path).read),options
+      end
+
+    end
+
+    FILE_REGEXPS[Regexp.new("\.html$")] = IMW::Files::Html
+    FILE_REGEXPS[Regexp.new("\.htm$")]  = IMW::Files::Html
   end
+
 end
 
 
