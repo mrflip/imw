@@ -42,7 +42,7 @@ module IMW
     protected
     # Open a file at the given +uri+.
     def self.open_file uri, mode='r', options = {}
-      klass = IMW::Files::FILE_REGEXPS.dispatch("Text") {|regexp| regexp.match(uri.path)}
+      klass = IMW::Files::FILE_REGEXPS.dispatch(IMW::Files::Text) {|regexp| regexp.match(uri.path)}
       klass.new(uri.path,mode,options)
     end
   end
