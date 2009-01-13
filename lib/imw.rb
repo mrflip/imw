@@ -19,6 +19,7 @@ require 'YAML' unless defined?('YAML') # some stupid collision with datamapper m
 require 'imw/boot'
 require 'imw/utils'
 require 'imw/model'
+require 'imw/parsers'
 
 #
 # Gem Dependencies:
