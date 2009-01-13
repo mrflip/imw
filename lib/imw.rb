@@ -3,9 +3,9 @@
 #
 # == About
 #
-# This file is the entry-point to the IMW library.  It starts up by
-# loading up all the other required files, including those responsible
-# for parsing configuration settings and setting initial constants.
+# This file is the entry-point to the IMW library.  It loads a minimal
+# setup.  Optional components can be loaded by calling the function
+# <tt>IMW::imw_components</tt>.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
@@ -19,7 +19,7 @@ require 'YAML' unless defined?('YAML') # some stupid collision with datamapper m
 require 'imw/boot'
 require 'imw/utils'
 require 'imw/model'
-require 'imw/parsers'
+require 'imw/components'
 
 #
 # Gem Dependencies:
