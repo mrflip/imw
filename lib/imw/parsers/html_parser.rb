@@ -189,7 +189,7 @@
 #
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
-require 'imw/parsers/html_parser/matcher'
+require 'imw/parsers/html_parser/matchers'
 
 class IMW::HTMLParser
 
