@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/sgml.rb -- SGML files
+# h2. lib/imw/files/sgml.rb -- SGML files
 #
 # == About
 #
@@ -12,9 +12,11 @@
 # 
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
-require 'imw/utils'
-require 'imw/model/files/text'
 require 'hpricot'
+
+require 'imw/utils'
+require 'imw/files/basicfile'
+require 'imw/files/compressible'
 
 module IMW
   module Files

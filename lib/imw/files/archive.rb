@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/archive.rb -- describes archives of files
+# h2. lib/imw/files/archive.rb -- describes archives of files
 #
 # == About
 #
@@ -34,15 +34,14 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 # 
+# puts "#{File.basename(__FILE__)}: Put it all in one place so that when something goes wrong you'll know it immediately.  You'll regret it, but at least you'll know." # at bottom
 
 require 'fileutils'
 
 require 'imw/utils'
 
 module IMW
-
   module Files
-
     module Archive
 
       attr_reader :archive
@@ -124,11 +123,8 @@ module IMW
       def archive_contents_string_to_array string
         string.split("\n")
       end
-      
     end
-    
   end
-    
 end
 
-# puts "#{File.basename(__FILE__)}: Put it all in one place so that when something goes wrong you'll know it immediately.  You'll regret it, but at least you'll know." # at bottom
+

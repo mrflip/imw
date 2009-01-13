@@ -1,9 +1,24 @@
-require 'rubygems'
+#
+# h2. lib/imw/dataset/datamapper.rb -- extensions to datamapper for datasets
+#
+# == About
+#
+# The DataMapper[http://datamapper.org/] library is an ORM for Ruby
+# which is lighter than ActiveRecord[http://ar.rubyonrails.com/] and
+# the like.  It is the ORM that IMW is designed to work natively with.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+#
+# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+
+require 'imw/utils'
 require 'dm-core'
 require 'dm-ar-finders'
 require 'dm-aggregates'
 require 'dm-serializer'
-
 
 module DataMapper
   # Connect to a remote database
@@ -29,8 +44,9 @@ module DataMapper
 
 
   module Model
-    # find or creat the resource matching search attributes
-    # and in either case set the updateable attributes
+    
+    # Find or create the resource matching search attributes and in
+    # either case set the update-able attributes.
     def update_or_create(search_attributes, updateable_attributes = {})
       if (resource = first(search_attributes))
         resource.update_attributes updateable_attributes
@@ -39,5 +55,6 @@ module DataMapper
       end
       resource
     end
+    
   end
 end

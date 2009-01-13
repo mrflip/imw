@@ -15,6 +15,7 @@ require 'imw/utils/log'
 require 'imw/utils/config'
 require 'imw/utils/paths'
 require 'imw/utils/misc'
+require 'imw/utils/components'
 require 'imw/utils/extensions/core'
 
 # puts "#{File.basename(__FILE__)}: Early economists thought they would measure the utility of an action in units of `utils'.  Really." # at bottom

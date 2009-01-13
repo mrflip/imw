@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/yaml.rb -- describes yaml files
+# h2. lib/imw/files/yaml.rb -- describes yaml files
 #
 # == About
 #
@@ -14,7 +14,7 @@
 require 'yaml'
 
 require 'imw/utils'
-require 'imw/model/files/text'
+require 'imw/files/text'
 
 module IMW
   module Files

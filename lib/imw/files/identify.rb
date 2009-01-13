@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/identify.rb -- identifies files by extension
+# h2. lib/imw/files/identify.rb -- identifies files by extension
 #
 # == About
 #
@@ -10,23 +10,6 @@
 # 
 
 require 'imw/utils'
-
-# require 'imw/model/files/text'
-
-# require 'imw/model/files/zip'
-# require 'imw/model/files/rar'
-# require 'imw/model/files/tar'
-
-# require 'imw/model/files/tarbz2'
-# require 'imw/model/files/targz'
-
-# require 'imw/model/files/gz'
-# require 'imw/model/files/bz2'
-
-# require 'imw/model/files/csv'
-
-# require 'imw/model/files/xml'
-# require 'imw/model/files/html'
 
 module IMW
   module Files

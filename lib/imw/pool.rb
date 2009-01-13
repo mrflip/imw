@@ -1,16 +1,18 @@
 #
-# h2. lib/imw/model/pool.rb -- describes collections of datasets
+# h2. lib/imw/pool.rb -- describes collections of datasets
 #
 # == About
 #
+# Implements a class for managing all the datasets in the IMW.
 #
 # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 #
+# puts "#{File.basename(__FILE__)}: You dip your Monkeywrench into the whirling maelstrom of Charybdis and pull out...a carton of tube socks! " # at bottom
 
-require 'imw/model/dataset'
+require 'imw/dataset'
 require 'imw/utils'
 require 'imw/utils/extensions/find'
 
@@ -56,4 +58,4 @@ module IMW
 
 end
 
-# puts "#{File.basename(__FILE__)}: You dip your Monkeywrench into the whirling maelstrom of Charybdis and pull out...a carton of tube socks! " # at bottom
+

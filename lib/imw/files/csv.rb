@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/csv.rb -- CSV, TSV files
+# h2. lib/imw/files/csv.rb -- CSV, TSV files
 #
 # == About
 #
@@ -13,8 +13,10 @@
 # 
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
-require 'imw/model/files/basicfile'
 require 'fastercsv'
+
+require 'imw/files/basicfile'
+require 'imw/files/compressible'
 
 module IMW
   module Files

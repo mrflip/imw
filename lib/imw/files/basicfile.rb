@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/file.rb -- base class for files 
+# h2. lib/imw/files/file.rb -- base class for files 
 #
 # == About
 #
@@ -10,15 +10,14 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 #
+# puts "#{File.basename(__FILE__)}: At the very bottom of the office building, wedged between a small boulder and a rotting log you see a weathered manilla file folder.  The writing on the tab is too faded to make out." # at bottom
 
 require 'fileutils'
 
 require 'imw/utils'
 
 module IMW
-
   module Files
-
     module BasicFile
 
       attr_reader :path, :dirname, :basename, :extname, :name
@@ -88,11 +87,8 @@ module IMW
         FileUtils.mv @path,path
         self.class.new(path)
       end
-
     end
-
   end
-
 end
 
-# puts "#{File.basename(__FILE__)}: At the very bottom of the office building, wedged between a small boulder and a rotting log you see a weathered manilla file folder.  The writing on the tab is too faded to make out." # at bottom
+

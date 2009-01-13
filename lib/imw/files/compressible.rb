@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files//compressible.rb -- compression module
+# h2. lib/imw/files//compressible.rb -- compression module
 #
 # == About
 #
@@ -20,15 +20,14 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 # 
+# puts "#{File.basename(__FILE__)}: Why is it that when you squeeze a lemon you get lemonade but when you squeeze a banana you just get a mess?" # at bottom
 
 require 'fileutils'
 
 require 'imw/utils'
 
 module IMW
-
   module Files
-
     module Compressible
 
       # Known compression programs.
@@ -106,4 +105,4 @@ module IMW
     end
   end
 end
-# puts "#{File.basename(__FILE__)}: Why is it that when you squeeze a lemon you get lemonade but when you squeeze a banana you just get a mess?" # at bottom
+

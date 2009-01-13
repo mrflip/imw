@@ -1,3 +1,19 @@
+#
+# h2. lib/imw/parsers/line_parser.rb -- line parser
+#
+# == About
+#
+# Implements a relatively unsophisticated line-by-line parser for
+# files.  Meant to be subclassed to create a more powerful and useful
+# parser.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+#
+# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+
 module IMW
   class LineOrientedFileParser
     attr_accessor :skip_head

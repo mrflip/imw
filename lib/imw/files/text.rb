@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/text.rb -- describes text files
+# h2. lib/imw/files/text.rb -- describes text files
 #
 # == About
 #
@@ -11,8 +11,8 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/model/files/basicfile'
-require 'imw/model/files/compressible'
+require 'imw/files/basicfile'
+require 'imw/files/compressible'
 
 module IMW
   module Files

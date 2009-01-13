@@ -1,4 +1,21 @@
+#
+# h2. lib/imw/parsers/flat_file_parser.rb -- flat file parser
+#
+# == About
+#
+# Implements a parser for flat files which takes simple "cartoon"
+# descriptions of the (oftentimes weird) format of each line.
+#
+# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+# Copyright:: Copyright (c) 2008 infochimps.org
+# License::   GPL 3.0
+# Website::   http://infinitemonkeywrench.org/
+#
+# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
+
+
 require 'imw/parsers/line_parser'
+
 module IMW
   class FlatFileParser < LineOrientedFileParser
     attr_accessor :cartoon, :cartoon_re

@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/binary.rb -- binary files
+# h2. lib/imw/files/binary.rb -- binary files
 #
 # == About
 #
@@ -12,9 +12,9 @@
 #
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
-
 require 'imw/utils'
-require 'imw/model/files/basicfile'
+require 'imw/files/basicfile'
+require 'imw/files/compressible'
 
 module IMW
   module Files
@@ -29,6 +29,5 @@ module IMW
       end
 
     end
-    
   end
 end

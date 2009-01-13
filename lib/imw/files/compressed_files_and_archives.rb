@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/compressed_files_and_archives.rb -- require farm
+# h2. lib/imw/files/compressed_files_and_archives.rb -- require farm
 #
 # == About
 #
@@ -13,10 +13,10 @@
 #
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
-require 'imw/model/files/basicfile'
-require 'imw/model/files/compressible'
-require 'imw/model/files/archive'
-require 'imw/model/files/compressed_file'
+require 'imw/files/basicfile'
+require 'imw/files/compressible'
+require 'imw/files/archive'
+require 'imw/files/compressed_file'
 
 module IMW
   module Files

@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/model/files/compressed_file.rb -- class describing compressed files
+# h2. lib/imw/files/compressed_file.rb -- class describing compressed files
 #
 # == About
 #
@@ -31,8 +31,9 @@
 # puts "#{File.basename(__FILE__)}: Have you ever folded up the wrapper of a soda straw into a little accordian shape and let a drop of water soak into it?" # at bottom
 
 require 'fileutils'
-require 'imw/model/files/basicfile'
-require 'imw/model/files/identify'
+
+require 'imw/files/basicfile'
+require 'imw/files/identify'
 require 'imw/utils'
 
 module IMW
