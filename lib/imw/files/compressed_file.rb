@@ -33,7 +33,6 @@
 require 'fileutils'
 
 require 'imw/files/basicfile'
-require 'imw/files/identify'
 require 'imw/utils'
 
 module IMW
@@ -61,7 +60,7 @@ module IMW
       def decompress!
         raise IMW::PathError.new("cannot decompress #{@path}, doesn't exist!") unless exist?
         FileUtils.cd(@dirname) { IMW.system decompression_command }
-        IMW::Files.identify(decompressed_path)
+        IMW.open(decompressed_path)
       end
 
       # Decompress this file in its present directory, overwriting any
@@ -77,7 +76,7 @@ module IMW
         ensure
           FileUtils.mv(@path + 'copy',@path)
         end
-        IMW::Files.identify(decompressed_path)
+        IMW.open(decompressed_path)
       end
 
     end
