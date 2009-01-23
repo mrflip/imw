@@ -46,6 +46,7 @@ module IMW
     include IMW::Workflow
 
     attr_reader :handle, :taxon, :options
+    attr_accessor :data
 
     # The default taxon assigned to a dataset.
     DEFAULT_TAXON = ["misc"]
