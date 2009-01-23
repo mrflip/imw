@@ -26,6 +26,26 @@ module IMW
         self.path= path
         super path, mode
       end
+
+      # Return the contents of this text file as a string.  If given a
+      # block, then pass each line of the string to the block.
+      def load &block
+        f = File.new(@path)
+        if block
+          f.each_line {|line| yield line}
+        else
+          f.read
+        end
+      end
+
+      # Dump +data+ to this file as a string.
+      #
+      # FIXME should we worry about the fact that this is ugly for
+      # nested Ruby structures?
+      def dump data
+        File.open(@path,'w') {|f| f.write(data)}
+      end
+
     end
 
     FILE_REGEXPS[Regexp.new("\.txt$")] = IMW::Files::Text
