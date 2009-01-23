@@ -24,7 +24,7 @@ module IMW
 
       protected
       def path=(path)
-        path = ::File.expand_path path
+        path = IMW.path_to(path)
         raise IMW::PathError.new("#{path} is a directory") if ::File.directory? path
         @path = path      
         @dirname = ::File.dirname @path
