@@ -47,7 +47,7 @@ module IMW
       end
 
       # Delete this file.
-      def rm
+      def rm!
         raise IMW::PathError.new("cannot delete #{@path}, doesn't exist!") unless exist?
         FileUtils.rm @path
       end
