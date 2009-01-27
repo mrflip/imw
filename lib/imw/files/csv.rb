@@ -41,49 +41,51 @@ module IMW
       }
         
       def initialize path, mode='r', options = {}
-        self.path= path
-        options.reverse_merge!(self.class::DEFAULT_OPTIONS)
-        super File.new(@path,mode),options
-      end
-
-      # Return the contents of this CSV file as an array of arrays.
-      # If given a block, then yield each row of the outer array to
-      # the block.
-      def load &block
-        if block
-          each_line {|line| yield line}
+        options.reverse_merge!(self.class::DEFAULT_OPTIONS)        
+        if File.exist?(File.expand_path(path)) then
+          self.path= path
+          super File.new(@path,mode),options
         else
-          entries
+          super path,options
         end
       end
 
-      # Dump +data+ to this file.  Will close the I/O stream for this
-      # file.
+      # Return the contents of this CSV file as an array of arrays.
+      def load
+        entries
+      end
+
+      # Dump +data+ to this file.
       #
-      # FIXME should we have an option here to not close the I/O
-      # stream but leave it open for further dumping until someone
-      # calls +close+?
-      def dump data
+      # Options include:
+      # <tt>:flush</tt> (true):: flush the file buffer, writing it to disk
+      # <tt>:close</tt> (true):: close the file after writing +data+
+      def dump data, options = {}
+        options.reverse_merge!({:close => true, :flush => true})
         data.each {|row| self << row}
-        self.close
+        self.flush if options[:flush]
+        self.close if options[:close]
+        self
       end
     end
 
     # Represents a file of comma-separated values (CSV).  This class
     # is a subclass of <tt>FasterCSV</tt> so the methods of that
     # library are available for use.
+    #
+    # See <tt>IMW::Files::TabularDataFile</tt> for more complete
+    # documentation.
     class Csv < TabularDataFile
     end
 
     # Represents a file of tab-separated values (TSV).  This class
     # is a subclass of <tt>FasterCSV</tt> so the methods of that
     # library are available for use.
+    #
+    # See <tt>IMW::Files::TabularDataFile</tt> for more complete
+    # documentation.
     class Tsv < TabularDataFile
-
-      # Default options to be passed to
-      # FasterCSV[http://fastercsv.rubyforge.org/]; see its
-      # documentation for more information.
-      DEFAULT_OPTIONS[:col_sep] = "\t"
+      DEFAULT_OPTIONS = {:col_sep => "\t"}.reverse_merge DEFAULT_OPTIONS
     end
 
     FILE_REGEXPS[Regexp.new("\.csv$")] = IMW::Files::Csv
