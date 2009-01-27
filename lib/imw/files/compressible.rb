@@ -79,7 +79,7 @@ module IMW
       def compress! program = :bzip2
         raise IMW::PathError.new("cannot compress #{@path}, doesn't exist!") unless exist?
         FileUtils.cd(@dirname) { IMW.system(self.compression_command(program)) }
-        self.compressed_file_path program
+        IMW.open(self.compressed_file_path(program))
       end
 
       # Compress this file in its present directory, overwriting any
@@ -99,7 +99,7 @@ module IMW
         ensure
           FileUtils.mv(self.path + 'copy',self.path)
         end
-        self.compressed_file_path program        
+        IMW.open(self.compressed_file_path(program))
       end
       
     end
