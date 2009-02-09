@@ -80,7 +80,7 @@ module IMW
     end
     add_path :dset, dset_path
     add_path :me,   [:scripts_root, :dset]
-    [:rawd, :temp, :fixd, :log, :ripd].each do |seg|
+    [:rawd, :tmp, :fixd, :log, :ripd].each do |seg|
       add_path seg, [:me, seg.to_s]
     end
   end

@@ -13,7 +13,7 @@ module IMW
   #     rawd => /data/rawd/foo/bar/baz
   #
   def scaffold_dset_dirs
-    [:rawd, :temp, :fixd, :log].each do |seg|
+    [:rawd, :tmp, :fixd, :log].each do |seg|
       unless File.exist?(path_to(seg))
         seg_dir = path_to(pathseg_root(seg), :dset)
         mkdir_p seg_dir
