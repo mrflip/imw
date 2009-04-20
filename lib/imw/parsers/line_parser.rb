@@ -15,50 +15,48 @@
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
 module IMW
-  class LineOrientedFileParser
-    attr_accessor :skip_head
-    # the Struct factory each record will be mapped to
-    attr_accessor :factory
 
-    #
-    #
-    # +:fields+         List of symbols giving field names produced by each line.
-    # +:factory+        -OR- a class to act as factory for each record
-    # +:skip_head+      Initial lines to skip in file
-    #
+  # This is an abstract class for a line-oriented file parser.  It can
+  # be used to read and emit lines sequentially from a file.
+  #
+  #   parser = LineOrientedFileParser.new :skip_first => 1 # skip first line when parsing
+  #   file = File.new '/path/to/my/data.dat'
+  #
+  #   # return an array of lines transformed by the block
+  #   transformed_lines = parser.parse file do |line|
+  #     # ...
+  #   end
+  #
+  # More complicated parsing is handled by classes which subclass this
+  # one.
+  class LineOrientedFileParser
+
+    # The number of lines to skip on each file parsed.
+    attr_accessor :skip_first
+
+
+    # If called with the option <tt>:skip_first</tt> then skip the
+    # corresponding number of lines at the beginning of the file when
+    # parsing.
     def initialize(options)
-      self.skip_head = options[:skip_head] || 0
-      case
-      when options.include?(:factory)
-        self.factory = options[:factory]
-      when options.include?(:fields)
-        self.factory = Struct.new(*options[:fields].map(&:to_sym))
-      else
-        raise "Need either a factory (can be nil) or field names"
-      end
+      self.skip_first = options[:skip_first] || 0
     end
 
-    #
-    #
-    def parse lines, &block
-      skip_lines lines, self.skip_head
+    def parse file, &block
+      skip_lines file, self.skip_first
+      self.respond_to?(:parse_line) ? 
       case
       when block && factory
-        lines.map{|line| yield self.factory.new(line) }
+        file.map{|line| yield self.factory.new(line) }
       when block && !factory
-        lines.map{|line| yield line }
+        file.map{|line| yield line }
       else # no block -- better be a factory
         lines.map{|line|       self.factory.new(line) }
       end
     end
 
   protected
-    #
+
     # Skip (unconditionally) a given number of lines in the file
-    #
-    def skip_lines file, n_lines
-      return unless file
-      n_lines.times do file.gets end
-    end
   end
 end

@@ -35,15 +35,16 @@ module IMW
   #   IMW.load_components :datamapper, :flat_file_parser
   def self.load_components *args
     args.each do |component_name|
-      thing_to_require = IMW::COMPONENTS[component_name]
-      if thing_to_require.is_a? String then
-        require thing_to_require
-      elsif thing_to_require.is_a? Array then
-        IMW.load_components *thing_to_require
-      elsif thing_to_require.is_a? Symbol then
-        IMW.load_components thing_to_require
-      else
-        raise IMW::Error.new("#{component_name} is an invalid IMW component.  See IMW::COMPONENTS.")
+      begin
+        require component_name.to_s
+      rescue LoadError
+        component = IMW::COMPONENTS[component_name]
+        raise IMW::Error.new("#{component_name} is an invalid IMW component.  See IMW::COMPONENTS.") unless component        
+        if component.is_a? Array then
+          IMW.load_components *component
+        else
+          IMW.load_components component
+        end
       end
     end
   end

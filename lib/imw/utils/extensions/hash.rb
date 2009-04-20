@@ -196,6 +196,23 @@ class Hash
     match = self.keys.find(nil,&block)
     match ? self[match] : default
   end
+
+
+  # Recurses through the pairs of this Hash collecting all String or
+  # Symbol "terminal" nodes.
+  def terminals &block
+    terminals = []
+    each_value do |value|
+      if value.respond_to? :terminals then
+        terminals += value.terminals
+      else
+        terminals << value
+      end
+    end
+    terminals.map! {|terminal| yield terminal } if block
+    terminals
+  end
+  
 end
 
 # puts "#{File.basename(__FILE__)}: To each improvement there corresponds another, yes?" # at bottom
