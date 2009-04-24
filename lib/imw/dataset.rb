@@ -165,7 +165,7 @@ module IMW
   # By default, the tasks associated with a dataset are blank.  All of
   # IMW's functionality is available without defining tasks.  Tasks
   # simply provide a convenient scaffold for building a data
-  # transformation.
+  # transformation upon.
   #
   # Similarly, there is no requirement to use the directory structure
   # outlined above.  IMW's methods accept plain filenames and do the
