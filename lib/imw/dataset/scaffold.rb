@@ -22,7 +22,7 @@ require 'rake'
 require 'fileutils'
 
 require 'imw/utils'
-require 'imw/workflow/task'
+require 'imw/dataset/task'
 
 include FileUtils
 

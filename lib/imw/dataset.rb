@@ -16,7 +16,7 @@ require 'rake'
 require 'ostruct'
 
 require 'imw/utils'
-require 'imw/workflow'
+require 'imw/dataset/workflow'
 require 'imw/dataset/loaddump'
 require 'imw/dataset/stats'
 

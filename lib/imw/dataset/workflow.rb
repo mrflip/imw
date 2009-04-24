@@ -12,8 +12,8 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-require 'imw/workflow/scaffold'
-require 'imw/workflow/task'
+require 'imw/dataset/scaffold'
+require 'imw/dataset/task'
 
 module IMW
 
