@@ -41,13 +41,9 @@ module IMW
       }
         
       def initialize path, mode='r', options = {}
-        options.reverse_merge!(self.class::DEFAULT_OPTIONS)        
-        if File.exist?(File.expand_path(path)) then
-          self.path= path
-          super File.new(@path,mode),options
-        else
-          super path,options
-        end
+        options.reverse_merge!(self.class::DEFAULT_OPTIONS)
+        self.path= path
+        super File.new(@path,mode),options
       end
 
       # Return the contents of this CSV file as an array of arrays.
@@ -61,7 +57,7 @@ module IMW
       # <tt>:flush</tt> (true):: flush the file buffer, writing it to disk
       # <tt>:close</tt> (true):: close the file after writing +data+
       def dump data, options = {}
-        options.reverse_merge!({:close => true, :flush => true})
+        options = options.reverse_merge :close => true, :flush => true
         data.each {|row| self << row}
         self.flush if options[:flush]
         self.close if options[:close]
