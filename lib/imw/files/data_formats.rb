@@ -16,4 +16,4 @@
 require 'imw/files/csv'
 require 'imw/files/sgml'
 require 'imw/files/yaml'
-
+require 'imw/files/json'
