@@ -30,7 +30,7 @@ module IMW
     :super_root => File.expand_path(File.join(File.dirname(__FILE__), '../..')),
 
     # Data processing scripts
-    :scripts_root => [:super_root, 'infochimps-data'],
+    :scripts_root => [:super_root, 'pool'],
 
     # the imw library
     :imw_bin   => [:imw_root, 'bin'],
@@ -38,16 +38,8 @@ module IMW
     :imw_lib   => [:imw_root, 'lib'],
 
     # Data
-    :data_root  => [:super_root, 'data'],
-    :ripd_root  => [:data_root, 'ripd'],
-    :peeld_root => [:data_root, 'peeld'],
-    :mungd_root => [:data_root, 'mungd'],    
-    :temp_root  => [:data_root, 'temp'],
-    :fixd_root  => [:data_root, 'fixd'],
-    :pkgd_root  => [:data_root, 'pkgd'],
-    :log_root   => [:data_root, 'log'],
+    :data_root  => [:super_root, 'data']
   }
-  PATHS[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
 
   # Default time format.
   STRFTIME_FORMAT = "%Y%m%d-%H%M%S" unless defined? STRFTIME_FORMAT
@@ -62,19 +54,6 @@ module IMW
     :bzip2 => "bzip2",
     :wget => "wget"
   } unless defined? ::IMW::EXTERNAL_PROGRAMS
-
-  # Directories where IMW will write and look for files.
-  DIRECTORIES = {
-    :instructions => File.expand_path("~/imw/instructions"),
-    :log => File.expand_path("~/imw/data/log"),
-    :dump => "/tmp/imw",
-    :data => File.expand_path("~/imw/data"),
-    :rip => File.expand_path("~/imw/data/ripd"),
-    :parse => File.expand_path("~/imw/data/prsd"),
-    :munge => File.expand_path("~/imw/data/mungd"),
-    :fix => File.expand_path("~/imw/data/fixd"),
-    :package => File.expand_path("~/imw/data/pkgd")
-  } unless defined? ::IMW::DIRECTORIES
 
   module Files
     # Regular expressions which match pathnames to the name of the
@@ -95,7 +74,6 @@ module IMW
     :collection => "Infochimps",
     :mediatype => "Data"
   }
-
 
 end
 

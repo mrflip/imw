@@ -75,13 +75,13 @@ module IMW
     private
     def set_paths
       @paths = {}
-      add_path :me, File.dirname(eval('__FILE__'))
+      add_path :self, File.dirname(eval('__FILE__'))
     end
   end
     
-  def path_to *pathsegs
+  def self.path_to *pathsegs
     begin
-      path = Pathname.new path_to_helper(*pathsegs)
+      path = Pathname.new IMW.path_to_helper(*pathsegs)
       path.absolute? ? File.expand_path(path) : path.to_s
     rescue Exception => e
       raise("Can't find path to '#{pathsegs}': #{e}");
@@ -89,7 +89,7 @@ module IMW
   end
 
   private
-  def path_to_helper *pathsegs # :nodoc:
+  def self.path_to_helper *pathsegs # :nodoc:
     # +path_to_helper+ handles the recursive calls for +path_to+.
     expanded = pathsegs.flatten.compact.map do |pathseg|
       case
@@ -103,12 +103,12 @@ module IMW
   public
 
   # Adds a symbolic path for expansion by +path_to+.
-  def add_path sym, *pathsegs
+  def self.add_path sym, *pathsegs
     IMW::PATHS[sym] = pathsegs.flatten
   end
 
   # Removes a symbolic path for expansion by +path_to+.
-  def remove_path sym
+  def self.remove_path sym
     IMW::PATHS.delete sym if IMW::PATHS.include? sym
   end
 end
