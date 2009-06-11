@@ -24,7 +24,7 @@ module IMW
 
       protected
       def path=(path)
-        path = IMW.path_to(path)
+        path = File.expand_path(IMW.path_to(path))
         raise IMW::PathError.new("#{path} is a directory") if ::File.directory? path
         @path = path      
         @dirname = ::File.dirname @path
@@ -54,49 +54,27 @@ module IMW
       end
 
       # Copy this file to +path+.
-      #
-      # Options include
-      #
-      # <tt>:force</tt> (false):: raise an error if the new extension
-      # isn't the same as the old extension unless <tt>:force</tt> is
-      # true.
-      def cp path, opts = {}
-        opts.reverse_merge!({:force => false})
+      def cp path
         raise IMW::PathError.new("cannot copy from #{@path}, doesn't exist!") unless exist?
-        new_extname = find_extname path
-        unless new_extname == @extname
-          raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") unless opts[:force]
-        end
         FileUtils.cp @path,path
         self.class.new(path)
       end
 
       # Copy this file to +dir+.
-      def cp_to_dir dir, opts = {}
-        cp File.join(File.expand_path(dir),basename), opts
+      def cp_to_dir dir
+        cp File.join(File.expand_path(dir),basename)
       end
 
       # Move this file to +path+.
-      #
-      # Options include
-      #
-      # <tt>:force</tt> (false):: raise an error if the new extension
-      # isn't the same as the old extension unless <tt>:force</tt> is
-      # true.
-      def mv path, opts = {}
-        opts.reverse_merge!({:force => false})        
+      def mv path
         raise IMW::PathError.new("cannot move from #{@path}, doesn't exist!") unless exist?
-        new_extname = find_extname path
-        unless new_extname == @extname
-          raise IMW::Error.new("new extension #{new_extname} isn't the same as the old extension #{@extname}") unless opts[:force]
-        end
         FileUtils.mv @path,path
         self.class.new(path)
       end
 
       # Move this file to +dir+.
-      def mv_to_dir dir, opts = {}
-        mv File.join(File.expand_path(dir),basename), opts
+      def mv_to_dir dir
+        mv File.join(File.expand_path(dir),basename)
       end
         
     end
