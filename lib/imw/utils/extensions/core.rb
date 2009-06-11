@@ -31,10 +31,10 @@ module IMW
   # A replacement for the standard system call which raises an
   # IMW::SystemCallError if the command fails as well as printing the
   # command appended to the end of <tt>error_message</tt>.
-  def self.system(command, error_message = nil)
+  def self.system *commands
+    command = commands.flatten.join ' '
     Kernel.system(command)
-    message = error_message ? "#{error_message} (#{command})" : command
-    raise IMW::SystemCallError.new(message) unless $?.success?
+    raise IMW::SystemCallError.new(command) unless $?.success?
   end
 end
 
