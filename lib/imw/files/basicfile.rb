@@ -29,15 +29,16 @@ module IMW
         @path = path      
         @dirname = ::File.dirname @path
         @basename = ::File.basename @path
-        @extname = find_extname @path
+        @extname = find_extname
         @name = @basename[0,@basename.length - @extname.length]
       end
 
-      # Some files (like <tt>.tar.gz</tt>) have an extension which is
-      # not what <tt>File.extname</tt> will provide so this method is
-      # used instead.  It can be overridden by a subclass.
-      def find_extname path
-        ::File.extname path
+      # Some files (like <tt>.tar.gz</tt>) have an "extra" extension.
+      # Classes in the <tt>IMW::Files</tt> module should define a
+      # class method <tt>extname</tt> which returns the their full
+      # extension.
+      def find_extname
+        self.class.respond_to?(:extname) ? self.class.extname(@path) : ::File.extname(@path)
       end
 
       public
@@ -70,6 +71,11 @@ module IMW
         self.class.new(path)
       end
 
+      # Copy this file to +dir+.
+      def cp_to_dir dir, opts = {}
+        cp File.join(File.expand_path(dir),basename), opts
+      end
+
       # Move this file to +path+.
       #
       # Options include
@@ -87,6 +93,12 @@ module IMW
         FileUtils.mv @path,path
         self.class.new(path)
       end
+
+      # Move this file to +dir+.
+      def mv_to_dir dir, opts = {}
+        mv File.join(File.expand_path(dir),basename), opts
+      end
+        
     end
   end
 end

@@ -42,9 +42,23 @@ require 'imw/utils'
 
 module IMW
   module Files
+
+    module BasicFile
+
+      # Is this file an archive?
+      def archive?
+        false
+      end
+    end
+    
     module Archive
 
       attr_reader :archive
+
+      # Is this file an archive?
+      def archive?
+        true
+      end
 
       private
       # Ensure a path is stripped of any leading directory prefixes

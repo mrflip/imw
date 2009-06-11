@@ -37,6 +37,6 @@ module IMW
         super data.to_json
       end
     end
-    FILE_REGEXPS[Regexp.new("\.json$")] = IMW::Files::Json
+    FILE_REGEXPS << [/\.json$/, IMW::Files::Json]
   end
 end

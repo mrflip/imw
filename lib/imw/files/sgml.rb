@@ -35,12 +35,12 @@ module IMW
 
     class Xml < Sgml
     end
-    FILE_REGEXPS[Regexp.new("\.xml$")] = IMW::Files::Xml
+    FILE_REGEXPS << [/\.xml$/, IMW::Files::Xml]
 
     class Html < Sgml
     end
-    FILE_REGEXPS[Regexp.new("\.html$")] = IMW::Files::Html
-    FILE_REGEXPS[Regexp.new("\.htm$")]  = IMW::Files::Html
+    FILE_REGEXPS << [/\.html$/, IMW::Files::Html]
+    FILE_REGEXPS << [/\.htm$/,  IMW::Files::Html]
   end
 
 end

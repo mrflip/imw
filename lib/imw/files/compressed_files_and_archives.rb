@@ -96,6 +96,15 @@ module IMW
           @path.gsub /\.tgz$/, ".tar"
         end
       end
+
+      def self.extname path
+        if /\tar\.gz$/.match path then
+          "tar.gz"
+        elsif /\.tgz$/.match path then
+          "tgz"
+        end
+      end
+      
     end # TarGz
 
     # A class to wrap a <tt>tar.bz2</tt> archive.
@@ -118,6 +127,14 @@ module IMW
         :archive_list_flags => "-tf",
         :archive_extract_flags => "-xjf"
       }
+
+      def self.extname path
+        if /\.tar\.bz2$/.match path then
+          "tar.bz2"
+        elsif /\.tbz2$/.match path then
+          "tbz2"
+        end
+      end
       
       def initialize path, *args
         self.path= path
@@ -299,15 +316,19 @@ module IMW
       end
     end # Bz2
 
-    FILE_REGEXPS[Regexp.new("\.bz2$")]      = IMW::Files::Bz2
-    FILE_REGEXPS[Regexp.new("\.gz$")]       = IMW::Files::Gz
-    FILE_REGEXPS[Regexp.new("\.tar$")]      = IMW::Files::Tar
-    FILE_REGEXPS[Regexp.new("\.tar\.bz2$")] = IMW::Files::TarBz2
-    FILE_REGEXPS[Regexp.new("\.tbz2$")]     = IMW::Files::TarBz2
-    FILE_REGEXPS[Regexp.new("\.tar\.gz$")]  = IMW::Files::TarGz
-    FILE_REGEXPS[Regexp.new("\.tgz$")]      = IMW::Files::TarGz
-    FILE_REGEXPS[Regexp.new("\.rar$")]      = IMW::Files::Rar
-    FILE_REGEXPS[Regexp.new("\.zip$")]      = IMW::Files::Zip
+
+    # make sure that tar.bz2 precedes bz2 and so on...
+    FILE_REGEXPS << [/\.tar\.bz2$/, IMW::Files::TarBz2]
+    FILE_REGEXPS << [/\.tbz2$/,     IMW::Files::TarBz2]
+    
+    FILE_REGEXPS << [/\.tar\.gz$/,  IMW::Files::TarGz]
+    FILE_REGEXPS << [/\.tgz$/,      IMW::Files::TarGz]
+
+    FILE_REGEXPS << [/\.tar$/,      IMW::Files::Tar]    
+    FILE_REGEXPS << [/\.bz2$/,      IMW::Files::Bz2]    
+    FILE_REGEXPS << [/\.gz$/,       IMW::Files::Gz]    
+    FILE_REGEXPS << [/\.rar$/,      IMW::Files::Rar]
+    FILE_REGEXPS << [/\.zip$/,      IMW::Files::Zip]
     
   end # Files
 end # IMW

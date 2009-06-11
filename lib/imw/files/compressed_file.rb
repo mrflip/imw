@@ -37,6 +37,13 @@ require 'imw/utils'
 
 module IMW
   module Files
+
+    module BasicFile
+      def compressed?
+        false
+      end
+    end
+    
     # A module which provides methods for decompressing a compressed
     # file.  An including should define an instance variable
     # <tt>@compression</tt> with two keys:
@@ -46,6 +53,11 @@ module IMW
     module CompressedFile
 
       attr_reader :compression
+
+      # Is this file compressed?
+      def compressed?
+        true
+      end
       
       # Construct the command passed to the shell to decompress this
       # file.

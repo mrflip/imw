@@ -63,8 +63,7 @@ module IMW
     # <tt>IMW::Files</tt> prefix, i.e. - the file object
     # <tt>IMW::Files::Bz2</tt> should be referenced by the string
     # <tt>"Bz2"</tt>.
-    FILE_REGEXPS = {
-    } unless defined? ::IMW::Files::FILE_REGEXPS
+    FILE_REGEXPS = [] unless defined? ::IMW::Files::FILE_REGEXPS
   end
 
   # Default settings for uploading datasets to

@@ -84,8 +84,8 @@ module IMW
       DEFAULT_OPTIONS = {:col_sep => "\t"}.reverse_merge DEFAULT_OPTIONS
     end
 
-    FILE_REGEXPS[Regexp.new("\.csv$")] = IMW::Files::Csv
-    FILE_REGEXPS[Regexp.new("\.tsv$")] = IMW::Files::Tsv
+    FILE_REGEXPS << [/\.csv$/, IMW::Files::Csv]
+    FILE_REGEXPS << [/\.tsv$/, IMW::Files::Tsv]
 
   end
 end
