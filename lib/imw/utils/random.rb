@@ -181,7 +181,8 @@ module IMW
     # <tt>:num_files</tt> (10):: the maximum number of files per directory
     # <tt>:force</tt> (false):: force overwriting of existing directories
     def self.directory_with_files(directory,options = {})
-      options.reverse_merge!({:extensions => ['txt','csv','dat','xml'],:max_depth => 3,:force => false,:starting_depth => 1, :num_files => 3})
+      directory = File.expand_path(directory)
+      options.reverse_merge!({:extensions => ['txt','csv','dat'],:max_depth => 3,:force => false,:starting_depth => 1, :num_files => 3})
       depth = options[:starting_depth]
 
       if File.exist?(directory) then
