@@ -60,14 +60,6 @@ module IMW
         true
       end
 
-      private
-      # Ensure a path is stripped of any leading directory prefixes
-      # shared by the directory of this archive.
-      def strip_leading_directories path
-        # the `+1' is to make it a relative path
-        return path.starts_with?(@dirname) ? path.slice(@dirname.length + 1,path.length) : path
-      end
-      
       public
       # Create this archive containing the given +paths+, which can be
       # either a string or list of strings to be interpreted as paths
@@ -80,7 +72,6 @@ module IMW
         raise IMW::Error.new("An archive already exists at #{@path}.") if exist? and not opts[:force]
         raise IMW::Error.new("Cannot create an archive of type #{@extname}") unless @archive[:create_flags]
         paths = [paths] if paths.class == String
-        paths.map! {|file| strip_leading_directories file}
         IMW.system IMW::EXTERNAL_PROGRAMS[@archive[:program]], @archive[:create_flags], @path, *paths
         self
       end
@@ -91,17 +82,14 @@ module IMW
       def append paths
         raise IMW::Error.new("Cannot append to an archive of type #{@archive[:program]}.") unless @archive[:append_flags]
         paths = [paths] if paths.class == String
-        paths.map! {|file| strip_leading_directories file}
         IMW.system IMW::EXTERNAL_PROGRAMS[@archive[:program]], @archive[:append_flags], @path, *paths
         self
       end
 
       # Extract the files from this archive to the current directory.
       def extract
-        puts "IMW thinks it wants to extract a file #{@path}"
         raise IMW::Error.new("Cannot extract, #{@path} does not exist.") unless exist?
         program = (@archive[:unarchiving_program] or @archive[:program])
-        puts "imw thinks it's in #{`pwd`}"
         IMW.system IMW::EXTERNAL_PROGRAMS[program], @archive[:extract_flags], @path
       end
 
