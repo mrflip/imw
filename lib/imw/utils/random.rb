@@ -21,46 +21,42 @@ module IMW
 
   module Random
 
-    STRING_CHARS = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ']
-    TEXT_CHARS = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ',"\n"]
-    FILENAME_CHARS = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + ["-","_"]
-    EXTENSIONS = {
-      /\.csv$/ => :csv_file,
-      /\.xml$/ => :xml_file,
-      /\.html$/ => :html_file,
-      /\.tar$/ => :tar_file,
-      /\.tar\.gz$/ => :targz_file,
+    STRING_CHARS        = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ']
+    TEXT_CHARS          = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ',"\n"]
+    FILENAME_CHARS      = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + ["-","_"]
+    FILENAME_MAX_LENGTH = 9
+    TEXT_MAX_LENGTH     = 1024
+    EXTENSIONS          = {
+      /\.csv$/      => :csv_file,
+      /\.xml$/      => :xml_file,
+      /\.html$/     => :html_file,
+      /\.tar$/      => :tar_file,
+      /\.tar\.gz$/  => :targz_file,
       /\.tar\.bz2$/ => :tarbz2_file,
-      /\.rar$/ => :rar_file,
-      /\.zip$/ => :zip_file
+      /\.rar$/      => :rar_file,
+      /\.zip$/      => :zip_file
     }
 
     private
-    # Return a random filename of the given maximum +length+.
-    def self.filename_without_extension(length = 9)
-      # filenames shouldn't begin with a hyphen
-      first_char = FILENAME_CHARS.random_element
-      while first_char == '-' do
-        first_char = FILENAME_CHARS.random_element
+    # Return a random filename.  Optional +length+ to set the maximum
+    # length of the filename returned.
+    def self.basename options = {}
+      length = (options[:length] or FILENAME_MAX_LENGTH)
+      (1..length).map { |i| FILENAME_CHARS.random_element }.join
+
+      # filenames beginning with hyphens suck
+      while (filename[0,1] == '-') do
+        filename[0] = FILENAME_CHARS.random_element
       end
-
-      name = first_char
-      rand(length).times { name +=  FILENAME_CHARS.random_element }
-      name
+      filename
     end
-
-    # Return a random string of text up to the maximum +length+.
-    def self.text_string length
-      string = ""
-      rand(length).times { string += STRING_CHARS.random_element }
-      string
-    end
-
-    # Return a random paragraph of text up to the maximum +length+.
-    def self.text_para length
-      text = ""
-      rand(length).times { text += TEXT_CHARS.random_element }
-      text
+      
+    # Return a random string of text up.  Control the length with
+    # optional +length+ and also the presence of +newlines+.
+    def self.text options = {}
+      length = (options[:length] or TEXT_MAX_LENGTH)
+      char_pool = options[:newlines] ? TEXT_CHARS : STRING_CHARS
+      (1..length).map { |i| char_pool.random_element }.join
     end
 
     public
@@ -86,10 +82,10 @@ module IMW
       f = File.open(filename,'w')
       rand(num_rows).times do # rows
         num_columns.times do # columns
-          f.write(text_string(entry_length)) # entry
+          f.write(text(:length => entry_length)) # entry
           f.write ','
         end
-        f.write(text_string(entry_length)) # last entry
+        f.write(text(:length => entry_length)) # last entry
         f.write("\n")
       end
       f.close
@@ -102,7 +98,7 @@ module IMW
     # been implemented.
     def self.xml_file(filename, length = 5000)
       f = File.open(filename,'w')
-      f.write "<xml>" + text_string(length) + "</xml>"
+      f.write "<xml>" + text(:length => length) + "</xml>"
       f.close
     end
 
@@ -113,10 +109,9 @@ module IMW
     # the tree has not been implemented.
     def self.html_file(filename, title_length = 100, body_length = 5000)
       f = File.open(filename,'w')
-      f.write "<html><head><title>" + text_string(title_length) + "</title></head><body>" + text_string(body_length) + "</body></html>"
+      f.write "<html><head><title>" + string(title_length) + "</title></head><body>" + string(body_length) + "</body></html>"
       f.close
     end
-
 
     # Create a tar archive at the given +filename+ containing random
     # files.
@@ -196,7 +191,7 @@ module IMW
       
       (rand(options[:num_files]) + 2).times do
         ext = options[:extensions].random_element
-        name = filename_without_extension
+        name = basename
         if ext == 'dir' then
           if depth <= options[:max_depth] then
             newd = directory + '/' + name
