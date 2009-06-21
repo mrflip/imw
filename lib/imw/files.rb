@@ -57,7 +57,7 @@ module IMW
     protected
     # Open a file at the given +uri+.
     def self.open_file uri, mode='r', options = {}
-      klass = IMW::Files::FILE_REGEXPS.find(lambda {[nil,IMW::Files::Text]}) {|regexp,file_class| regexp.match(uri.path) }.last
+      klass = (options.delete(:as) or IMW::Files::FILE_REGEXPS.find(lambda {[nil,IMW::Files::Text]}) {|regexp,file_class| regexp.match(uri.path) }.last)
       klass.new(uri.path,mode,options)
     end
   end
