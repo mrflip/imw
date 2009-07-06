@@ -1,7 +1,7 @@
 #
 # h2. lib/imw/foo -- desc lib
 #
-# action::    desc action     
+# action::    desc action
 #
 # == About
 #
@@ -12,38 +12,40 @@
 # Copyright:: Copyright (c) 2008 infochimps.org
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
-# 
+#
 
 require 'imw/utils'
 require 'uri'
 
 module IMW
 
+  #
   # Parse +source+ and return an appropriate data object.
   #
   #   IMW.open("/tmp/test.csv") # => IMW::Files::Csv("/tmp/test.csv')
   #
   # The objects returned by <tt>IMW.open</tt> present a uniform
   # interface across the different source data formats they handle.
+  #
   def self.open source
     uri = URI.parse(source)
     method = {
       "file" => :open_file,
       "http" => :open_http
-    }.dispatch(:open_file) {|scheme| uri.scheme == scheme}
+    }.dispatch(:open_file){|scheme| uri.scheme == scheme}
     IMW::Source.send(method,uri)
   end
-  
 
+  #
   # The <tt>IMW::Source</tt> module contains functions which wrap the
   # various kinds of data sources.
+  #
   module Source
-
     protected
     # Open a file at the given +uri+.
     def self.open_file(uri)
       require 'imw/model/files'
-      class_name = IMW::Files::FILE_REGEXPS.dispatch("Text") {|regexp| regexp.match(uri.path)}
+      class_name = IMW::Files::FILE_REGEXPS.dispatch("Text"){|regexp| regexp.match(uri.path) }
       # FIXME this use of 'eval' can't be the right way to do what i
       # want?
       eval("IMW::Files::#{class_name}.new(\"#{uri.path}\")")
