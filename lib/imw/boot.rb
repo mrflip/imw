@@ -1,5 +1,5 @@
 #
-# h2. lib/imw/utils/boot.rb -- startup functions
+# h2. lib/imw/boot.rb -- startup functions
 #
 # == About
 #

@@ -26,9 +26,9 @@ Struct.class_eval do
   def merge *args
     self.dup.merge! *args
   end
-  def merge! hashlike, &block
+  def merge! hsh, &block
     raise "can't handle block arg yet" if block
-    hashlike.each_pair{|k,v| self[k] = v }
+    hsh.each_pair{|key, val| self.send("#{key}=", val) if self.respond_to?("#{key}=") }
     self
   end
   alias_method :update, :merge!
@@ -38,5 +38,4 @@ Struct.class_eval do
   def indifferent_merge! hashlike, &block
     merge! hashlike.reject{|k,v| ! self.members.include?(k.to_s) }
   end
-
 end
