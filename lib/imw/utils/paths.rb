@@ -37,7 +37,7 @@ module IMW
   # IMW.path_to :ripd, :mlb_08, 'month_06', 'day_08', 'miniscoreboard.xml'
   # => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
   #
-  def path_to *pathsegs
+  def self.path_to *pathsegs
     begin
       path = Pathname.new path_to_helper(*pathsegs)
       path.absolute? ? File.expand_path(path) : path.to_s
@@ -46,8 +46,12 @@ module IMW
     end
   end
 
+  def path_to *pathsegs
+    self.path_to *pathsegs
+  end
+
   private
-  def path_to_helper *pathsegs # :nodoc:
+  def self.path_to_helper *pathsegs # :nodoc:
     # +path_to_helper+ handles the recursive calls for +path_to+.
     expanded = pathsegs.flatten.compact.map do |pathseg|
       case

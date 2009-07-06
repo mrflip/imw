@@ -30,7 +30,7 @@ module IMW
     :super_root => File.expand_path(File.join(File.dirname(__FILE__), '../..')),
 
     # Data processing scripts
-    :scripts_root => [:super_root, 'pool'],
+    :scripts_root => [:super_root, 'infochimps-data'],
 
     # the imw library
     :imw_bin   => [:imw_root, 'bin'],
@@ -38,13 +38,14 @@ module IMW
     :imw_lib   => [:imw_root, 'lib'],
 
     # Data
-    :data_root => [:super_root,  'data'],
-    :ripd_root => [:data_root, 'ripd'],
-    :rawd_root => [:data_root, 'rawd'],
-    :temp_root => [:data_root, 'temp'],
-    :fixd_root => [:data_root, 'fixd'],
-    :pkgd_root => [:data_root, 'pkgd'],
-    :log_root  => [:data_root, 'log'],
+    :data_root  => [:super_root, 'data'],
+    :ripd_root  => [:data_root, 'ripd'],
+    :peeld_root => [:data_root, 'peeld'],
+    :mungd_root => [:data_root, 'mungd'],
+    :temp_root  => [:data_root, 'temp'],
+    :fixd_root  => [:data_root, 'fixd'],
+    :pkgd_root  => [:data_root, 'pkgd'],
+    :log_root   => [:data_root, 'log'],
   }
   PATHS[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
 
@@ -84,23 +85,23 @@ module IMW
     # <tt>IMW::Files::Bz2</tt> should be referenced by the string
     # <tt>"Bz2"</tt>.
     FILE_REGEXPS = {
-      /\.bz2$/      => "Bz2",
-      /\.gz$/       => "Gz",
-      /\.tar\.bz2$/ => "TarBz2",
-      /\.tbz2$/     => "TarBz2",
-      /\.tar\.gz$/  => "TarGz",
-      /\.tgz$/      => "TarGz",
-      /\.rar$/      => "Rar",
-      /\.zip$/      => "Zip",
-      /\.txt$/      => "Text",
-      /\.ascii$/    => "Text",
-      /\.csv$/      => "Csv",
-      /\.tsv$/      => "Tsv",      
-      /\.xml$/      => "Xml",
-      /\.html$/     => "Html",
-      /\.yaml$/     => "Yaml",
-      /\.yml$/      => "Yaml"
     } unless defined? ::IMW::Files::FILE_REGEXPS
+      # /\.bz2$/      => "Bz2",
+      # /\.gz$/       => "Gz",
+      # /\.tar\.bz2$/ => "TarBz2",
+      # /\.tbz2$/     => "TarBz2",
+      # /\.tar\.gz$/  => "TarGz",
+      # /\.tgz$/      => "TarGz",
+      # /\.rar$/      => "Rar",
+      # /\.zip$/      => "Zip",
+      # /\.txt$/      => "Text",
+      # /\.ascii$/    => "Text",
+      # /\.csv$/      => "Csv",
+      # /\.tsv$/      => "Tsv",
+      # /\.xml$/      => "Xml",
+      # /\.html$/     => "Html",
+      # /\.yaml$/     => "Yaml",
+      # /\.yml$/      => "Yaml"
   end
 
   # Default settings for uploading datasets to

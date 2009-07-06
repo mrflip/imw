@@ -15,38 +15,25 @@
 # require 'rake'
 require 'ostruct'
 require 'imw/utils'
+require 'imw/workflow/scaffold'
+require 'imw/workflow/task'
 
 module IMW
 
-  # The <tt>IMW::Workflow</tt> object leverages the functionality of
-  # the Rake module for IMW.  It mixes in the
-  # <tt>Rake::TaskManager</tt> module which allows an including class
-  # to manipulate collections of tasks.
-  #
-  # The <tt>Rake::TaskManager</tt> class requires an including class
-  # <tt>Example</tt> to define an <tt>OpenStruct</tt> object
-  # <tt>Example.options</tt> which individual <tt>Rake::Task</tt>'s
-  # check before performing their actions.
-  class Workflow
+  # The <tt>IMW::Workflow</tt> module is a collection of methods which
+  # define Rake[http://rake.rubyforge.org/] tasks specialized for each
+  # dataset.
+  module Workflow
 
-    include Rake::TaskManager
-
-    # The steps in the IMW workflow, in order from first to last.
-    STEPS = [:rip, :parse, :munge, :fix, :package]
-
-    attr_reader :options
-
-    # Default options
-    DEFAULT_OPTIONS = {
-      :dry_run => false,
-      :trace => false,
-      :verbose => false
-    }
-
-    def initialize
-      super
-      @options = OpenStruct.new(DEFAULT_OPTIONS)
-      set_default_tasks
+    # The functions called here define the default tasks associated
+    # with each dataset.
+    def create_default_tasks
+      create_directories_task
+      create_symlinks_task
+      create_initialize_task
+      create_delete_data_task
+      create_destroy_task
+      create_workflow_tasks
     end
 
     # Sets the default tasks in this workflow.
@@ -64,9 +51,7 @@ module IMW
       define_task(Rake::Task, {:munge => :parse})
       define_task(Rake::Task, {:fix => :munge})
       define_task(Rake::Task, {:package => :fix})
-
       comment_default_tasks
-
     end
 
     # Set the initial comments for each of the default tasks.
@@ -78,8 +63,22 @@ module IMW
       self[:package].comment = "Package dataset into a final format"
     end
 
+    # Creates the task dependency chain <tt>:package => :fix => :munge
+    # => :peel => :rip => :initialize</tt>.
+    def create_workflow_tasks
+      @last_description = "Obtain data from some source."
+      define_task(IMW::Task, :rip     => [:initialize])
+      @last_description = "Extract datafiles from ripped data."
+      define_task(IMW::Task, :peel    => [:rip])
+      @last_description = "Transform records in a dataset."
+      define_task(IMW::Task, :munge   => [:peel])
+      @last_description = "Reconcile records."
+      define_task(IMW::Task, :fix     => [:munge])
+      @last_description = "Package dataset in final form."
+      define_task(IMW::Task, :package => [:fix])
+    end
+
   end
 end
-
 
 # puts "#{File.basename(__FILE__)}: You find your flow next to a tall tree.  Ahhhh."

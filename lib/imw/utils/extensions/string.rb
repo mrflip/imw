@@ -40,7 +40,7 @@ class String
   # Returns the handle corresponding to this string as a symbol:
   #
   #   "A possible title of a dataset".handle #=> :a_possible_title_of_a_dataset
-  def handle
+  def to_handle
     self.downcase.underscore.to_sym
   end
 

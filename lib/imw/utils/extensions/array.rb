@@ -93,6 +93,17 @@ class Array
     collection.each_slice(number, &block)
   end
 
+  # Returns a single hash containing the merge of all hashes in this
+  # array.  This is useful when dealing with badly written YAML files.
+  # Only merges hashes at depth zero, i.e. - this isn't recursive.
+  def merge_hashes
+    merged_hash = {}
+    self.each do |element|
+      merged_hash.merge!(element) if element.is_a?(Hash)
+    end
+    merged_hash
+  end
+
 end
 
 # puts "#{File.basename(__FILE__)}: I have a loooong list of complaints.  Firstly, ..." # at bottom
