@@ -20,13 +20,16 @@ module IMW
   module Files
     module BasicFile
 
-      attr_reader :path, :dirname, :basename, :extname, :name
+      attr_reader :uri, :path, :dirname, :basename, :extname, :name
 
       protected
-      def path=(path)
-        path = File.expand_path(IMW.path_to(path))
-        raise IMW::PathError.new("#{path} is a directory") if ::File.directory? path
-        @path = path      
+
+      def uri= uri
+        @uri = case 
+               when uri.is_a?(String); URI.parse(uri)
+               when uri.is_a?(URI::Generic) || uri.superclass.is_a?(URI::Generic); uri
+               end
+        @path = self.uri.path
         @dirname = ::File.dirname @path
         @basename = ::File.basename @path
         @extname = find_extname
@@ -42,21 +45,47 @@ module IMW
       end
 
       public
-      # Is there a real file at the path of this File?
+
+      # Is this file on the local machine (the scheme of the file's URI is nil or 
+      def local?
+        uri.host == 'file' || uri.host.nil?
+      end
+
+      # Is this file on a remote machine?
+      def remot?
+        (! local?)
+      end
+      
+      # Is there a real file at the path of this File?  Will attempt
+      # to open files online too to check.
       def exist?
-        ::File.exist?(@path) ? true : false
+        if local?
+          ::File.exist?(@path) ? true : false
+        else
+          begin
+            open(uri)
+          rescue SocketError
+            false
+          end
+        end
       end
 
       # Delete this file.
       def rm!
-        raise IMW::PathError.new("cannot delete #{@path}, doesn't exist!") unless exist?
+        raise IMW::PathError.new("cannot delete remote file #{uri}")     unless local?
+        raise IMW::PathError.new("cannot delete #{uri}, doesn't exist!") unless exist?
         FileUtils.rm @path
       end
 
       # Copy this file to +path+.
       def cp path
         raise IMW::PathError.new("cannot copy from #{@path}, doesn't exist!") unless exist?
-        FileUtils.cp @path,path
+        if local?
+          FileUtils.cp @path,path
+        else
+          # FIXME better way to do this?
+          File.open(path,'w') { |f| f.write(open(uri)).read }
+        end
         self.class.new(path)
       end
 
@@ -68,7 +97,12 @@ module IMW
       # Move this file to +path+.
       def mv path
         raise IMW::PathError.new("cannot move from #{@path}, doesn't exist!") unless exist?
-        FileUtils.mv @path,path
+        if local?
+          FileUtils.mv @path,path
+        else
+          # FIXME better way to do this?
+          File.open(path,'w') { |f| f.write(open(uri)).read }
+        end
         self.class.new(path)
       end
 

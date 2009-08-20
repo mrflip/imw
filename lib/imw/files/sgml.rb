@@ -17,6 +17,7 @@ require 'hpricot'
 require 'imw/utils'
 require 'imw/files/basicfile'
 require 'imw/files/compressible'
+#require 'imw/parsers/html_parser'
 
 module IMW
   module Files
@@ -26,21 +27,28 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path,mode='r',options = {}
-        self.path= path
-        super Hpricot.make(File.new(@path).read),options
+      def initialize uri, mode='r', options={}
+        self.uri= uri
+        raise IMW::PathError.new("Cannot write to remote file #{uri}") if mode == 'w' && remote?
+        super Hpricot.make(File.new(path).read),options
+      end
+
+      # Parse this file using the IMW HTMLParser.  The parser can
+      # either be passed in directly or constructed from a passed hash
+      # of matchers.
+      def parse *args
+        IMW.load_components :html_parser
+        parser = args.first.is_a?(IMW::HTMLParser) ? args.first : IMW::HTMLParser.new(*args)
+        parser.parse(self)
       end
 
     end
 
     class Xml < Sgml
     end
-    FILE_REGEXPS << [/\.xml$/, IMW::Files::Xml]
-
+    
     class Html < Sgml
     end
-    FILE_REGEXPS << [/\.html$/, IMW::Files::Html]
-    FILE_REGEXPS << [/\.htm$/,  IMW::Files::Html]
   end
 
 end

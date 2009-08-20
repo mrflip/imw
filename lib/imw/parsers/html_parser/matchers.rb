@@ -1,3 +1,6 @@
+
+
+
 #
 # h2. lib/imw/parsers/html_parser/matcher.rb -- utility classes for html parser
 #
@@ -32,10 +35,12 @@ module IMW
       
       attr_accessor :selector
       attr_accessor :matcher
+      attr_accessor :options      
       
-      def initialize selector, matcher=nil
+      def initialize selector, matcher=nil, options={}
         self.selector = selector
         self.matcher  = matcher
+        self.options  = options
       end
 
       def match doc
@@ -59,7 +64,11 @@ module IMW
       def match doc
         doc = Hpricot(doc) if doc.is_a?(String)
         el = doc.at(selector) or return nil
-        matcher ? matcher.match(el) : el.inner_html
+        if matcher
+          matcher.match(el)
+        else
+          options[:html] ? el.inner_html : el.inner_text.strip
+        end
       end
     end
 
@@ -75,7 +84,7 @@ module IMW
       end
       def match doc
         val = super doc
-        self.proc.call(val) if val
+        val ? self.proc.call(val) : self.proc.call(doc)
       end
     end    
 
@@ -99,7 +108,11 @@ module IMW
         if matcher
           subdoc.map{|el| matcher.match(el)}
         else
-          subdoc.map{|el| el.inner_html}
+          if options[:html]
+            subdoc.map{|el| el.inner_html }
+          else
+            subdoc.map{|el| el.inner_text.strip }
+          end
         end
       end
     end

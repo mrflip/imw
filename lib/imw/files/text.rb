@@ -3,55 +3,60 @@
 #
 # == About
 #
-# Base class for text files of various types to subclass from.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-# 
 
+require 'open-uri'
 require 'imw/files/basicfile'
 require 'imw/files/compressible'
 
 module IMW
   module Files
-
-    class Text < File
+    
+    # Used to process text files when no more specialized class is suitable.
+    #
+    #   f = IMW::Files::Text.new '/path/to/my_file.dat'
+    #   f.load do |line|
+    #     # ...
+    #   end
+    #
+    # Missing methods will be passed to the associated file handle
+    # (either IO or StringIO depending on whether the URI passed in
+    # was local or remote) so the usual stuff like read or each_line
+    # still works.
+    class Text
 
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path, mode='r', options = {}
-        self.path= path
-        super path, mode
+      attr_reader :file
+
+      def initialize uri, mode='r', options = {}
+        self.uri= uri
+        raise IMW::PathError.new("Cannot write to remote file #{uri}") if mode == 'w' && remote?
+        @file = open(path, mode)
       end
 
       # Return the contents of this text file as a string.  If given a
       # block, then pass each line of the string to the block.
       def load &block
-        f = File.new(@path)
         if block
-          f.each_line {|line| yield line}
+          file.each_line {|line| yield line}
         else
-          f.read
+          file.read
         end
       end
 
-      # Dump +data+ to this file as a string.
-      #
-      # FIXME should we worry about the fact that this is ugly for
-      # nested Ruby structures?
-      def dump data
-        File.open(@path,'w') {|f| f.write(data)}
+      # Dump +data+ to this file as a string.  Close the file handle
+      # if passed in :close.
+      def dump data, options={}
+        @file.write(data.inspect)
+        @file.close if options[:close]
       end
 
+      def method_missing method, *args
+        @file.send method, *args
+      end
+      
     end
-
-    FILE_REGEXPS << [/\.txt$/,   IMW::Files::Text]
-    FILE_REGEXPS << [/\.dat$/,   IMW::Files::Text]
-    FILE_REGEXPS << [/\.ascii$/, IMW::Files::Text]
-    
   end
 end
 

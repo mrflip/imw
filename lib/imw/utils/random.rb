@@ -14,7 +14,6 @@
 # 
 
 require 'fileutils'
-
 require 'imw/utils'
 
 module IMW
@@ -42,7 +41,7 @@ module IMW
     # length of the filename returned.
     def self.basename options = {}
       length = (options[:length] or FILENAME_MAX_LENGTH)
-      (1..length).map { |i| FILENAME_CHARS.random_element }.join
+      filename = (1..length).map { |i| FILENAME_CHARS.random_element }.join
 
       # filenames beginning with hyphens suck
       while (filename[0,1] == '-') do
@@ -69,10 +68,8 @@ module IMW
 
     # Create a random text file at +filename+ containing a maximum of
     # +length+ characters.
-    def self.text_file(filename, length = 5000)
-      f = File.open(filename,'w')
-      f.write(text_para(length))
-      f.close
+    def self.text_file filename, options = {}
+      File.open(filename,'w') do { |f| f.write text(:newlines => true) }
     end
 
     # Create a comma-separated value file containing random text at
@@ -96,9 +93,23 @@ module IMW
     # At the present moment, this file contains random text in a very
     # boring single-element XML tree.  Randomizing the tree has not
     # been implemented.
-    def self.xml_file(filename, length = 5000)
-      f = File.open(filename,'w')
+    def self.xml_file filename, options = {}
+      options = options.reverse_merge({:max_depth => 5, :starting_depth => 1, :depth => nil, :pretty_print})
+      require 'builder'
+      Builder.XmlMarkup.new do
+        
+      Hpri
+      File.open(filename,'w') do |file|
+        file.write "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        
+
+
+      
+                                      
       f.write "<xml>" + text(:length => length) + "</xml>"
+
+      
+      
       f.close
     end
 
@@ -177,7 +188,7 @@ module IMW
     # <tt>:force</tt> (false):: force overwriting of existing directories
     def self.directory_with_files(directory,options = {})
       directory = File.expand_path(directory)
-      options.reverse_merge!({:extensions => ['txt','csv','dat'],:max_depth => 3,:force => false,:starting_depth => 1, :num_files => 3})
+      options = options.reverse_merge({:extensions => ['txt','csv','dat'],:max_depth => 3,:force => false,:starting_depth => 1, :num_files => 3})
       depth = options[:starting_depth]
 
       if File.exist?(directory) then
@@ -188,10 +199,10 @@ module IMW
         end
       end
       FileUtils.mkdir_p(directory)
-      
+
       (rand(options[:num_files]) + 2).times do
         ext = options[:extensions].random_element
-        name = basename
+        name = self.basename
         if ext == 'dir' then
           if depth <= options[:max_depth] then
             newd = directory + '/' + name
