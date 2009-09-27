@@ -53,28 +53,28 @@ module IMW
     # allows, say, <tt>.tar.gz</tt> to be handled differently from
     # <tt>.gz</tt>.
     EXTENSION_HANDLERS = [
-                          [/./,           :text], # catchall
-                          [/\.txt$/,      :text],                          
-                          [/\.txt$/,      :text],
-                          [/\.dat$/,      :text],
-                          [/\.ascii$/,    :text],
-                          [/\.yaml$/,     :yaml],
-                          [/\.yml$/,      :yaml],
-                          [/\.csv$/,      :csv],
-                          [/\.tsv$/,      :tsv],
-                          [/\.json$/,     :json],
+                          [/./,           :Text], # catchall
+                          [/\.txt$/,      :Text],                          
+                          [/\.txt$/,      :Text],
+                          [/\.dat$/,      :Text],
+                          [/\.ascii$/,    :Text],
+                          [/\.yaml$/,     :Yaml],
+                          [/\.yml$/,      :Yaml],
+                          [/\.csv$/,      :Csv],
+                          [/\.tsv$/,      :Tsv],
+                          [/\.json$/,     :Json],
+                          [/\.bz2$/,      :Bz2],
+                          [/\.gz$/,       :Gz],
                           [/\.tar\.bz2$/, :TarBz2],
                           [/\.tbz2$/,     :TarBz2],
                           [/\.tar\.gz$/,  :TarGz],
                           [/\.tgz$/,      :TarGz],
-                          [/\.tar$/,      :tar],
-                          [/\.bz2$/,      :bz2],
-                          [/\.gz$/,       :gz],
-                          [/\.rar$/,      :rar],
-                          [/\.zip$/,      :zip],
-                          [/\.xml$/,      :xml],
-                          [/\.html$/,     :html],
-                          [/\.htm$/,      :html]
+                          [/\.tar$/,      :Tar],
+                          [/\.rar$/,      :Rar],
+                          [/\.zip$/,      :Zip],
+                          [/\.xml$/,      :Xml],
+                          [/\.html$/,     :Html],
+                          [/\.htm$/,      :Html]
                          ]
     protected
     def self.file_class_for path, options = {}
@@ -86,7 +86,7 @@ module IMW
           break
         end
       end
-      klass.is_a?(Class) ? klass : class_eval(klass.to_s.downcase.capitalize)
+      klass.is_a?(Class) ? klass : class_eval(klass.to_s)
     end
   end
 end

@@ -40,9 +40,9 @@ module IMW
         :force_quotes   => false
       }
         
-      def initialize path, mode='r', options = {}
+      def initialize uri, mode='r', options = {}
         options.reverse_merge!(self.class::DEFAULT_OPTIONS)
-        self.path= path
+        self.uri= uri
         super File.new(@path,mode),options
       end
 

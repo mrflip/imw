@@ -42,8 +42,8 @@ module IMW
         :program => :tar
       }
       
-      def initialize path, *args
-        self.path= path
+      def initialize uri, *args
+        self.uri= uri
         @archive = {
           :program => DEFAULT_FLAGS[:program],
           :create_flags => DEFAULT_FLAGS[:create],
@@ -75,8 +75,8 @@ module IMW
         :archive_extract_flags => "-xzf"
       }
       
-      def initialize path, *args
-        self.path= path
+      def initialize uri, *args
+        self.uri= uri
         @compression = {
           :program => DEFAULT_FLAGS[:decompression_program],
           :decompression_flags => DEFAULT_FLAGS[:decompression_flags]
@@ -124,6 +124,7 @@ module IMW
         :decompression_program => :bzip2,
         :decompression_flags => '-fd',
         :archive_program => :tar,
+        :archive_create_flags => '-cf',
         :archive_list_flags => "-tf",
         :archive_extract_flags => "-xjf"
       }
@@ -136,8 +137,8 @@ module IMW
         end
       end
       
-      def initialize path, *args
-        self.path= path
+      def initialize uri, *args
+        self.uri= uri
         @compression = {
           :program => DEFAULT_FLAGS[:decompression_program],
           :decompression_flags => DEFAULT_FLAGS[:decompression]
@@ -145,7 +146,8 @@ module IMW
         @archive = {
           :program => DEFAULT_FLAGS[:archive_program],
           :list_flags => DEFAULT_FLAGS[:archive_list_flags],
-          :extract_flags => DEFAULT_FLAGS[:archive_extract_flags]
+          :extract_flags => DEFAULT_FLAGS[:archive_extract_flags],
+          :create_flags  => DEFAULT_FLAGS[:archive_create_flags]
         }
       end
 
@@ -157,6 +159,22 @@ module IMW
           @path.gsub /\.tbz2$/, ".tar"
         end
       end
+
+      # Overrides default behvaior of IMW::Files::Archive#create to
+      # compress files after creating them.
+      def create paths, opts={}
+        opts = opts.reverse_merge({:force => false})
+        raise IMW::Error.new("An archive already exists at #{@path}.") if exist? and not opts[:force]
+        paths = [paths] if paths.class == String
+        IMW.system IMW::EXTERNAL_PROGRAMS[@archive[:program]], @archive[:create_flags], path_between_archive_and_compression, *paths
+        IMW.open(path_between_archive_and_compression).compress!(:bzip2)
+      end
+
+      protected
+      def path_between_archive_and_compression
+        File.join(dirname,name + '.tar')
+      end
+      
     end # TarBz2
     
     # A class to wrap a +rar+ archive.
@@ -178,8 +196,8 @@ module IMW
         :extract => "x -o+ -inul"
       }
       
-      def initialize path, *args
-        self.path= path
+      def initialize uri, *args
+        self.uri= uri
         @archive = {
           :program => :rar,
           :create_flags => DEFAULT_FLAGS[:create],
@@ -204,15 +222,15 @@ module IMW
       # The default flags used creating, appending to, listing, and
       # extracting a zip archive.
       DEFAULT_FLAGS = {
-        :create => "-r -q",
-        :append => "-g -q",
+        :create => "-q -r",
+        :append => "-q -g",
         :list => "-l",
-        :extract => "-o -q",
+        :extract => "-q -o",
         :unarchiving_program => :unzip
       }
       
-      def initialize path, *args
-        self.path= path
+      def initialize uri, *args
+        self.uri= uri
         @archive = {
           :program => :zip,
           :create_flags => DEFAULT_FLAGS[:create],
@@ -272,8 +290,8 @@ module IMW
         :decompression => '-fd'
       }
       
-      def initialize path, *args
-        self.path= path
+      def initialize uri, *args
+        self.uri= uri
         @compression = {
           :program => DEFAULT_FLAGS[:program],
           :decompression_flags => DEFAULT_FLAGS[:decompression]
@@ -301,8 +319,8 @@ module IMW
         :decompression => '-fd'
       }
       
-      def initialize path, *args
-        self.path= path
+      def initialize uri, *args
+        self.uri= uri
         raise IMW::Error.new("#{@extname} is not a valid extension for a bzip2 compressed file.") unless @extname == '.bz2'
         @compression = {
           :program => DEFAULT_FLAGS[:program],
