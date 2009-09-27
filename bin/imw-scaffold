@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-$: << File.join(File.dirname(__FILE__), '../lib/')
-require 'imw'
-require 'imw/workflow/scaffold'
-require 'fileutils'; include FileUtils::Verbose; # or include FileUtils::DryRun
-include IMW
-
-
-as_dset ARGV[0], :scaffold => true, :cut_dirs=>1 if ARGV.length >= 1

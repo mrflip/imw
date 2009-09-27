@@ -21,6 +21,8 @@ Echoe.new('imw', '0.1.0') do |p|
   p.author         = "Dhruv Bansal, Philip (flip) Kromer"
   p.email          = "coders@infochimps.org"
   p.ignore_pattern = ["tmp/*", "script/*", "meta/*", "old/*"]
+  p.development_dependencies = []
 end
+
 
 # puts "#{File.basename(__FILE__)}: Line 'em up and knock 'em down." # at bottom
