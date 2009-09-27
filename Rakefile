@@ -11,13 +11,16 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 
-# This task is for running Nick Sieger's "autotest rspec
-# plugin"[http://blog.nicksieger.com/articles/2007/01/30/rspec-autotest-for-standalone-projects].
-namespace :spec do
-  task :autotest do
-    require './spec/rspec_autotest'
-    RspecAutotest.run
-  end
+require 'rubygems'
+require 'rake'
+require 'echoe'
+
+Echoe.new('imw', '0.1.0') do |p|
+  p.description    = "An Infinite Monkeywrench for ripping, transforming, and packaging data."
+  p.url            = "http://github.com/infochimps/imw"
+  p.author         = "Dhruv Bansal, Philip (flip) Kromer"
+  p.email          = "coders@infochimps.org"
+  p.ignore_pattern = ["tmp/*", "script/*", "meta/*", "old/*"]
 end
 
 # puts "#{File.basename(__FILE__)}: Line 'em up and knock 'em down." # at bottom
