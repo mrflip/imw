@@ -32,5 +32,11 @@ Struct.class_eval do
     self
   end
   alias_method :update, :merge!
+  def indifferent_merge  *args, &block
+    self.dup.indifferent_merge! *args
+  end
+  def indifferent_merge! hashlike, &block
+    merge! hashlike.reject{|k,v| ! self.members.include?(k.to_s) }
+  end
 
 end

@@ -1,5 +1,6 @@
-require 'imw/dataset/uri/file_store'
-require 'imw/dataset/uuid'
+require 'imw/utils'
+require 'imw/utils/uuid'
+require 'addressable/uri'
 module Addressable
   #
   # Add the #scrubbed and #revhost calls
@@ -12,30 +13,23 @@ module Addressable
     HOST_HEAD     = '(?:[a-z0-9\-]+\.)+'
     HOST_TLD      = '(?:[a-z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|jobs|museum)'
 
-    def path_with_strip
-      path_str = path_without_strip
-      return '/' if path_str.blank?
-      path_str.gsub!(%r{([^/])/+$},'\1')
-      @path = path_str
-    end
-    alias_method_chain :path, :strip unless defined?(path_without_strip)
-
     def host_valid?
       !!(host =~ %r{\A#{HOST_HEAD}#{HOST_TLD}\z}i)
     end
-
     def path_valid?
       !!(path =~ %r{\A[#{PATH_CHARS}%]*\z})
     end
+    def simple_connection_part?
+      ( ['http', nil].include?(scheme) &&
+        [80,     nil].include?(port) &&
+        (self.to_hash.values_at(:password, :user).join.blank?) )
+    end
 
     #
-    # can the uri be reproduced from its scrubbed representation?
+    # Does this look like a
     #
     def simple?
-      host_valid? &&
-        path_valid? &&
-        (scheme == 'http' && port == 80)  &&
-        self.to_hash.values_at(:password, :user).join.blank?
+      host_valid? && path_valid? && simple_connection_part?
     end
 
     #
@@ -59,3 +53,7 @@ module Addressable
   end
 end
 
+class << Addressable::URI
+  alias_method :encode_segment,   :encode_component    if ! defined?(encode_segment)
+  alias_method :unencode_segment, :unencode_component  if ! defined?(unencode_segment)
+end

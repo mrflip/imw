@@ -14,7 +14,6 @@
 # License::   GPL 3.0
 # Website::   http://infinitemonkeywrench.org/
 #
-require 'pathname'
 
 module IMW
 

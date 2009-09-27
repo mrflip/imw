@@ -27,6 +27,7 @@ require 'imw/dataset/task'
 include FileUtils
 
 module IMW
+  include FileUtils
 
   ################################################################
   ## FLIP'S CODE
@@ -126,6 +127,6 @@ module IMW
       @last_description = "Get rid of all traces of this dataset."
       define_task(IMW::Task, :destroy => [:delete_data])
     end
-    
+
   end
 end

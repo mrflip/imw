@@ -38,7 +38,14 @@ module IMW
     :imw_lib   => [:imw_root, 'lib'],
 
     # Data
-    :data_root  => [:super_root, 'data']
+    :data_root  => [:super_root, 'data'],
+    :ripd_root  => [:data_root, 'ripd'],
+    :peeld_root => [:data_root, 'peeld'],
+    :mungd_root => [:data_root, 'mungd'],
+    :temp_root  => [:data_root, 'temp'],
+    :fixd_root  => [:data_root, 'fixd'],
+    :pkgd_root  => [:data_root, 'pkgd'],
+    :log_root   => [:data_root, 'log'],
   }
 
   # Default time format.

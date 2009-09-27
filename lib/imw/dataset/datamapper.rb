@@ -31,7 +31,7 @@ module DataMapper
   def self.setup_local_connection options
     options = { :handle => :default }.merge options
     params = options.values_at(:protocol, :dbpath, :dbname)
-    DataMapper.setup(options[:handle], "%s://%s/%s" % options)
+    DataMapper.setup(options[:handle], "%s://%s/%s" % params)
   end
 
   # KLUDGE
@@ -56,5 +56,11 @@ module DataMapper
       resource
     end
     
+  end
+
+  # watch SQL log -- must be BEFORE call to db setup
+  def self.logging=(verbosity)
+    verbosity = :debug if (verbosity == true)
+    DataMapper::Logger.new(STDERR, verbosity) if verbosity
   end
 end
