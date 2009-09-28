@@ -43,5 +43,4 @@ tmp/*
 *.tmproj
 TODO (Autosaved).taskpaper
 /vendor/src/**/*
-Manifest
 pkg/*
