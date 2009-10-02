@@ -20,6 +20,7 @@ require 'imw/boot'
 require 'imw/utils'
 require 'imw/dataset'
 require 'imw/files'
+require 'imw/parsers'
 require 'imw/pool'
 require 'imw/rip'
 
