@@ -4,7 +4,6 @@
 # == About
 #
 
-require 'open-uri'
 require 'imw/files/basicfile'
 require 'imw/files/compressible'
 
@@ -32,7 +31,7 @@ module IMW
       def initialize uri, mode='r', options = {}
         self.uri= uri
         raise IMW::PathError.new("Cannot write to remote file #{uri}") if mode == 'w' && remote?
-        @file = open(path, mode)
+        @file = open(uri, mode)
       end
 
       # Return the contents of this text file as a string.  If given a

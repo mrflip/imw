@@ -15,22 +15,23 @@
 require 'hpricot'
 
 require 'imw/utils'
-require 'imw/files/basicfile'
-require 'imw/files/compressible'
-#require 'imw/parsers/html_parser'
+require 'imw/files/text'
 
 module IMW
   module Files
 
-    class Sgml < Hpricot::Doc
+    module Sgml
 
-      include IMW::Files::BasicFile
-      include IMW::Files::Compressible
+      attr_accessor :doc
 
       def initialize uri, mode='r', options={}
-        self.uri= uri
-        raise IMW::PathError.new("Cannot write to remote file #{uri}") if mode == 'w' && remote?
-        super Hpricot.make(File.new(path).read),options
+        super uri, mode, options
+        @doc = Hpricot(open(uri))
+      end
+
+      # Delegate to Hpricot
+      def method_missing method, *args, &block
+        @doc.send method, *args, &block
       end
 
       # Parse this file using the IMW HTMLParser.  The parser can
@@ -44,13 +45,22 @@ module IMW
 
     end
 
-    class Xml < Sgml
+    class Xml < IMW::Files::Text
+      include Sgml
+      def initialize uri, mode='r', options={}
+        super uri, mode, options
+        @doc = Hpricot.XML(open(uri))
+      end
     end
     
-    class Html < Sgml
+    class Html < IMW::Files::Text
+      include Sgml
+      def initialize uri, mode='r', options={}
+        super uri, mode, options
+        @doc = Hpricot(open(uri))
+      end
     end
   end
-
 end
 
 

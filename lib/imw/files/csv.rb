@@ -43,7 +43,7 @@ module IMW
       def initialize uri, mode='r', options = {}
         options.reverse_merge!(self.class::DEFAULT_OPTIONS)
         self.uri= uri
-        super File.new(@path,mode),options
+        super open(uri,mode),options
       end
 
       # Return the contents of this CSV file as an array of arrays.

@@ -13,7 +13,6 @@
 # puts "#{File.basename(__FILE__)}: At the very bottom of the office building, wedged between a small boulder and a rotting log you see a weathered manilla file folder.  The writing on the tab is too faded to make out." # at bottom
 
 require 'fileutils'
-
 require 'imw/utils'
 
 module IMW
@@ -52,7 +51,7 @@ module IMW
       end
 
       # Is this file on a remote machine?
-      def remot?
+      def remote?
         (! local?)
       end
       
@@ -63,7 +62,7 @@ module IMW
           ::File.exist?(@path) ? true : false
         else
           begin
-            open(uri)
+            true if open(uri)
           rescue SocketError
             false
           end

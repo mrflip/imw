@@ -36,8 +36,6 @@
 # 
 # puts "#{File.basename(__FILE__)}: Put it all in one place so that when something goes wrong you'll know it immediately.  You'll regret it, but at least you'll know." # at bottom
 
-require 'fileutils'
-
 require 'imw/utils'
 
 module IMW

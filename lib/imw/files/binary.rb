@@ -15,6 +15,7 @@
 require 'imw/utils'
 require 'imw/files/basicfile'
 require 'imw/files/compressible'
+require 'imw/files/text'
 
 module IMW
   module Files
@@ -24,8 +25,8 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path
-        self.path= path
+      def initialize uri
+        self.uri= uri
       end
 
     end

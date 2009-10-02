@@ -21,8 +21,8 @@ module IMW
 
     class Yaml < IMW::Files::Text
 
-      def initialize path, mode='r', options = {}
-        super path, mode
+      def initialize uri, mode='r', options = {}
+        super uri, mode
       end
 
       # Return the contents of this YAML file.

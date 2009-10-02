@@ -14,12 +14,8 @@
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
 require 'uri'
-
+require 'open-uri'
 require 'imw/utils'
-require 'imw/files/text'
-require 'imw/files/binary'
-require 'imw/files/data_formats'
-require 'imw/files/compressed_files_and_archives'
 
 module IMW
 
@@ -31,8 +27,7 @@ module IMW
   # 
   def self.open path, options = {}
     mode = options[:write] ? 'w' : 'r'
-    klass = Files.file_class_for(path)
-    Files.file_class_for(path).new(path, mode, options)
+    Files.file_class_for(path, options).new(path, mode, options)
   end
 
   def self.open! path, options = {}
@@ -40,6 +35,24 @@ module IMW
   end
 
   module Files
+
+
+    # There is certainly a cleaner way to do this.
+    autoload :Text,   'imw/files/text'
+    autoload :Binary, 'imw/files/binary'
+    autoload :Yaml,   'imw/files/yaml'
+    autoload :Csv,    'imw/files/csv'
+    autoload :Json,   'imw/files/json'
+    autoload :Bz2,    'imw/files/compressed_files_and_archives'
+    autoload :Gz,     'imw/files/compressed_files_and_archives'
+    autoload :Tar,    'imw/files/compressed_files_and_archives'
+    autoload :TarBz2, 'imw/files/compressed_files_and_archives'
+    autoload :TarGz,  'imw/files/compressed_files_and_archives'
+    autoload :Rar,    'imw/files/compressed_files_and_archives'
+    autoload :Zip,    'imw/files/compressed_files_and_archives'
+    autoload :Xml,    'imw/files/sgml'
+    autoload :Html,   'imw/files/sgml'
+    
 
     # An array used to match files to classes to handle them.  The
     # first element of each array is the regexp and the second names
@@ -76,6 +89,7 @@ module IMW
                           [/\.html$/,     :Html],
                           [/\.htm$/,      :Html]
                          ]
+    
     protected
     def self.file_class_for path, options = {}
       klass = options.delete(:as)
