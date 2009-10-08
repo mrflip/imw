@@ -5,14 +5,20 @@ $: << IMW_LIB_DIR
 
 require 'rubygems'
 require 'spec'
+require 'fileutils'
 require 'imw/utils'
 
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |path| require path }
 
-module IMW::SpecConfig
-  SKIP_ARCHIVE_FORMATS = [:rar]
+module IMWTest
+  TMP_DIR = "/tmp/imwtest"
+  
+end
 
-  TEST_WITH_DATAMAPPER = false
 
-end unless defined? IMW::SpecConfig
-
+Spec::Runner.configure do |config|
+  config.after(:each) do
+    
+  end
+  
 

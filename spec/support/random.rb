@@ -1,22 +1,6 @@
-#
-# h2. lib/imw/utils/random.rb -- creation of random objects
-#
-# == About
-#
-# This module has methods for creating random strings of text and
-# random files in particular formats as well as random directories
-# with random content.  These methods are most useful for testing.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-# 
-
 require 'fileutils'
-require 'imw/utils'
 
-module IMW
+module IMWTest
 
   module Random
 
@@ -35,6 +19,19 @@ module IMW
       /\.rar$/      => :rar_file,
       /\.zip$/      => :zip_file
     }
+    EXTERNAL_PROGRAMS = if defined?(IMW) && defined?(IMW::EXTERNAL_PROGRAMS)
+                          IMW::EXTERNAL_PROGRAMS
+                        else
+                          {
+        :tar => "tar",
+        :rar => "rar",
+        :zip => "zip",
+        :unzip => "unzip",
+        :gzip => "gzip",
+        :bzip2 => "bzip2",
+        :wget => "wget"
+      }
+                        end
 
     private
     # Return a random filename.  Optional +length+ to set the maximum
@@ -129,7 +126,7 @@ module IMW
     def self.tar_file filename
       tmpd = File.dirname(filename) + '/dir'
       directory_with_files(tmpd)
-      FileUtils.cd(tmpd) {|dir| IMW.system("#{IMW::EXTERNAL_PROGRAMS[:tar]} -cf file.tar *") }
+      FileUtils.cd(tmpd) {|dir| system("#{EXTERNAL_PROGRAMS[:tar]} -cf file.tar *") }
       FileUtils.cp(tmpd + "/file.tar",filename)
       FileUtils.rm_rf(tmpd)
     end
@@ -140,7 +137,7 @@ module IMW
       tar = File.dirname(filename) + "/file.tar"
       targz = tar + ".gz"
       tar_file tar
-      IMW.system("#{IMW::EXTERNAL_PROGRAMS[:gzip]} #{tar}")
+      system("#{EXTERNAL_PROGRAMS[:gzip]} #{tar}")
       FileUtils.cp(targz,filename)
       FileUtils.rm(targz)
     end
@@ -151,7 +148,7 @@ module IMW
       tar = File.dirname(filename) + "/file.tar"
       tarbz2 = tar + ".bz2"
       tar_file tar
-      IMW.system("#{IMW::EXTERNAL_PROGRAMS[:bzip2]} #{tar}")
+      system("#{EXTERNAL_PROGRAMS[:bzip2]} #{tar}")
       FileUtils.cp(tarbz2,filename)
       FileUtils.rm(tarbz2)
     end
@@ -161,7 +158,7 @@ module IMW
     def self.rar_file filename
       tmpd = File.dirname(filename) + '/dir'
       directory_with_files(tmpd)
-      FileUtils.cd(tmpd) {|dir| IMW.system("#{IMW::EXTERNAL_PROGRAMS[:rar]} a -r -o+ file.rar *") }
+      FileUtils.cd(tmpd) {|dir| system("#{EXTERNAL_PROGRAMS[:rar]} a -r -o+ file.rar *") }
       FileUtils.cp(tmpd + "/file.rar",filename)
       FileUtils.rm_rf(tmpd)
     end
@@ -171,7 +168,7 @@ module IMW
     def self.zip_file filename
       tmpd = File.dirname(filename) + '/dir'
       directory_with_files(tmpd)
-      FileUtils.cd(tmpd) {|dir| IMW.system("#{IMW::EXTERNAL_PROGRAMS[:zip]} -r file.zip *") }
+      FileUtils.cd(tmpd) {|dir| system("#{EXTERNAL_PROGRAMS[:zip]} -r file.zip *") }
       FileUtils.cp(tmpd + "/file.zip",filename)
       FileUtils.rm_rf(tmpd)
     end
@@ -181,7 +178,7 @@ module IMW
     #
     # Options (with their default values in parentheses) include:
     #
-    # <tt>:extensions</tt> (<tt>[txt,csv,dat,xml]</tt>):: extensions to use.  If an extension is known (see <tt>IMW::Test::EXTENSIONS</tt>) then appropriately formatted random data will be used  If an extension is not known, it will be treated as text.  The extension +dir+ will create a directory which will itself be filled with random files in the same way as its parent.
+    # <tt>:extensions</tt> (<tt>[txt,csv,dat,xml]</tt>):: extensions to use.  If an extension is known (see <tt>IMWTest::Random::EXTENSIONS</tt>) then appropriately formatted random data will be used  If an extension is not known, it will be treated as text.  The extension +dir+ will create a directory which will itself be filled with random files in the same way as its parent.
     # <tt>:max_depth</tt> (3):: maximum depth to nest directories
     # <tt>:starting_depth</tt> (1):: the default depth the parent directory is assumed to have
     # <tt>:num_files</tt> (10):: the maximum number of files per directory
@@ -195,7 +192,7 @@ module IMW
         if options[:force] then
           FileUtils.rm_rf(directory)
         else
-          IMW::Error.new("#{directory} already exists")
+          raise "#{directory} already exists"
         end
       end
       FileUtils.mkdir_p(directory)
