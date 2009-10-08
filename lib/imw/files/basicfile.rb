@@ -29,8 +29,8 @@ module IMW
                when uri.is_a?(URI::Generic) || uri.superclass.is_a?(URI::Generic); uri
                end
         @path = self.uri.path
-        @dirname = ::File.dirname @path
-        @basename = ::File.basename @path
+        @dirname = ::File.dirname path
+        @basename = ::File.basename path
         @extname = find_extname
         @name = @basename[0,@basename.length - @extname.length]
       end
@@ -40,7 +40,7 @@ module IMW
       # class method <tt>extname</tt> which returns the their full
       # extension.
       def find_extname
-        self.class.respond_to?(:extname) ? self.class.extname(@path) : ::File.extname(@path)
+        self.class.respond_to?(:extname) ? self.class.extname(path) : ::File.extname(path)
       end
 
       public
@@ -59,7 +59,7 @@ module IMW
       # to open files online too to check.
       def exist?
         if local?
-          ::File.exist?(@path) ? true : false
+          ::File.exist?(path) ? true : false
         else
           begin
             true if open(uri)
@@ -73,19 +73,19 @@ module IMW
       def rm!
         raise IMW::PathError.new("cannot delete remote file #{uri}")     unless local?
         raise IMW::PathError.new("cannot delete #{uri}, doesn't exist!") unless exist?
-        FileUtils.rm @path
+        FileUtils.rm path
       end
 
       # Copy this file to +path+.
-      def cp path
-        raise IMW::PathError.new("cannot copy from #{@path}, doesn't exist!") unless exist?
+      def cp new_path
+        raise IMW::PathError.new("cannot copy from #{path}, doesn't exist!") unless exist?
         if local?
-          FileUtils.cp @path,path
+          FileUtils.cp path, new_path
         else
           # FIXME better way to do this?
-          File.open(path,'w') { |f| f.write(open(uri)).read }
+          File.open(new_path,'w') { |f| f.write(open(uri)).read }
         end
-        self.class.new(path)
+        self.class.new(new_path)
       end
 
       # Copy this file to +dir+.
@@ -94,15 +94,15 @@ module IMW
       end
 
       # Move this file to +path+.
-      def mv path
-        raise IMW::PathError.new("cannot move from #{@path}, doesn't exist!") unless exist?
+      def mv new_path
+        raise IMW::PathError.new("cannot move from #{path}, doesn't exist!") unless exist?
         if local?
-          FileUtils.mv @path,path
+          FileUtils.mv path, new_path
         else
           # FIXME better way to do this?
-          File.open(path,'w') { |f| f.write(open(uri)).read }
+          File.open(new_path,'w') { |f| f.write(open(uri)).read }
         end
-        self.class.new(path)
+        self.class.new(new_path)
       end
 
       # Move this file to +dir+.
