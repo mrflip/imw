@@ -1,3 +1,3 @@
 module IMW
-  autoload HTMLParser, 'imw/parsers/html_parser'
+  autoload :HTMLParser, 'imw/parsers/html_parser'
 end
