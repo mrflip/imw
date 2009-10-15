@@ -84,7 +84,7 @@ module IMW
           FileUtils.cp path, new_path
         else
           # FIXME better way to do this?
-          File.open(new_path,'w') { |f| f.write(open(uri)).read }
+          File.open(new_path,'w') { |f| f.write(open(uri).read) }
         end
         self.class.new(new_path)
       end
@@ -101,7 +101,7 @@ module IMW
           FileUtils.mv path, new_path
         else
           # FIXME better way to do this?
-          File.open(new_path,'w') { |f| f.write(open(uri)).read }
+          File.open(new_path,'w') { |f| f.write(open(uri).read) }
         end
         self.class.new(new_path)
       end

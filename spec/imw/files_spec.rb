@@ -8,6 +8,7 @@ describe IMW do
     describe 'opening any file' do
       describe "that doesn't exist" do
         before do
+          @path = 
     
     
   end

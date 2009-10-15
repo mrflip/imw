@@ -13,9 +13,9 @@
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
 require 'hpricot'
-
 require 'imw/utils'
 require 'imw/files/text'
+require 'imw/parsers/html_parser'
 
 module IMW
   module Files
@@ -38,7 +38,6 @@ module IMW
       # either be passed in directly or constructed from a passed hash
       # of matchers.
       def parse *args
-        IMW.load_components :html_parser
         parser = args.first.is_a?(IMW::HTMLParser) ? args.first : IMW::HTMLParser.new(*args)
         parser.parse(self)
       end

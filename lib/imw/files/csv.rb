@@ -39,7 +39,7 @@ module IMW
         :skip_blanks    => false,
         :force_quotes   => false
       }
-        
+      
       def initialize uri, mode='r', options = {}
         options.reverse_merge!(self.class::DEFAULT_OPTIONS)
         self.uri= uri
@@ -63,7 +63,32 @@ module IMW
         self.close if options[:close]
         self
       end
+
+      # Return a random sample of rows.
+      def sample length=10
+        rows, indices = [], Set.new
+        begin
+          each_with_index do |row, index|
+            break if rows.size == length
+            next if index != 0 && rand < 0.75   # skip 3/4 of rows after the 1st
+            rows    << row
+            indices << index
+          end
+          # now fill up to length if not there already
+          while rows.length < length
+            each_with_index do |row, index|
+              break if rows.size == length
+              next if index indices.include?(index)
+              rows << row
+            end
+          end
+          rows
+        rescue FasterCSV::MalformedCSVError
+          rows
+        end
+      end
     end
+    
 
     # Represents a file of comma-separated values (CSV).  This class
     # is a subclass of <tt>FasterCSV</tt> so the methods of that
