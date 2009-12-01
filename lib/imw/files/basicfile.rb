@@ -77,7 +77,7 @@ module IMW
         FileUtils.rm path
       end
 
-      # Copy this file to +path+.
+      # Copy this file to +new_path+.
       def cp new_path
         raise IMW::PathError.new("cannot copy from #{path}, doesn't exist!") unless exist?
         if local?
@@ -94,7 +94,7 @@ module IMW
         cp File.join(File.expand_path(dir),basename)
       end
 
-      # Move this file to +path+.
+      # Move this file to +new_path+.
       def mv new_path
         raise IMW::PathError.new("cannot move from #{path}, doesn't exist!") unless exist?
         if local?
