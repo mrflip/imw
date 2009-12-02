@@ -1,11 +1,11 @@
 
-h1. Overview
+= Overview
 
 The Infinite Monkeywrench (IMW) is a Ruby frameworks to simplify the
 tasks of acquiring, extracting, transforming, loading, and packaging
 data.  It has the following goals:
 
-* Minimize **programmer time** even at the expense of increasing run
+* Minimize programmer time even at the expense of increasing run
   time.
 
 * Take data through a full transformation from raw source to packaged
@@ -25,18 +25,18 @@ data.  It has the following goals:
 The Infinite Monkeywrench is a powerful tool but it is not always the
 right one to use.  IMW is **not** designed for
 
-* Scraping vast amounts of data (use "Wuclan":http://github.com/infochimps/wuclan, "Monkeyshines":http://github.com/infochimps/monkeyshines, and "Edamame":http://github.com/infochimps/edamame.)
+* Scraping vast amounts of data (use Wuclan[http://github.com/infochimps/wuclan], Monkeyshines[http://github.com/infochimps/monkeyshines], and Edamame[http://github.com/infochimps/edamame].)
 
-* Really, really big datasets (use "Wukong":http://github.com/infochimps/wukong and "Hadoop":http://hadoop.apache.org/)
+* Really, really big datasets (use Wukong[http://github.com/infochimps/wukong] and Hadoop[http://hadoop.apache.org])
 
 * Data mining
 
 * Data visualization
 
 
-h1. Setup
+= Setup
 
-IMW is hosted on "Gemcutter":http://gemcutter.org so it's easy to install.
+IMW is hosted on Gemcutter[http://gemcutter.org] so it's easy to install.
 
 You'll have to set up Gemcutter
 
@@ -47,14 +47,16 @@ and then install IMW
 
   $ sudo gem install imw
 
-h1. Using IMW
+= Using IMW
 
 The central goal of IMW is to make workflow involved in processing a
 dataset from a raw source to a finished product as simple as possible.
 
+So consider that there exist two datasets that I want to combine.  The
+first details the historical price of bananas over the past century
+and the second 
 
-
-h2. Working with paths and files
+== Working with paths and files
 
   require 'rubygems'
   require 'imw'
