@@ -7,6 +7,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "imw"
     gem.summary = "The Infinite Monkeywrench (IMW) makes acquiring, extracting, transforming, loading, and packaging data easy."
+    gem.description = "The Infinite Monkeywrench (IMW) is a Ruby frameworks to simplify the tasks of acquiring, extracting, transforming, loading, and packaging data. It minimizes programmer time by encapsulating common data workflows and patterns and creating interfaces to many other useful Ruby libraries."
     gem.email = "coders@infochimps.org"
     gem.homepage = "http://github.com/infochimps/imw"
     gem.authors = ["Dhruv Bansal", "Philip (flip) Kromer"]

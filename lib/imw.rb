@@ -21,8 +21,7 @@ require 'imw/utils'
 require 'imw/dataset'
 require 'imw/files'
 require 'imw/parsers'
-require 'imw/pool'
-require 'imw/rip'
+require 'imw/packager'
 
 # The Infinite Monkeywrench (IMW) is a Ruby library for obtaining,
 # parsing, transforming, reconciling, and packaging datasets.

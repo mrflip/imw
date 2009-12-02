@@ -98,7 +98,7 @@ module IMW
       end
 
       def self.extname path
-        if /\tar\.gz$/.match path then
+        if /\.tar\.gz$/.match path then
           ".tar.gz"
         elsif /\.tgz$/.match path then
           ".tgz"

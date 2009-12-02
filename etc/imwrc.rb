@@ -25,27 +25,25 @@
 
 module IMW
   PATHS = {
-    :home       => ENV['HOME'],
-    :imw_root   => File.expand_path(File.join(File.dirname(__FILE__), '..')),
-    :super_root => File.expand_path(File.join(File.dirname(__FILE__), '../..')),
-
-    # Data processing scripts
-    :scripts_root => [:super_root, 'pool'],
+    :home         => ENV['HOME'],
+    :data_root    => "/var/lib/imw",
+    :log_root     => "/var/log/imw",
+    :scripts_root => "/usr/share/imw",
+    :tmp_root     => "/tmp/imw",
 
     # the imw library
+    :imw_root  => File.expand_path(File.dirname(__FILE__) + "/.."),
     :imw_bin   => [:imw_root, 'bin'],
     :imw_etc   => [:imw_root, 'etc'],
     :imw_lib   => [:imw_root, 'lib'],
 
-    # Data
-    :data_root  => [:super_root, 'data'],
+    # workflow
     :ripd_root  => [:data_root, 'ripd'],
     :peeld_root => [:data_root, 'peeld'],
     :mungd_root => [:data_root, 'mungd'],
     :temp_root  => [:data_root, 'temp'],
     :fixd_root  => [:data_root, 'fixd'],
-    :pkgd_root  => [:data_root, 'pkgd'],
-    :log_root   => [:data_root, 'log'],
+    :pkgd_root  => [:data_root, 'pkgd']
   }
 
   # Default time format.

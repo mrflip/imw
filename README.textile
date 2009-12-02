@@ -25,30 +25,75 @@ data.  It has the following goals:
 The Infinite Monkeywrench is a powerful tool but it is not always the
 right one to use.  IMW is **not** designed for
 
-* Scraping vast amounts of data (go and read about "http://github.com/infochimps/wukong":Wuclan)
+* Scraping vast amounts of data (use "Wuclan":http://github.com/infochimps/wuclan, "Monkeyshines":http://github.com/infochimps/monkeyshines, and "Edamame":http://github.com/infochimps/edamame.)
 
-* Really, really big datasets (go and read about "http://github.com/infochimps/wukong":Wukong)
+* Really, really big datasets (use "Wukong":http://github.com/infochimps/wukong and "Hadoop":http://hadoop.apache.org/)
 
 * Data mining
 
 * Data visualization
 
 
-h2. Setup
+h1. Setup
+
+IMW is hosted on "Gemcutter":http://gemcutter.org so it's easy to install.
+
+You'll have to set up Gemcutter
+
+  $ sudo gem install gemcutter
+  $ gem tumble
+
+and then install IMW
+
+  $ sudo gem install imw
+
+h1. Using IMW
+
+The central goal of IMW is to make workflow involved in processing a
+dataset from a raw source to a finished product as simple as possible.
 
 
 
-h2. Actually processing your data
+h2. Working with paths and files
 
-The Infinite Monkeywrench is built atop ActiveResource, the data model that
-powers Ruby on Rails.  This gives us
+  require 'rubygems'
+  require 'imw'
 
-* a well-known, well-tested, database-agnostic data model
-* ability to export from that datamodel to sqlite3, csv, yaml, xml and JSON with
-  vernacular structure
-* active_resource for both an outgoing API and an ingoing data socket: if
-  someone creates an active_resource facade to an external API we get the
-  data
+IMW holds a registry of paths that you can define on the fly or store
+in a configuration file.
 
-It also demonstrates our commitment to the "minimize programmer time, not run
-time" philosophy, but it's worked for us so far.
+  IMW.add_path :dropbox, "/var/www/public/dropbox"
+  IMW.add_path :raw,     "/mnt/data/raw"
+  IMW.add_path :
+
+This makes it easeir
+
+  IMW.path_to :raw, "one/particular/dataset"
+  #=> "/mnt/data/raw/one/particular/dataset"
+
+IMW makes it easy to manipulate compressed files and archives.
+
+
+  # Move a collection of files from a public dropbox to a processing directory
+
+  raw
+  
+  Dir["/public/*"].each do |path|
+    file = IMW.open(path)
+    case
+    when file.compressed?
+      file.decompress.mv_to_dir "/raw"
+    when file.archive?
+      FileUtils.cd("/raw") do
+        file.extract
+      end
+    else
+      file.mv_to_dir("/raw")
+    end
+  end
+  
+  
+	
+    
+  
+

@@ -12,3 +12,4 @@ TAGS
 tmp/*
 *.tmproj
 pkg/*
+imw.gemspec

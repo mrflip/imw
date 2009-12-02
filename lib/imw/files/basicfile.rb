@@ -76,11 +76,12 @@ module IMW
       end
 
       # Delete this file.
-      def rm!
+      def rm
         raise IMW::PathError.new("cannot delete remote file #{uri}")     unless local?
         raise IMW::PathError.new("cannot delete #{uri}, doesn't exist!") unless exist?
         FileUtils.rm path
       end
+      alias_method :rm!, :rm
 
       # Copy this file to +new_path+.
       def cp new_path
@@ -110,12 +111,13 @@ module IMW
         end
         self.class.new(new_path)
       end
+      alias_method :mv!, :mv
 
       # Move this file to +dir+.
       def mv_to_dir dir
         mv File.join(File.expand_path(dir),basename)
       end
-        
+      alias_method :mv_to_dir!, :mv_to_dir
     end
   end
 end
