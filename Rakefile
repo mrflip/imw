@@ -12,7 +12,6 @@ begin
     gem.authors = ["Dhruv Bansal", "Philip (flip) Kromer"]
     
     gem.files.exclude "old/**/*"
-    gem.files.exclude "meta/**/*"    
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
