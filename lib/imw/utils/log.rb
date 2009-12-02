@@ -1,20 +1,4 @@
-#
-# h2. lib/imw/utils.rb -- utility functions
-#
-# == About
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-
-# puts "#{File.basename(__FILE__)}: Early economists thought they would measure the utility of an action in units of `utils'.  Really." # at bottom
-
 require 'logger'
-#
-# http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/
-#
 
 module IMW
   LOG_FILE_DESTINATION = STDERR             unless defined?(LOG_FILE_DESTINATION)
@@ -47,7 +31,7 @@ module IMW
 
   PROGRESS_TRACKERS = {}
   #
-  # When the slowly-changine tracked variable +var+ changes value,
+  # When the slowly-changing tracked variable +var+ changes value,
   # announce its new value.  Always announces on first call.
   #
   # Ex:

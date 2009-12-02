@@ -1,9 +1,0 @@
-
-* Kill off the (huge quantity) of crap we don't need in the imw/ directory
-
-
-* We need to set data partitioning as a design goal: make it easy to define a
-  number of worker processes and a worker #, then have steps attempt to only
-  do that specific fraction of the data.  (for ripd, how does this work? file
-  glob on dl? insist on separate steps, and make a 'distribute' command? rip
-  files probabilistically?)

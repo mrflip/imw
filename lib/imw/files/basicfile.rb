@@ -69,6 +69,11 @@ module IMW
           end
         end
       end
+      alias_method :exists?, :exist?
+
+      def directory?
+        File.directory?(path)
+      end
 
       # Delete this file.
       def rm!

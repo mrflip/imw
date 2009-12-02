@@ -1,71 +1,40 @@
 
-h1. Intro
+h1. Overview
 
-Infinite monkeywrench is a frameworks to simplify the tasks of acquiring,
-extracting, transforming and loading data.
+The Infinite Monkeywrench (IMW) is a Ruby frameworks to simplify the
+tasks of acquiring, extracting, transforming, loading, and packaging
+data.  It has the following goals:
 
-* It's built, designed and tested for manipulating datasets as small as 1k and
-  as large as hundreds of gigabytes.
+* Minimize **programmer time** even at the expense of increasing run
+  time.
 
-* Minimize **programmer time** even at the expense of increasing run time.
-  These tasks only need to be run once.  (And they deal scalably with
-  incremental updates: see 'Lazy' below.)
+* Take data through a full transformation from raw source to packaged
+  purity in as few lines of code as possible.
 
-* Runtime scales with data.  One MB of data for testing, will run in about
-  1000'th the time to process one GB of data for real.
-  
-* Simple parallelization. Tell imw it's #3 out of 5 (or 500) workers and it will
-  process only that fraction of the input.
+* Treat data records as objects as much as possible.
 
-* Lazy evaluation, like 'make': imw lets you define dependency chains (and comes
-  already knowing a few).  It won't scrape new data if there's nothing new to
-  scrape, and if you need to generate file "frobnozz" before you can process
-  file "marklar", imw generates frobnozz if and only if it doesn't already exist.
+* Use instead of repeat better code that already exists in other
+  libraries (FasterCSV, I'm talkin' to you).
 
-* Realistic.  IMW is built to handle real data as she is spoke:
+* Make what's common easy without making what's uncommon impossible.
 
-** Beautiful, schematized, formatted data from the infochimps.org collection.
-** Most popular file formats: XML, YAML, CSV, JSON
-** Parsing flat files becomes an easy two-liner piece of code.
-** Messy data in some backwater format with no schema still sucks but a lot less
-   than it used to.
-** Scrape a web page tree and nimbly extract the table data from each page.
+* Work with messy data as well as clean data.
 
-* Although obviously it's more work to acquire a sloppy dataset than a
-  well-defined one, imw degrades well -- you write code for exactly and only the
-  tasks that make your dataset bizarre.
+* Let you incorporate your own tools wherever you choose to.
 
-* IMW is toolset agnostic.  If you have pre-existing routines to parse or
-  acquire some format, imw is happy to call those tools at any step. You can
-  have imw manage the acquisition and loading, but replace the entire munging
-  step with a simple @'sh "perl dostuff.pl"'@ or even @'make'@.
+The Infinite Monkeywrench is a powerful tool but it is not always the
+right one to use.  IMW is **not** designed for
+
+* Scraping vast amounts of data (go and read about "http://github.com/infochimps/wukong":Wuclan)
+
+* Really, really big datasets (go and read about "http://github.com/infochimps/wukong":Wukong)
+
+* Data mining
+
+* Data visualization
+
 
 h2. Setup
-
-Since I'm not smart enough to get this bootstrapped the right way, add this to
-your .profile (either that, or ensmarten me about the right way):
-  ### Wield Infinite Monkeywrench (+1 to data munging, charisma, THAC0):
-  export IMW_ROOT=$HOME/ics/imw
-  export PATH="$IMW_ROOT"/bin:"$PATH"
-  export RUBYLIB="$IMW_ROOT"/lib:"$RUBYLIB"
-
-These directories will be created under $IMW_ROOT (more about each later):
-* @pool/(cat)/(subcat)/(pool)/@		-- Data pool processing code
-* @ripd/com.reverse.url/dirs/files.ext@	-- scraped data from elsewhere
-* @rawd/(cat)/(subcat)/(pool)/@ 	-- working copy of raw data
-* @dump/(cat)/(subcat)/(pool)/@ 	-- intermediate data
-* @fixd/(cat)/(subcat)/(pool)/@ 	-- completely processed data
-* @pkgd/(cat)/(subcat)/(pool)/@ 	-- compressed & bundled distributable
-
-If any directory is called for but found missing, IMW will create it (except for
-@dump/@, which will be linked to /tmp/imw).  However, if the directory is there,
-IMW will leave it the heck alone. So feel free to replace each directory with a
-symbolic link (putting @rawd/@, @dump/@ and @fixd/@ directories on a large, fast
-drive, @ripd/@ and @pkgd/@ on large, slow drives for instance.).
-
-h2. Scaffolding
-
-@ imw generate pool=foo/bar/myhappypool @
 
 
 
