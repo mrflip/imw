@@ -20,10 +20,7 @@ module IMW
       protected
 
       def uri= uri
-        @uri = case 
-               when uri.is_a?(String); URI.parse(uri)
-               when uri.is_a?(URI::Generic) || uri.superclass.is_a?(URI::Generic); uri
-               end
+        @uri      = URI.parse(uri) if uri.is_a?(String)
         @host     = self.uri.host
         @path     = local? ? ::File.expand_path(self.uri.path) : self.uri.path
         @dirname  = ::File.dirname path

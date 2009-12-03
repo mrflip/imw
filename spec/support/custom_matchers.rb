@@ -10,4 +10,12 @@ module CustomMatchers
       paths.all? { |path| given_contents.include?(path) }
     end
   end
+
+  def exist
+    simple_matcher("exist") do |given, matcher|
+      matcher.failure_message = "expected #{given} to exist on disk"
+      matcher.failure_message = "expected #{given} not to exist on disk"
+      File.exist?(given)
+    end
+  end
 end
