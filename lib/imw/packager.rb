@@ -73,14 +73,14 @@ module IMW
       FileUtils.mkdir_p archive_dir unless File.exist?(archive_dir)
       inputs.each_pair do |path, basename|
         new_path = File.join(archive_dir, basename)
-        file = IMW.open(path)
+        file = IMW.open(path, :as => IMW::Files.file_class_for(basename)) # file's original path is meaningless: RackMultipart20091203-958-1nkgc61-0
         case
         when file.archive?
           FileUtils.cd(archive_dir) do
             file.extract
           end
         when file.compressed?
-          file.decompress.mv(new_path) # FIXME should copy first then decompress...
+          file.cp(new_path).decompress!
         else
           file.cp(new_path)
         end

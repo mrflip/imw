@@ -1,7 +1,6 @@
 require 'fileutils'
 
 module IMWTest
-
   module Random
 
     STRING_CHARS        = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ']
@@ -38,21 +37,21 @@ module IMWTest
     # length of the filename returned.
     def self.basename options = {}
       length = (options[:length] or FILENAME_MAX_LENGTH)
-      filename = (1..length).map { |i| FILENAME_CHARS.random_element }.join
+      filename = (1..length).map { |i| FILENAME_CHARS.random }.join
 
       # filenames beginning with hyphens suck
       while (filename[0,1] == '-') do
-        filename[0] = FILENAME_CHARS.random_element
+        filename[0] = FILENAME_CHARS.random
       end
       filename
     end
-      
+    
     # Return a random string of text up.  Control the length with
     # optional +length+ and also the presence of +newlines+.
     def self.text options = {}
       length = (options[:length] or TEXT_MAX_LENGTH)
       char_pool = options[:newlines] ? TEXT_CHARS : STRING_CHARS
-      (1..length).map { |i| char_pool.random_element }.join
+      (1..length).map { |i| char_pool.random }.join
     end
 
     public
@@ -66,7 +65,7 @@ module IMWTest
     # Create a random text file at +filename+ containing a maximum of
     # +length+ characters.
     def self.text_file filename, options = {}
-      File.open(filename,'w') do { |f| f.write text(:newlines => true) }
+      File.open(filename,'w') { |f| f.write text(:newlines => true) }
     end
 
     # Create a comma-separated value file containing random text at
@@ -91,24 +90,14 @@ module IMWTest
     # boring single-element XML tree.  Randomizing the tree has not
     # been implemented.
     def self.xml_file filename, options = {}
-      options = options.reverse_merge({:max_depth => 5, :starting_depth => 1, :depth => nil, :pretty_print})
-      require 'builder'
-      Builder.XmlMarkup.new do
-        
-      Hpri
+      options = options.reverse_merge({:max_depth => 5, :starting_depth => 1, :depth => nil, :pretty_print => true})
       File.open(filename,'w') do |file|
         file.write "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        
-
-
-      
-                                      
-      f.write "<xml>" + text(:length => length) + "</xml>"
-
-      
-      
-      f.close
+        file.write "<xml>" + text + "</xml>"
+        file.close
+      end
     end
+    
 
     # Create an HTML file at +filename+ of the maximum +length+.
     # 
@@ -198,7 +187,7 @@ module IMWTest
       FileUtils.mkdir_p(directory)
 
       (rand(options[:num_files]) + 2).times do
-        ext = options[:extensions].random_element
+        ext = options[:extensions].random
         name = self.basename
         if ext == 'dir' then
           if depth <= options[:max_depth] then
@@ -214,9 +203,8 @@ module IMWTest
       end
     end
 
-
   end
 end
 
 
-# puts "#{File.basename(__FILE__)}: You hurl your Monkeywrench at a passerby to test whether he'll flinch.  He doesn't.  You'd better run..." # at bottom
+

@@ -6,19 +6,28 @@ $: << IMW_LIB_DIR
 require 'rubygems'
 require 'spec'
 require 'fileutils'
-require 'imw/utils'
+require 'imw'
 
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each { |path| require path }
 
+
 module IMWTest
   TMP_DIR = "/tmp/imwtest"
-  
 end
 
-
 Spec::Runner.configure do |config|
-  config.after(:each) do
-    
+
+  config.include CustomMatchers
+
+  config.before do
+    FileUtils.mkdir_p IMWTest::TMP_DIR
+    FileUtils.cd IMWTest::TMP_DIR
   end
+  
+  config.after do
+    FileUtils.rm_rf IMWTest::TMP_DIR
+  end
+end
+
   
 
