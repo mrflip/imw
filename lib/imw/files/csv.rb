@@ -14,10 +14,6 @@
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
 require 'fastercsv'
-
-require 'imw/files/basicfile'
-require 'imw/files/compressible'
-
 module IMW
   module Files
 

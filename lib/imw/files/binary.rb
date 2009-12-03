@@ -11,12 +11,6 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
-
-require 'imw/utils'
-require 'imw/files/basicfile'
-require 'imw/files/compressible'
-require 'imw/files/text'
-
 module IMW
   module Files
 

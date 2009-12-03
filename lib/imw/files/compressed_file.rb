@@ -29,12 +29,6 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 # puts "#{File.basename(__FILE__)}: Have you ever folded up the wrapper of a soda straw into a little accordian shape and let a drop of water soak into it?" # at bottom
-
-require 'fileutils'
-
-require 'imw/files/basicfile'
-require 'imw/utils'
-
 module IMW
   module Files
 

@@ -16,6 +16,10 @@
 require 'uri'
 require 'open-uri'
 require 'imw/utils'
+require 'imw/files/basicfile'
+require 'imw/files/archive'
+require 'imw/files/compressible'
+require 'imw/files/compressed_file'
 
 module IMW
 

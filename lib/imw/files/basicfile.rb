@@ -11,10 +11,6 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 # puts "#{File.basename(__FILE__)}: At the very bottom of the office building, wedged between a small boulder and a rotting log you see a weathered manilla file folder.  The writing on the tab is too faded to make out." # at bottom
-
-require 'fileutils'
-require 'imw/utils'
-
 module IMW
   module Files
     module BasicFile

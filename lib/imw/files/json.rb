@@ -13,7 +13,6 @@
 # puts "#{File.basename(__FILE__)}: Yet another clever comment." # at bottobm
 
 require 'json'
-require 'imw/utils'
 require 'imw/files/text'
 
 module IMW

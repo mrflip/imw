@@ -12,8 +12,6 @@
 # 
 
 require 'yaml'
-
-require 'imw/utils'
 require 'imw/files/text'
 
 module IMW

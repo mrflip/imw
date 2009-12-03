@@ -3,10 +3,6 @@
 #
 # == About
 #
-
-require 'imw/files/basicfile'
-require 'imw/files/compressible'
-
 module IMW
   module Files
     

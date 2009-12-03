@@ -13,7 +13,6 @@
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
 require 'hpricot'
-require 'imw/utils'
 require 'imw/files/text'
 require 'imw/parsers/html_parser'
 

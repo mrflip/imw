@@ -21,11 +21,6 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 # puts "#{File.basename(__FILE__)}: Why is it that when you squeeze a lemon you get lemonade but when you squeeze a banana you just get a mess?" # at bottom
-
-require 'fileutils'
-
-require 'imw/utils'
-
 module IMW
   module Files
     module Compressible
