@@ -16,7 +16,7 @@ module IMW
       end
 
       def success?
-        last_response && last_response.class == Net::HTTPOK
+        last_response && last_response.response.class == Net::HTTPOK
       end
 
       def upload! local_path, remote_path
