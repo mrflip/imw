@@ -11,13 +11,13 @@ describe IMW::Packagers::S3Mover do
   end
 
   it "should upload a file successfully" do
-    @mover.bucket.should_receive(:store).and_return(Net::HTTPOK)
+    AWS::S3::Bucket.should_receive(:store).and_return(Net::HTTPOK)
     @mover.upload!(@local_path, @s3_path)
     @mover.success?.should be_true
   end
 
   it "should recognize an error" do
-    @mover.bucket.should_receive(:store).and_return(Net::HTTPBadRequest)
+    AWS::S3::Bucket.should_receive(:store).and_return(Net::HTTPBadRequest)
     @mover.upload!(@local_path, @s3_path)
     @mover.success?.should_not be_true
   end

@@ -15,16 +15,12 @@ module IMW
         errors.empty?
       end
 
-      def bucket
-        @bucket ||= AWS::S3::Bucket.new :name => bucket_name
-      end
-
       def success?
         last_response == Net::HTTPOK
       end
 
       def upload! local_path, remote_path
-        @last_response = bucket.store(remote_path, open(local_path))
+        @last_response = AWS::S3::Bucket.store(remote_path, open(local_path), bucket_name)
       end
       
     end
