@@ -48,7 +48,15 @@ module IMW
       def remote?
         (! local?)
       end
-      
+
+      # Steal a bunch of class methods from File which only take a
+      # path as a first argument.
+      [:executable?, :executable_real?, :file?, :directory?, :ftype, :owned?, :pipe?, :readable?, :readable_real?, :setgid?, :setuid?, :size, :size?, :socket?, :split, :stat, :sticky?, :writable?, :writable_real?, :zero?].each do |class_method|
+        define_method class_method do
+          File.send(class_method, path) if local?
+        end
+      end
+
       # Is there a real file at the path of this File?  Will attempt
       # to open files online too to check.
       def exist?
@@ -63,10 +71,6 @@ module IMW
         end
       end
       alias_method :exists?, :exist?
-
-      def directory?
-        File.directory?(path)
-      end
 
       # Delete this file.
       def rm
