@@ -90,7 +90,7 @@ module IMW
       
       # Package the contents of the temporary directory to an archive
       # at +output+.
-      def package output, options={}
+      def package! output, options={}
         output = IMW.open(output)         if output.is_a?(String)
         FileUtils.mkdir_p(output.dirname) unless File.exist?(output.dirname)        
         output.rm!                        if output.exist?
@@ -99,17 +99,8 @@ module IMW
           packaged_output = temp_output.create(name.to_s + '/*').mv(output.path)
           temp_output.rm if temp_output.exist?
           add_processing_error "Archiver: couldn't create archive #{output.path}" unless output.exists?
-          packaged_output if success?
         end
-      end
-
-      def package! output
-        output = IMW.open(output) if output.is_a?(String)
-        prepare!
-        package output
-        clean!
-        add_processing_error "Archiver: couldn't create archive #{output.path}" unless output.exists?
-        output if success?
+        output
       end
     end
   end

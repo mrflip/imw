@@ -107,10 +107,19 @@ describe IMW::Packagers::Archiver do
 
     it "should create a package file containing the proper files" do
       @packages.each do |package|
-        @archiver.package package
+        @archiver.package! package
         @archiver.tmp_dir.should contain(IMW.open(package).contents)
       end
     end
+
+    it "should return the package file" do
+      @packages.each do |package|
+        output = @archiver.package! package
+        output.basename.should == package
+      end
+    end
+    
+    
   end
 end
 
