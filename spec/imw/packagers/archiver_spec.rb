@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + "/../spec_helper"
+require File.dirname(__FILE__) + "/../../spec_helper"
 
-describe IMW::Packager do
+describe IMW::Packagers::Archiver do
   before do
     @name = 'foobar'
 
@@ -21,7 +21,7 @@ describe IMW::Packager do
 
     @files = [@csv, @xml, @txt, @blah, @bz2, @zip, @tarbz2]
     
-    @files.each do |path| # do not create @txt on purpose
+    @files.each do |path|
       IMWTest::Random.file path
     end
   end
@@ -29,31 +29,31 @@ describe IMW::Packager do
 
   describe "when preparing files" do
     before do
-      @packager = IMW::Packager.new @name, @files
-      @packager.prepare!      
+      @archiver = IMW::Packagers::Archiver.new @name, @files
+      @archiver.prepare!      
     end
 
     after do
-      FileUtils.rm_rf @packager.tmp_dir
+      FileUtils.rm_rf @archiver.tmp_dir
     end
 
     it "should name its archive directory properly" do
-      @packager.tmp_dir.should contain(@name)
+      @archiver.tmp_dir.should contain(@name)
     end
 
     it "should copy regular files to its archive directory" do
-      @packager.archive_dir.should contain(@csv, @xml, @txt)
+      @archiver.dir.should contain(@csv, @xml, @txt)
     end
 
     it "should uncompress compressed files to its archive directory" do
-      @packager.archive_dir.should     contain('foobar-bz2')
-      @packager.archive_dir.should_not contain(@bz2)
+      @archiver.dir.should     contain('foobar-bz2')
+      @archiver.dir.should_not contain(@bz2)
     end
 
     it "should copy the content of archive files to its archive directory (but not the actual archives)" do
       @archives.each do |archive|
-        @packager.archive_dir.should_not contain(archive)
-        @packager.archive_dir.should contain(*IMW.open(archive).contents)
+        @archiver.dir.should_not contain(archive)
+        @archiver.dir.should contain(*IMW.open(archive).contents)
       end
     end
 
@@ -70,31 +70,31 @@ describe IMW::Packager do
       @renaming_hash = {}
       @files.each { |f| @renaming_hash[f] = f.gsub(/-/,'_') }
       
-      @packager = IMW::Packager.new @name, @renaming_hash
-      @packager.prepare!
+      @archiver = IMW::Packagers::Archiver.new @name, @renaming_hash
+      @archiver.prepare!
     end
 
     after do
-      FileUtils.rm_rf @packager.tmp_dir
+      FileUtils.rm_rf @archiver.tmp_dir
     end
 
     it "should copy regular files to its archive directory, renaming them" do
-      @packager.archive_dir.should_not contain([@csv, @xml, @txt])
-      @packager.archive_dir.should contain([@csv, @xml, @txt].map { |f| @renaming_hash[f] })
+      @archiver.dir.should_not contain([@csv, @xml, @txt])
+      @archiver.dir.should contain([@csv, @xml, @txt].map { |f| @renaming_hash[f] })
     end
 
     it "should uncompress compressed files to its archive directory, renaming them" do
-      @packager.archive_dir.should     contain('foobar_bz2')
-      @packager.archive_dir.should_not contain('foobar-bz2')      
-      @packager.archive_dir.should_not contain(@renaming_hash[@bz2])
-      @packager.archive_dir.should_not contain(@bz2)
+      @archiver.dir.should     contain('foobar_bz2')
+      @archiver.dir.should_not contain('foobar-bz2')      
+      @archiver.dir.should_not contain(@renaming_hash[@bz2])
+      @archiver.dir.should_not contain(@bz2)
     end
   end
 
   describe "when packaging files" do
     before do
-      @packager = IMW::Packager.new @name, @files
-      @packager.prepare!
+      @archiver = IMW::Packagers::Archiver.new @name, @files
+      @archiver.prepare!
 
       @package_tarbz2 = "package.tar.bz2"
       @package_zip    = "package.zip"
@@ -102,13 +102,13 @@ describe IMW::Packager do
     end
 
     after do
-      FileUtils.rm_rf @packager.tmp_dir
+      FileUtils.rm_rf @archiver.tmp_dir
     end
 
     it "should create a package file containing the proper files" do
       @packages.each do |package|
-        @packager.package package
-        @packager.tmp_dir.should contain(IMW.open(package).contents)
+        @archiver.package package
+        @archiver.tmp_dir.should contain(IMW.open(package).contents)
       end
     end
   end

@@ -71,14 +71,6 @@ module IMW
     FILE_REGEXPS = [] unless defined? ::IMW::Files::FILE_REGEXPS
   end
 
-  # Default settings for uploading datasets to
-  # archive.org[http://archive.org].
-  ARCHIVE_ORG_UPLOAD_SETTINGS = {
-    :server => "items-uploads.archive.org",
-    :collection => "Infochimps",
-    :mediatype => "Data"
-  }
-
 end
 
 
