@@ -1,8 +1,3 @@
-#
-# h2. lib/imw/files/text.rb -- describes text files
-#
-# == About
-#
 module IMW
   module Files
     
@@ -22,7 +17,7 @@ module IMW
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      attr_reader :file
+      attr_reader :file, :parser
 
       def initialize uri, mode='r', options = {}
         self.uri= uri
@@ -30,25 +25,40 @@ module IMW
         @file = open(uri, mode)
       end
 
-      # Return the contents of this text file as a string.  If given a
-      # block, then pass each line of the string to the block.
-      def load &block
-        if block
-          file.each_line {|line| yield line}
+      # Return the contents of this text file as a string.
+      def load
+        file.read
+      end
+
+      # Return an array with each line of this file.  If given a
+      # block, pass each line to the block.
+      def entries &block
+        if block_given?
+          file.each do |line|
+            yield line.chomp
+          end
         else
-          file.read
+          file.map do |line|
+            line.chomp
+          end
         end
       end
 
       # Dump +data+ to this file as a string.  Close the file handle
       # if passed in :close.
       def dump data, options={}
-        @file.write(data.inspect)
-        @file.close if options[:close]
+        file.write(data.inspect)
+        file.close if options[:close]
       end
 
       def method_missing method, *args
-        @file.send method, *args
+        file.send method, *args
+      end
+
+      def parse parser_spec, &block
+        lines = parser_spec.delete(:lines)
+        @parser = IMW::Parsers::RegexpParser.new(parser_spec)
+        parser.parse!(file, {:lines => lines}, &block)
       end
       
     end
