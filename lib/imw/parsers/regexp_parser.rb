@@ -55,14 +55,14 @@ module IMW
       end
 
       def parse_line line
-        match_data = regexp.match(line)
+        match_data = regexp.match(line.chomp)
         returning({}) do |hsh|
           if match_data
             match_data.captures.each_with_index do |capture, index|
               hsh[fields[index]] = capture
             end
           else
-            raise IMW::ParseError.new("Could not parse the following line:\n\n#{line}") if strict
+            raise IMW::ParseError.new("Could not parse the following line:\n\n#{line}\n\nusing regexp\n\n#{regexp.to_s}") if strict
           end
         end
       end
