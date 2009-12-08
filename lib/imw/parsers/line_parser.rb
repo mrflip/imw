@@ -73,8 +73,8 @@ module IMW
         end
       end
 
-      def parse_line
-        raise "Subclass the LineParser and redefine this method to create a true parser."
+      def parse_line line
+        raise IMW::NotImplementedError.new("Subclass the LineParser and redefine this method to create a true parser.")
       end
 
       protected

@@ -18,11 +18,25 @@ EOF
 
     @parser = IMW::Parsers::RegexpParser.new :by_regexp => @regexp, :into_fields => @fields    
   end
-  
-  it "should return the proper hash from each row" do
-    results = @parser.parse!(@file)
-    results.length.should == 3
-    results.first.should == {:ip => '151.199.53.145', :timestamp => '14-Oct-2007:13:34:34-0500', :verb => 'GET', :url => '/phpmyadmin/main.php', :version => "1.0"}
+
+  describe "parsing a line which matches its regexp" do
+    it "should return an appropriate hash" do
+      @parser.parse_line(@file.readline).should == {:ip => '151.199.53.145', :timestamp => '14-Oct-2007:13:34:34-0500', :verb => 'GET', :url => '/phpmyadmin/main.php', :version => "1.0"}
+    end
+  end
+
+  describe "parsing a line which doesn't match its regexp" do
+    before { @parser.regexp = /foobar/ }
+
+    it "return an empty hash if not parsing strictly" do
+      @parser.parse_line(@file.readline).should == {}
+    end
+
+    it "should raise an error if parsing strictly" do
+      @parser.strict = true
+      lambda { @parser.parse_line(@file.readline) }.should raise_error IMW::ParseError
+    end
   end
 end
+  
 

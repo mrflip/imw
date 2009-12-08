@@ -40,12 +40,17 @@ module IMW
     #                                           :of          => PageView
     #                                           
     #   parser.parse! file #=> [#<PageView ip="151.199.53.145", timestamp="14-Oct-2007:13:34:34-0500", verb="GET", url="/phpmyadmin/main.php", version="1.0">, ... ]
+    #
+    # The option <tt>:strictly</tt> can also be set to force the
+    # parser to raise an error if it finds a line which doesn't match
+    # its regexp.
     class RegexpParser < LineParser
-      attr_accessor :regexp, :fields
+      attr_accessor :regexp, :fields, :strict
 
       def initialize options={}
         @regexp = options[:regexp] || options[:by_regexp]
         @fields = options[:fields] || options[:into_fields]
+        @strict = options[:strict] || options[:strictly]
         super options
       end
 
@@ -56,6 +61,8 @@ module IMW
             match_data.captures.each_with_index do |capture, index|
               hsh[fields[index]] = capture
             end
+          else
+            raise IMW::ParseError.new("Could not parse the following line:\n\n#{line}") if strict
           end
         end
       end
