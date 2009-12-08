@@ -20,6 +20,7 @@ module IMW
       # parsing.
       def initialize options={}
         @skip_first = options[:skip_first] || 0
+        @klass      = options[:of]         || options[:klass]
       end
 
       # Parse the given file.  If the option <tt>:lines</tt> is passed
