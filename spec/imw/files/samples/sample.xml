@@ -1,0 +1,653 @@
+<monkeys>
+  <monkey id="001">
+    <genus>Aotus</genus>
+    <species>lemurinus</species>
+    <name>Gray-bellied Night Monkey</name>
+  </monkey>
+  <monkey id="002">
+    <genus>Aotus</genus>
+    <species>zonalis</species>
+    <name>Panamanian Night Monkey</name>
+  </monkey>
+  <monkey id="003">
+    <genus>Aotus</genus>
+    <species>jorgehernandezi</species>
+    <name>Hernández-Camacho's Night Monkey</name>
+  </monkey>
+  <monkey id="004">
+    <genus>Aotus</genus>
+    <species>griseimembra</species>
+    <name>Gray-handed Night Monkey</name>
+  </monkey>
+  <monkey id="005">
+    <genus>Aotus</genus>
+    <species>hershkovitzi</species>
+    <name>Hershkovitz's Night Monkey</name>
+  </monkey>
+  <monkey id="006">
+    <genus>Aotus</genus>
+    <species>brumbacki</species>
+    <name>Brumback's Night Monkey</name>
+  </monkey>
+  <monkey id="007">
+    <genus>Aotus</genus>
+    <species>trivirgatus</species>
+    <name>Three-striped Night Monkey</name>
+  </monkey>
+  <monkey id="008">
+    <genus>Aotus</genus>
+    <species>vociferans</species>
+    <name>Spix's Night Monkey</name>
+  </monkey>
+  <monkey id="009">
+    <genus>Hylobates</genus>
+    <species>lar lar</species>
+    <name>Malaysian Lar Gibbon</name>
+  </monkey>
+  <monkey id="010">
+    <genus>Hylobates</genus>
+    <species>lar carpenteri</species>
+    <name>Carpenter's Lar Gibbon</name>
+  </monkey>
+  <monkey id="011">
+    <genus>Hylobates</genus>
+    <species>lar entelloides</species>
+    <name>Central Lar Gibbon</name>
+  </monkey>
+  <monkey id="012">
+    <genus>Hylobates</genus>
+    <species>lar vestitus</species>
+    <name>Sumatran Lar Gibbon</name>
+  </monkey>
+  <monkey id="013">
+    <genus>Hylobates</genus>
+    <species>lar yunnanensis</species>
+    <name>Yunnan Lar Gibbon</name>
+  </monkey>
+  <monkey id="014">
+    <genus>Hylobates</genus>
+    <species>agilis agilis</species>
+    <name>Mountain Agile Gibbon</name>
+  </monkey>
+  <monkey id="015">
+    <genus>Hylobates</genus>
+    <species>agilis albibarbis</species>
+    <name>Bornean White-bearded Gibbon</name>
+  </monkey>
+  <monkey id="016">
+    <genus>Hylobates</genus>
+    <species>agilis unko</species>
+    <name>Lowland Agile Gibbon</name>
+  </monkey>
+  <monkey id="017">
+    <genus>Hylobates</genus>
+    <species>muelleri muelleri</species>
+    <name>Müller's Gray Gibbon</name>
+  </monkey>
+  <monkey id="018">
+    <genus>Hylobates</genus>
+    <species>muelleri abbotti</species>
+    <name>Abbott's Gray Gibbon</name>
+  </monkey>
+  <monkey id="019">
+    <genus>Hylobates</genus>
+    <species>muelleri funereus</species>
+    <name>Northern Gray Gibbon</name>
+  </monkey>
+  <monkey id="020">
+    <genus>Saguinas</genus>
+    <species>niger</species>
+    <name>Black Tamarin</name>
+  </monkey>
+  <monkey id="021">
+    <genus>Saguinas</genus>
+    <species>nigricollis</species>
+    <name>Black-mantled Tamarin</name>
+  </monkey>
+  <monkey id="022">
+    <genus>Saguinas</genus>
+    <species>fuscicollis</species>
+    <name>Brown-mantled Tamarin</name>
+  </monkey>
+  <monkey id="023">
+    <genus>Saguinas</genus>
+    <species>oedipus</species>
+    <name>Cottontop Tamarin or Pinché Tamarin</name>
+  </monkey>
+  <monkey id="024">
+    <genus>Saguinas</genus>
+    <species>imperator</species>
+    <name>Emperor Tamarin</name>
+  </monkey>
+  <monkey id="025">
+    <genus>Saguinas</genus>
+    <species>geoffroyi</species>
+    <name>Geoffroy's Tamarin</name>
+  </monkey>
+  <monkey id="026">
+    <genus>Saguinas</genus>
+    <species>tripartitus</species>
+    <name>Golden-mantled Tamarin</name>
+  </monkey>
+  <monkey id="027">
+    <genus>Saguinas</genus>
+    <species>graellsi</species>
+    <name>Graells's Tamarin</name>
+  </monkey>
+  <monkey id="028">
+    <genus>Saguinas</genus>
+    <species>martinsi</species>
+    <name>Martins's Tamarin</name>
+  </monkey>
+  <monkey id="029">
+    <genus>Saguinas</genus>
+    <species>inustus</species>
+    <name>Mottle-faced Tamarin</name>
+  </monkey>
+  <monkey id="030">
+    <genus>Saguinas</genus>
+    <species>mystax</species>
+    <name>Moustached Tamarin</name>
+  </monkey>
+  <monkey id="031">
+    <genus>Saguinas</genus>
+    <species>bicolor</species>
+    <name>Pied Tamarin</name>
+  </monkey>
+  <monkey id="032">
+    <genus>Saguinas</genus>
+    <species>pileatus</species>
+    <name>Red-capped Tamarin</name>
+  </monkey>
+  <monkey id="033">
+    <genus>Saguinas</genus>
+    <species>midas</species>
+    <name>Red-handed Tamarin</name>
+  </monkey>
+  <monkey id="034">
+    <genus>Saguinas</genus>
+    <species>leucopus</species>
+    <name>White-footed Tamarin</name>
+  </monkey>
+  <monkey id="035">
+    <genus>Saguinas</genus>
+    <species>labiatus</species>
+    <name>White-lipped Tamarin</name>
+  </monkey>
+  <monkey id="036">
+    <genus>Saguinas</genus>
+    <species>melanoleucus</species>
+    <name>White-mantled Tamarin</name>
+  </monkey>
+  <monkey id="037">
+    <genus>Allenopithecus</genus>
+    <species>nigroviridis</species>
+    <name>Allen's Swamp Monkey</name>
+  </monkey>
+  <monkey id="038">
+    <genus>Miopithecus</genus>
+    <species>talapoin</species>
+    <name>Angolan Talapoin</name>
+  </monkey>
+  <monkey id="039">
+    <genus>Miopithecus</genus>
+    <species>ogouensis</species>
+    <name>Gabon Talapoin</name>
+  </monkey>
+  <monkey id="040">
+    <genus>Erythrocebus</genus>
+    <species>patas</species>
+    <name>Patas Monkey</name>
+  </monkey>
+  <monkey id="041">
+    <genus>Chlorocebus</genus>
+    <species>sabaeus</species>
+    <name>Green Monkey</name>
+  </monkey>
+  <monkey id="042">
+    <genus>Chlorocebus</genus>
+    <species>aethiops</species>
+    <name>Grivet</name>
+  </monkey>
+  <monkey id="043">
+    <genus>Chlorocebus</genus>
+    <species>djamdjamensis</species>
+    <name>Bale Mountains Vervet</name>
+  </monkey>
+  <monkey id="044">
+    <genus>Chlorocebus</genus>
+    <species>tantalus</species>
+    <name>Tantalus Monkey</name>
+  </monkey>
+  <monkey id="045">
+    <genus>Chlorocebus</genus>
+    <species>pygerythrus</species>
+    <name>Vervet Monkey</name>
+  </monkey>
+  <monkey id="046">
+    <genus>Chlorocebus</genus>
+    <species>cynosuros</species>
+    <name>Malbrouck</name>
+  </monkey>
+  <monkey id="047">
+    <genus>Cercopithecus</genus>
+    <species>dryas</species>
+    <name>Dryas Monkey or Salongo Monkey</name>
+  </monkey>
+  <monkey id="048">
+    <genus>Cercopithecus</genus>
+    <species>diana</species>
+    <name>Diana Monkey</name>
+  </monkey>
+  <monkey id="049">
+    <genus>Cercopithecus</genus>
+    <species>roloway</species>
+    <name>Roloway Monkey</name>
+  </monkey>
+  <monkey id="050">
+    <genus>Cercopithecus</genus>
+    <species>nictitans</species>
+    <name>Greater Spot-nosed Monkey</name>
+  </monkey>
+  <monkey id="051">
+    <genus>Cercopithecus</genus>
+    <species>mitis</species>
+    <name>Blue Monkey</name>
+  </monkey>
+  <monkey id="052">
+    <genus>Cercopithecus</genus>
+    <species>doggetti</species>
+    <name>Silver Monkey</name>
+  </monkey>
+  <monkey id="053">
+    <genus>Cercopithecus</genus>
+    <species>kandti</species>
+    <name>Golden Monkey</name>
+  </monkey>
+  <monkey id="054">
+    <genus>Cercopithecus</genus>
+    <species>albogularis</species>
+    <name>Sykes's Monkey</name>
+  </monkey>
+  <monkey id="055">
+    <genus>Cercopithecus</genus>
+    <species>mona</species>
+    <name>Mona Monkey</name>
+  </monkey>
+  <monkey id="056">
+    <genus>Cercopithecus</genus>
+    <species>campbelli</species>
+    <name>Campbell's Mona Monkey</name>
+  </monkey>
+  <monkey id="057">
+    <genus>Cercopithecus</genus>
+    <species>lowei</species>
+    <name>Lowe's Mona Monkey</name>
+  </monkey>
+  <monkey id="058">
+    <genus>Cercopithecus</genus>
+    <species>pogonias</species>
+    <name>Crested Mona Monkey</name>
+  </monkey>
+  <monkey id="059">
+    <genus>Cercopithecus</genus>
+    <species>wolfi</species>
+    <name>Wolf's Mona Monkey</name>
+  </monkey>
+  <monkey id="060">
+    <genus>Cercopithecus</genus>
+    <species>denti</species>
+    <name>Dent's Mona Monkey</name>
+  </monkey>
+  <monkey id="061">
+    <genus>Cercopithecus</genus>
+    <species>petaurista</species>
+    <name>Lesser Spot-nosed Monkey</name>
+  </monkey>
+  <monkey id="062">
+    <genus>Cercopithecus</genus>
+    <species>erythrogaster</species>
+    <name>White-throated Guenon</name>
+  </monkey>
+  <monkey id="063">
+    <genus>Cercopithecus</genus>
+    <species>sclateri</species>
+    <name>Sclater's Guenon</name>
+  </monkey>
+  <monkey id="064">
+    <genus>Cercopithecus</genus>
+    <species>erythrotis</species>
+    <name>Red-eared Guenon</name>
+  </monkey>
+  <monkey id="065">
+    <genus>Cercopithecus</genus>
+    <species>cephus</species>
+    <name>Moustached Guenon</name>
+  </monkey>
+  <monkey id="066">
+    <genus>Cercopithecus</genus>
+    <species>ascanius</species>
+    <name>Red-tailed Monkey</name>
+  </monkey>
+  <monkey id="067">
+    <genus>Cercopithecus</genus>
+    <species>lhoesti</species>
+    <name>L'Hoest's Monkey</name>
+  </monkey>
+  <monkey id="068">
+    <genus>Cercopithecus</genus>
+    <species>preussi</species>
+    <name>Preuss's Monkey</name>
+  </monkey>
+  <monkey id="069">
+    <genus>Cercopithecus</genus>
+    <species>solatus</species>
+    <name>Sun-tailed Monkey</name>
+  </monkey>
+  <monkey id="070">
+    <genus>Cercopithecus</genus>
+    <species>hamlyni</species>
+    <name>Hamlyn's Monkey</name>
+  </monkey>
+  <monkey id="071">
+    <genus>Cercopithecus</genus>
+    <species>neglectus</species>
+    <name>De Brazza's Monkey</name>
+  </monkey>
+  <monkey id="072">
+    <genus>Macaca</genus>
+    <species>sylvanus</species>
+    <name>Barbary Macaque</name>
+  </monkey>
+  <monkey id="073">
+    <genus>Macaca</genus>
+    <species>silenus</species>
+    <name>Lion-tailed Macaque</name>
+  </monkey>
+  <monkey id="074">
+    <genus>Macaca</genus>
+    <species>nemestrina</species>
+    <name>Southern Pig-tailed Macaque or Beruk</name>
+  </monkey>
+  <monkey id="075">
+    <genus>Macaca</genus>
+    <species>leonina</species>
+    <name>Northern Pig-tailed Macaque</name>
+  </monkey>
+  <monkey id="076">
+    <genus>Macaca</genus>
+    <species>pagensis</species>
+    <name>Pagai Island Macaque or Bokkoi</name>
+  </monkey>
+  <monkey id="077">
+    <genus>Macaca</genus>
+    <species>siberu</species>
+    <name>Siberut Macaque</name>
+  </monkey>
+  <monkey id="078">
+    <genus>Macaca</genus>
+    <species>maura</species>
+    <name>Moor Macaque</name>
+  </monkey>
+  <monkey id="079">
+    <genus>Macaca</genus>
+    <species>ochreata</species>
+    <name>Booted Macaque</name>
+  </monkey>
+  <monkey id="080">
+    <genus>Macaca</genus>
+    <species>tonkeana</species>
+    <name>Tonkean Macaque</name>
+  </monkey>
+  <monkey id="081">
+    <genus>Macaca</genus>
+    <species>hecki</species>
+    <name>Heck's Macaque</name>
+  </monkey>
+  <monkey id="082">
+    <genus>Macaca</genus>
+    <species>nigrescens</species>
+    <name>Gorontalo Macaque</name>
+  </monkey>
+  <monkey id="083">
+    <genus>Macaca</genus>
+    <species>nigra</species>
+    <name>Celebes Crested Macaque or Black "Ape"</name>
+  </monkey>
+  <monkey id="084">
+    <genus>Macaca</genus>
+    <species>fascicularis</species>
+    <name>Crab-eating Macaque or Long-tailed Macaque or Kera</name>
+  </monkey>
+  <monkey id="085">
+    <genus>Macaca</genus>
+    <species>arctoides</species>
+    <name>Stump-tailed Macaque or Bear Macaque</name>
+  </monkey>
+  <monkey id="086">
+    <genus>Macaca</genus>
+    <species>mulatta</species>
+    <name>Rhesus Macaque</name>
+  </monkey>
+  <monkey id="087">
+    <genus>Macaca</genus>
+    <species>cyclopis</species>
+    <name>Formosan Rock Macaque</name>
+  </monkey>
+  <monkey id="088">
+    <genus>Macaca</genus>
+    <species>fuscata</species>
+    <name>Japanese Macaque</name>
+  </monkey>
+  <monkey id="089">
+    <genus>Macaca</genus>
+    <species>sinica</species>
+    <name>Toque Macaque</name>
+  </monkey>
+  <monkey id="090">
+    <genus>Macaca</genus>
+    <species>radiata</species>
+    <name>Bonnet Macaque</name>
+  </monkey>
+  <monkey id="091">
+    <genus>Macaca</genus>
+    <species>assamensis</species>
+    <name>Assam Macaque</name>
+  </monkey>
+  <monkey id="092">
+    <genus>Macaca</genus>
+    <species>thibetana</species>
+    <name>Tibetan Macaque or Milne-Edwards' Macaque</name>
+  </monkey>
+  <monkey id="093">
+    <genus>Macaca</genus>
+    <species>munzala</species>
+    <name>Arunachal Macaque or Munzala</name>
+  </monkey>
+  <monkey id="094">
+    <genus>Lophocebus</genus>
+    <species>albigena</species>
+    <name>Grey-cheeked Mangabey</name>
+  </monkey>
+  <monkey id="095">
+    <genus>Lophocebus</genus>
+    <species>aterrimus</species>
+    <name>Black Crested Mangabey</name>
+  </monkey>
+  <monkey id="096">
+    <genus>Lophocebus</genus>
+    <species>opdenboschi</species>
+    <name>Opdenbosch's Mangabey</name>
+  </monkey>
+  <monkey id="097">
+    <genus>Lophocebus</genus>
+    <species>ugandae</species>
+    <name>Uganda Mangabey</name>
+  </monkey>
+  <monkey id="098">
+    <genus>Lophocebus</genus>
+    <species>johnstoni</species>
+    <name>Johnston's Mangabey</name>
+  </monkey>
+  <monkey id="099">
+    <genus>Lophocebus</genus>
+    <species>osmani</species>
+    <name>Osman Hill's Mangabey</name>
+  </monkey>
+  <monkey id="100">
+    <genus>Rungwecebus</genus>
+    <species>kipunji</species>
+    <name>Kipunji</name>
+  </monkey>
+  <monkey id="101">
+    <genus>Papio</genus>
+    <species>hamadryas</species>
+    <name>Hamadryas Baboon</name>
+  </monkey>
+  <monkey id="102">
+    <genus>Papio</genus>
+    <species>papio</species>
+    <name>Guinea Baboon</name>
+  </monkey>
+  <monkey id="103">
+    <genus>Papio</genus>
+    <species>anubis</species>
+    <name>Olive Baboon</name>
+  </monkey>
+  <monkey id="104">
+    <genus>Papio</genus>
+    <species>cynocephalus</species>
+    <name>Yellow Baboon</name>
+  </monkey>
+  <monkey id="105">
+    <genus>Papio</genus>
+    <species>ursinus</species>
+    <name>Chacma Baboon</name>
+  </monkey>
+  <monkey id="106">
+    <genus>Theropithecus</genus>
+    <species>gelada</species>
+    <name>Gelada</name>
+  </monkey>
+  <monkey id="107">
+    <genus>Cercocebus</genus>
+    <species>atys</species>
+    <name>Sooty Mangabey</name>
+  </monkey>
+  <monkey id="108">
+    <genus>Cercocebus</genus>
+    <species>torquatus</species>
+    <name>Collared Mangabey</name>
+  </monkey>
+  <monkey id="109">
+    <genus>Cercocebus</genus>
+    <species>agilis</species>
+    <name>Agile Mangabey</name>
+  </monkey>
+  <monkey id="110">
+    <genus>Cercocebus</genus>
+    <species>chrysogaster</species>
+    <name>Golden-bellied Mangabey</name>
+  </monkey>
+  <monkey id="111">
+    <genus>Cercocebus</genus>
+    <species>galeritus</species>
+    <name>Tana River Mangabey</name>
+  </monkey>
+  <monkey id="112">
+    <genus>Cercocebus</genus>
+    <species>sanjei</species>
+    <name>Sanje Mangabey</name>
+  </monkey>
+  <monkey id="113">
+    <genus>Mandrillus</genus>
+    <species>sphinx</species>
+    <name>Mandrill</name>
+  </monkey>
+  <monkey id="114">
+    <genus>Mandrillus</genus>
+    <species>leucophaeus</species>
+    <name>Drill</name>
+  </monkey>
+  <monkey id="115">
+    <genus>Colobus</genus>
+    <species>satanas</species>
+    <name>Black Colobus</name>
+  </monkey>
+  <monkey id="116">
+    <genus>Colobus</genus>
+    <species>angolensis</species>
+    <name>Angola Colobus</name>
+  </monkey>
+  <monkey id="117">
+    <genus>Colobus</genus>
+    <species>polykomos</species>
+    <name>King Colobus</name>
+  </monkey>
+  <monkey id="118">
+    <genus>Colobus</genus>
+    <species>vellerosus</species>
+    <name>Ursine Colobus</name>
+  </monkey>
+  <monkey id="119">
+    <genus>Colobus</genus>
+    <species>guereza</species>
+    <name>Mantled Guereza</name>
+  </monkey>
+  <monkey id="120">
+    <genus>Piliocolobus</genus>
+    <species>badius</species>
+    <name>Western Red Colobus</name>
+  </monkey>
+  <monkey id="121">
+    <genus>Piliocolobus</genus>
+    <species>pennantii</species>
+    <name>Pennant's Colobus</name>
+  </monkey>
+  <monkey id="122">
+    <genus>Piliocolobus</genus>
+    <species>preussi</species>
+    <name>Preuss's Red Colobus</name>
+  </monkey>
+  <monkey id="123">
+    <genus>Piliocolobus</genus>
+    <species>tholloni</species>
+    <name>Thollon's Red Colobus</name>
+  </monkey>
+  <monkey id="124">
+    <genus>Piliocolobus</genus>
+    <species>foai</species>
+    <name>Central African Red Colobus</name>
+  </monkey>
+  <monkey id="125">
+    <genus>Piliocolobus</genus>
+    <species>tephrosceles</species>
+    <name>Ugandan Red Colobus</name>
+  </monkey>
+  <monkey id="126">
+    <genus>Piliocolobus</genus>
+    <species>gordonorum</species>
+    <name>Uzungwa Red Colobus</name>
+  </monkey>
+  <monkey id="127">
+    <genus>Piliocolobus</genus>
+    <species>kirkii</species>
+    <name>Zanzibar Red Colobus</name>
+  </monkey>
+  <monkey id="128">
+    <genus>Piliocolobus</genus>
+    <species>rufomitratus</species>
+    <name>Tana River Red Colobus</name>
+  </monkey>
+  <monkey id="129">
+    <genus>Procolobus</genus>
+    <species>verus</species>
+    <name>Olive Colobus</name>
+  </monkey>
+  <monkey id="130">
+    <genus>Presbytis</genus>
+    <species>rubicunda
+    </species>
+    <name>Maroon Leaf Monkey</name>
+  </monkey>
+</monkeys>

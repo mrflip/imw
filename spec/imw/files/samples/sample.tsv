@@ -1,0 +1,131 @@
+ID	Name	Genus	Species
+001	Gray-bellied Night Monkey	Aotus	lemurinus
+002	Panamanian Night Monkey	Aotus	zonalis
+003	Hernández-Camacho's Night Monkey	Aotus	jorgehernandezi
+004	Gray-handed Night Monkey	Aotus	griseimembra
+005	Hershkovitz's Night Monkey	Aotus	hershkovitzi
+006	Brumback's Night Monkey	Aotus	brumbacki
+007	Three-striped Night Monkey	Aotus	trivirgatus
+008	Spix's Night Monkey	Aotus	vociferans
+009	Malaysian Lar Gibbon	Hylobates	lar lar
+010	Carpenter's Lar Gibbon	Hylobates	lar carpenteri
+011	Central Lar Gibbon	Hylobates	lar entelloides
+012	Sumatran Lar Gibbon	Hylobates	lar vestitus
+013	Yunnan Lar Gibbon	Hylobates	lar yunnanensis
+014	Mountain Agile Gibbon	Hylobates	agilis agilis
+015	Bornean White-bearded Gibbon	Hylobates	agilis albibarbis
+016	Lowland Agile Gibbon	Hylobates	agilis unko
+017	Müller's Gray Gibbon	Hylobates	muelleri muelleri
+018	Abbott's Gray Gibbon	Hylobates	muelleri abbotti
+019	Northern Gray Gibbon	Hylobates	muelleri funereus
+020	Black Tamarin	Saguinas	niger
+021	Black-mantled Tamarin	Saguinas	nigricollis
+022	Brown-mantled Tamarin	Saguinas	fuscicollis
+023	Cottontop Tamarin or Pinché Tamarin	Saguinas	oedipus
+024	Emperor Tamarin	Saguinas	imperator
+025	Geoffroy's Tamarin	Saguinas	geoffroyi
+026	Golden-mantled Tamarin	Saguinas	tripartitus
+027	Graells's Tamarin	Saguinas	graellsi
+028	Martins's Tamarin	Saguinas	martinsi
+029	Mottle-faced Tamarin	Saguinas	inustus
+030	Moustached Tamarin	Saguinas	mystax
+031	Pied Tamarin	Saguinas	bicolor
+032	Red-capped Tamarin	Saguinas	pileatus
+033	Red-handed Tamarin	Saguinas	midas
+034	White-footed Tamarin	Saguinas	leucopus
+035	White-lipped Tamarin	Saguinas	labiatus
+036	White-mantled Tamarin	Saguinas	melanoleucus
+037	Allen's Swamp Monkey	Allenopithecus	nigroviridis
+038	Angolan Talapoin	Miopithecus	talapoin
+039	Gabon Talapoin	Miopithecus	ogouensis
+040	Patas Monkey	Erythrocebus	patas
+041	Green Monkey	Chlorocebus	sabaeus
+042	Grivet	Chlorocebus	aethiops
+043	Bale Mountains Vervet	Chlorocebus	djamdjamensis
+044	Tantalus Monkey	Chlorocebus	tantalus
+045	Vervet Monkey	Chlorocebus	pygerythrus
+046	Malbrouck	Chlorocebus	cynosuros
+047	Dryas Monkey or Salongo Monkey	Cercopithecus	dryas
+048	Diana Monkey	Cercopithecus	diana
+049	Roloway Monkey	Cercopithecus	roloway
+050	Greater Spot-nosed Monkey	Cercopithecus	nictitans
+051	Blue Monkey	Cercopithecus	mitis
+052	Silver Monkey	Cercopithecus	doggetti
+053	Golden Monkey	Cercopithecus	kandti
+054	Sykes's Monkey	Cercopithecus	albogularis
+055	Mona Monkey	Cercopithecus	mona
+056	Campbell's Mona Monkey	Cercopithecus	campbelli
+057	Lowe's Mona Monkey	Cercopithecus	lowei
+058	Crested Mona Monkey	Cercopithecus	pogonias
+059	Wolf's Mona Monkey	Cercopithecus	wolfi
+060	Dent's Mona Monkey	Cercopithecus	denti
+061	Lesser Spot-nosed Monkey	Cercopithecus	petaurista
+062	White-throated Guenon	Cercopithecus	erythrogaster
+063	Sclater's Guenon	Cercopithecus	sclateri
+064	Red-eared Guenon	Cercopithecus	erythrotis
+065	Moustached Guenon	Cercopithecus	cephus
+066	Red-tailed Monkey	Cercopithecus	ascanius
+067	L'Hoest's Monkey	Cercopithecus	lhoesti
+068	Preuss's Monkey	Cercopithecus	preussi
+069	Sun-tailed Monkey	Cercopithecus	solatus
+070	Hamlyn's Monkey	Cercopithecus	hamlyni
+071	De Brazza's Monkey	Cercopithecus	neglectus
+072	Barbary Macaque	Macaca	sylvanus
+073	Lion-tailed Macaque	Macaca	silenus
+074	Southern Pig-tailed Macaque or Beruk	Macaca	nemestrina
+075	Northern Pig-tailed Macaque	Macaca	leonina
+076	Pagai Island Macaque or Bokkoi	Macaca	pagensis
+077	Siberut Macaque	Macaca	siberu
+078	Moor Macaque	Macaca	maura
+079	Booted Macaque	Macaca	ochreata
+080	Tonkean Macaque	Macaca	tonkeana
+081	Heck's Macaque	Macaca	hecki
+082	Gorontalo Macaque	Macaca	nigrescens
+083	Celebes Crested Macaque or Black "Ape"	Macaca	nigra
+084	Crab-eating Macaque or Long-tailed Macaque or Kera	Macaca	fascicularis
+085	Stump-tailed Macaque or Bear Macaque	Macaca	arctoides
+086	Rhesus Macaque	Macaca	mulatta
+087	Formosan Rock Macaque	Macaca	cyclopis
+088	Japanese Macaque	Macaca	fuscata
+089	Toque Macaque	Macaca	sinica
+090	Bonnet Macaque	Macaca	radiata
+091	Assam Macaque	Macaca	assamensis
+092	Tibetan Macaque or Milne-Edwards' Macaque	Macaca	thibetana
+093	Arunachal Macaque or Munzala	Macaca	munzala
+094	Grey-cheeked Mangabey	Lophocebus	albigena
+095	Black Crested Mangabey	Lophocebus	aterrimus
+096	Opdenbosch's Mangabey	Lophocebus	opdenboschi
+097	Uganda Mangabey	Lophocebus	ugandae
+098	Johnston's Mangabey	Lophocebus	johnstoni
+099	Osman Hill's Mangabey	Lophocebus	osmani
+100	Kipunji	Rungwecebus	kipunji
+101	Hamadryas Baboon	Papio	hamadryas
+102	Guinea Baboon	Papio	papio
+103	Olive Baboon	Papio	anubis
+104	Yellow Baboon	Papio	cynocephalus
+105	Chacma Baboon	Papio	ursinus
+106	Gelada	Theropithecus	gelada
+107	Sooty Mangabey	Cercocebus	atys
+108	Collared Mangabey	Cercocebus	torquatus
+109	Agile Mangabey	Cercocebus	agilis
+110	Golden-bellied Mangabey	Cercocebus	chrysogaster
+111	Tana River Mangabey	Cercocebus	galeritus
+112	Sanje Mangabey	Cercocebus	sanjei
+113	Mandrill	Mandrillus	sphinx
+114	Drill	Mandrillus	leucophaeus
+115	Black Colobus	Colobus	satanas
+116	Angola Colobus	Colobus	angolensis
+117	King Colobus	Colobus	polykomos
+118	Ursine Colobus	Colobus	vellerosus
+119	Mantled Guereza	Colobus	guereza
+120	Western Red Colobus	Piliocolobus	badius
+121	Pennant's Colobus	Piliocolobus	pennantii
+122	Preuss's Red Colobus	Piliocolobus	preussi
+123	Thollon's Red Colobus	Piliocolobus	tholloni
+124	Central African Red Colobus	Piliocolobus	foai
+125	Ugandan Red Colobus	Piliocolobus	tephrosceles
+126	Uzungwa Red Colobus	Piliocolobus	gordonorum
+127	Zanzibar Red Colobus	Piliocolobus	kirkii
+128	Tana River Red Colobus	Piliocolobus	rufomitratus
+129	Olive Colobus	Procolobus	verus
+130	Maroon Leaf Monkey	Presbytis	rubicunda

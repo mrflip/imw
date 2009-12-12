@@ -1,0 +1,51 @@
+
+# open brace and block vars snuggle with function's parens; close brace has a
+# space
+
+foo(arg1, arg2){|x| x = x*3 }
+
+
+not set_path: path=
+Module:  self.included
+
+-- uri_or_file ??
+
+Delegation
+  http://www.fromjavatoruby.com/2008/10/delgation-in-ruby.html
+  http://www.ruby-doc.org/stdlib/libdoc/delegate/rdoc/index.html
+  http://caboo.se/doc/classes/Module.html#M004107
+
+
+Use cases:
+
+
+data_source = IMW::DataSource.open("/tmp/foo.yaml")
+data_source = IMW::DataSource.open("/tmp/foo.xml")
+data_source = IMW::DataSource.open("/tmp/foo.csv", "b", :foo => :bar)
+data_source = IMW::DataSource.open("/tmp/foo.txt")      # File
+---
+data_source = IMW::DataSource.open("mysql://localhost/dm_core_test")
+
+#open should take a block
+-- see http://fastercsv.rubyforge.org/classes/FasterCSV.html#M000012
+
+* http://ben.woosley.name/code/ROXML/rdoc/
+* http://railstips.org/2008/8/12/parsing-xml-with-ruby
+* http://xml-simple.rubyforge.org/
+
+* rails/activesupport/lib/active_support/core_ext/hash/conversions.rb
+
+data_source.each
+
+
+
+f = File.open("testfile")
+begin
+  # .. process
+rescue
+  # .. handle error
+else
+  puts "Congratulations-- no errors!"
+ensure
+  f.close unless f.nil?
+end
