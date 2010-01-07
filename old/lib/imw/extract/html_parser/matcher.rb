@@ -1,5 +1,5 @@
 module IMW
-  module HTMLParserMatcher
+  module HtmlParserMatcher
     class Matcher
       attr_accessor :selector
       attr_accessor :matcher
@@ -64,11 +64,11 @@ module IMW
     end
 
     #
-    # map html elements -- or any HTMLParser tree -- to attributes in a hash.
-    #   HTMLParser.new([ {
+    # map html elements -- or any HtmlParser tree -- to attributes in a hash.
+    #   HtmlParser.new([ {
     #       :name     => 'li/span.fn',
     #       :location => 'li/span.adr',
-    #       :url      => HTMLParser.attr('li/a.url[@href]', 'href'),
+    #       :url      => HtmlParser.attr('li/a.url[@href]', 'href'),
     #       :bio      => 'li#bio/span.bio',
     #     }
     #   ])

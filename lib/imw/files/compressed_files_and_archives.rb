@@ -1,17 +1,3 @@
-#
-# h2. lib/imw/files/compressed_files_and_archives.rb -- require farm
-#
-# == About
-#
-# Just required all the archive and compressed formats (+tar+, +bz2+,
-# &c.)
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 module IMW
   module Files
     
@@ -29,9 +15,9 @@ module IMW
       # The default flags used creating, appending to, listing, and
       # extracting a tar archive.
       DEFAULT_FLAGS = {
-        :create => "-cf",
-        :append => "-rf",
-        :list => "-tf",
+        :create  => "-cf",
+        :append  => "-rf",
+        :list    => "-tf",
         :extract => "-xf",
         :program => :tar
       }
@@ -39,10 +25,10 @@ module IMW
       def initialize uri, *args
         self.uri= uri
         @archive = {
-          :program => DEFAULT_FLAGS[:program],
-          :create_flags => DEFAULT_FLAGS[:create],
-          :append_flags => DEFAULT_FLAGS[:append],
-          :list_flags => DEFAULT_FLAGS[:list],
+          :program       => DEFAULT_FLAGS[:program],
+          :create_flags  => DEFAULT_FLAGS[:create],
+          :append_flags  => DEFAULT_FLAGS[:append],
+          :list_flags    => DEFAULT_FLAGS[:list],
           :extract_flags => DEFAULT_FLAGS[:extract]
         }
       end
@@ -51,9 +37,9 @@ module IMW
     # A class to wrap a <tt>tar.gz</tt> archive.
     #
     # Creation, appending, listing, and extraction flags are stored in
-    # <tt>IMW::Files::TarGz::DEFAULT_FLAGS</tt> and all are passed to
+    # <tt>IMW::Files::Targz::DEFAULT_FLAGS</tt> and all are passed to
     # the <tt>:tar</tt> program in <tt>IMW::EXTERAL_PROGRAMS</tt>.
-    class TarGz
+    class Targz
       
       include IMW::Files::BasicFile
       include IMW::Files::Archive
@@ -63,21 +49,21 @@ module IMW
       # extracting a <tt>tar.gz</tt> archive.
       DEFAULT_FLAGS = {
         :decompression_program => :gzip,
-        :decompression_flags => '-fd',
-        :archive_program => :tar,
-        :archive_list_flags => "-tf",
+        :decompression_flags   => '-fd',
+        :archive_program       => :tar,
+        :archive_list_flags    => "-tf",
         :archive_extract_flags => "-xzf"
       }
       
       def initialize uri, *args
         self.uri= uri
         @compression = {
-          :program => DEFAULT_FLAGS[:decompression_program],
+          :program             => DEFAULT_FLAGS[:decompression_program],
           :decompression_flags => DEFAULT_FLAGS[:decompression_flags]
         }
         @archive = {
-          :program => DEFAULT_FLAGS[:archive_program],
-          :list_flags => DEFAULT_FLAGS[:archive_list_flags],
+          :program       => DEFAULT_FLAGS[:archive_program],
+          :list_flags    => DEFAULT_FLAGS[:archive_list_flags],
           :extract_flags => DEFAULT_FLAGS[:archive_extract_flags]
         }
       end
@@ -99,14 +85,14 @@ module IMW
         end
       end
       
-    end # TarGz
+    end # Targz
 
     # A class to wrap a <tt>tar.bz2</tt> archive.
     #
     # Creation, appending, listing, and extraction flags are stored in
-    # <tt>IMW::Files::TarBz2::DEFAULT_FLAGS</tt> and all are passed to
+    # <tt>IMW::Files::Tarbz2::DEFAULT_FLAGS</tt> and all are passed to
     # the <tt>:tar</tt> program in <tt>IMW::EXTERAL_PROGRAMS</tt>.
-    class TarBz2
+    class Tarbz2
 
       include IMW::Files::BasicFile
       include IMW::Files::Archive
@@ -169,7 +155,7 @@ module IMW
         File.join(dirname,name + '.tar')
       end
       
-    end # TarBz2
+    end # Tarbz2
     
     # A class to wrap a +rar+ archive.
     #
@@ -330,11 +316,11 @@ module IMW
 
 
     # make sure that tar.bz2 precedes bz2 and so on...
-    FILE_REGEXPS << [/\.tar\.bz2$/, IMW::Files::TarBz2]
-    FILE_REGEXPS << [/\.tbz2$/,     IMW::Files::TarBz2]
+    FILE_REGEXPS << [/\.tar\.bz2$/, IMW::Files::Tarbz2]
+    FILE_REGEXPS << [/\.tbz2$/,     IMW::Files::Tarbz2]
     
-    FILE_REGEXPS << [/\.tar\.gz$/,  IMW::Files::TarGz]
-    FILE_REGEXPS << [/\.tgz$/,      IMW::Files::TarGz]
+    FILE_REGEXPS << [/\.tar\.gz$/,  IMW::Files::Targz]
+    FILE_REGEXPS << [/\.tgz$/,      IMW::Files::Targz]
 
     FILE_REGEXPS << [/\.tar$/,      IMW::Files::Tar]    
     FILE_REGEXPS << [/\.bz2$/,      IMW::Files::Bz2]    

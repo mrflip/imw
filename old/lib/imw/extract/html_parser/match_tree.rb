@@ -1,3 +1,3 @@
-module IMW::HTMLParser::MatchTree
+module IMW::HtmlParser::MatchTree
 
 end

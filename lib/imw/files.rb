@@ -1,18 +1,3 @@
-#
-# h2. lib/imw/files.rb -- uniform interface to various files
-#
-# == About
-#
-# Implements <tt>IMW.open</tt> which returns an appropriate +IMW+
-# object given a URI.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-# puts "#{File.basename(__FILE__)}: Something clever" # at bottom
-
 require 'uri'
 require 'open-uri'
 require 'imw/utils'
@@ -50,8 +35,8 @@ module IMW
     autoload :Bz2,    'imw/files/compressed_files_and_archives'
     autoload :Gz,     'imw/files/compressed_files_and_archives'
     autoload :Tar,    'imw/files/compressed_files_and_archives'
-    autoload :TarBz2, 'imw/files/compressed_files_and_archives'
-    autoload :TarGz,  'imw/files/compressed_files_and_archives'
+    autoload :Tarbz2, 'imw/files/compressed_files_and_archives'
+    autoload :Targz,  'imw/files/compressed_files_and_archives'
     autoload :Rar,    'imw/files/compressed_files_and_archives'
     autoload :Zip,    'imw/files/compressed_files_and_archives'
     autoload :Xml,    'imw/files/sgml'
@@ -70,33 +55,38 @@ module IMW
     # allows, say, <tt>.tar.gz</tt> to be handled differently from
     # <tt>.gz</tt>.
     EXTENSION_HANDLERS = [
-                          [/./,           :Text], # catchall
-                          [/\.txt$/,      :Text],                          
-                          [/\.txt$/,      :Text],
-                          [/\.dat$/,      :Text],
-                          [/\.ascii$/,    :Text],
-                          [/\.yaml$/,     :Yaml],
-                          [/\.yml$/,      :Yaml],
-                          [/\.csv$/,      :Csv],
-                          [/\.tsv$/,      :Tsv],
-                          [/\.json$/,     :Json],
-                          [/\.bz2$/,      :Bz2],
-                          [/\.gz$/,       :Gz],
-                          [/\.tar\.bz2$/, :TarBz2],
-                          [/\.tbz2$/,     :TarBz2],
-                          [/\.tar\.gz$/,  :TarGz],
-                          [/\.tgz$/,      :TarGz],
-                          [/\.tar$/,      :Tar],
-                          [/\.rar$/,      :Rar],
-                          [/\.zip$/,      :Zip],
-                          [/\.xml$/,      :Xml],
-                          [/\.html$/,     :Html],
-                          [/\.htm$/,      :Html]
+                          [/\.txt$/,      :text],                          
+                          [/\.txt$/,      :text],
+                          [/\.dat$/,      :text],
+                          [/\.ascii$/,    :text],
+                          [/\.yaml$/,     :yaml],
+                          [/\.yml$/,      :yaml],
+                          [/\.csv$/,      :csv],
+                          [/\.tsv$/,      :tsv],
+                          [/\.json$/,     :json],
+                          [/\.bz2$/,      :bz2],
+                          [/\.gz$/,       :gz],
+                          [/\.tar\.bz2$/, :tarbz2],
+                          [/\.tbz2$/,     :tarbz2],
+                          [/\.tar\.gz$/,  :targz],
+                          [/\.tgz$/,      :targz],
+                          [/\.tar$/,      :tar],
+                          [/\.rar$/,      :rar],
+                          [/\.zip$/,      :zip],
+                          [/\.xml$/,      :xml],
+                          [/\.html$/,     :html],
+                          [/\.htm$/,      :html]
                          ]
+
+    SCHEME_HANDLERS = [
+                       [/http/, :html]
+                       ]
     
     protected
     def self.file_class_for path, options = {}
       klass = options.delete(:as)
+
+      # try to choose klass from path extension if not already set
       unless klass
         EXTENSION_HANDLERS.reverse_each do |regexp, thing| # end has greater precedence
           next unless regexp =~ path
@@ -104,7 +94,18 @@ module IMW
           break
         end
       end
-      klass.is_a?(Class) ? klass : class_eval(klass.to_s)
+
+      # try to choose klass from uri scheme if not already set
+      unless klass
+        scheme = URI.parse(path).scheme
+        SCHEME_HANDLERS.reverse_each do |regexp, thing| # end has greater precedence
+          next unless regexp =~ scheme
+          klass = thing
+          break
+        end
+      end
+      
+      klass.is_a?(Class) ? klass : class_eval(klass.to_s.downcase.capitalize)
     end
   end
 end
