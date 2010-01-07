@@ -1,20 +1,3 @@
-#
-# h2. lib/imw/utils/paths.rb -- defines the path structure of IMW
-#
-# == About
-#
-# IMW uses lots of different directories to keep information on data
-# and datasets separate.  This module interfaces with the
-# configuration files to establish the paths to these IMW directories
-# and provides functions and mixins for IMW objects to use to access
-# these paths.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-
 module IMW
 
   # Implements methods designed to work with an object's

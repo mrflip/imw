@@ -1,24 +1,5 @@
-#
-# h2. lib/imw/dataset.rb -- imw dataset
-#
-# == About
-#
-# Defines basic properties of the <tt>IMW::Dataset</tt>
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-# puts "#{File.basename(__FILE__)}: You use your Monkeywrench to rake deep and straight furrows in the earth for your orchard." # at bottom
-
-require 'rake'
-require 'ostruct'
-
 require 'imw/utils'
 require 'imw/dataset/workflow'
-require 'imw/dataset/loaddump'
-require 'imw/dataset/stats'
 
 module IMW
 
@@ -174,54 +155,16 @@ module IMW
   # framework in which to program.
   class Dataset
 
-    # The <tt>Rake::TaskManager</tt> module allows the
-    # <tt>IMW::Dataset</tt> class to leverage the functionality of the
-    # Rake[http://rake.rubyforge.org/] library to manage tasks
-    # associated with the processing of this dataset.
-    include Rake::TaskManager
-
     # The <tt>IMW::Workflow</tt> module contains pre-defined tasks for
     # dataset processing.
     include IMW::Workflow
 
-    attr_reader   :handle, :taxon, :options
-    attr_accessor :data
+    attr_accessor :options, :data
+    attr_reader   :handle
 
-    # The default taxon assigned to a dataset.
-    DEFAULT_TAXON = nil
-
-    # Default options passed to <tt>Rake</tt>.  Any class including
-    # the <tt>Rake::TaskManager</tt> module must define a constant by
-    # this name.
-    DEFAULT_OPTIONS = {
-      :dry_run => false,
-      :trace   => false,
-      :verbose => false
-    }
-
-    # Create a new dataset.  Arguments include
-    #
-    #   <tt>:taxon</tt> (+DEFAULT_TAXON+):: a string or sequence
-    #   giving the taxonomic classification of the dataset.  See
-    #   <tt>IMW::Dataset.taxon=</tt> for more details on how this
-    #   argument is interpreted.
     def initialize handle, options = {}
-      options = options.reverse_merge :taxon => DEFAULT_TAXON
-
-      # FIXME is this how the attribute writer functions should be
-      # called?
-      @handle = handle
-      @taxon = options[:taxon]
-
-      # for rake
-      @tasks = Hash.new
-      @rules = Array.new
-      @scope = Array.new
-      @last_description = nil
-      @options = OpenStruct.new(DEFAULT_OPTIONS)
-      create_default_tasks
-
-      # sets an empty @paths hash; see utils/paths.rb
+      self.handle= handle
+      initialize_workflow
       set_paths
     end
 
