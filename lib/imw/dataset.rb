@@ -1,5 +1,6 @@
 require 'imw/utils'
 require 'imw/dataset/workflow'
+require 'imw/dataset/paths'
 
 module IMW
 

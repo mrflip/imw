@@ -50,17 +50,6 @@ module IMW
     end
   end
 
-  class Dataset
-    attr_reader :paths
-    include IMW::Paths
-
-    private
-    def set_paths
-      @paths = {}
-      add_path :self, File.dirname(eval('__FILE__'))
-    end
-  end
-    
   def self.path_to *pathsegs
     begin
       path = Pathname.new IMW.path_to_helper(*pathsegs)
