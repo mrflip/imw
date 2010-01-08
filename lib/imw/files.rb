@@ -2,6 +2,7 @@ require 'uri'
 require 'open-uri'
 require 'imw/utils'
 require 'imw/files/basicfile'
+require 'imw/files/directory'
 require 'imw/files/archive'
 require 'imw/files/compressible'
 require 'imw/files/compressed_file'
@@ -14,12 +15,20 @@ module IMW
   #   IMW.open("/tmp/test.csv") # => IMW::Files::Csv("/tmp/test.csv')
   #
   # 
-  def self.open path, options = {}
-    mode = options[:write] ? 'w' : 'r'
-    Files.file_class_for(path, options).new(path, mode, options)
+  def self.open path, options = {}, &block
+    if File.directory?(File.expand_path(path))
+      dir = Files::Directory.new(path)
+      yield dir if block_given?
+      dir
+    else
+      mode = options[:write] ? 'w' : 'r'
+      file = Files.file_class_for(path, options).new(path, mode, options)
+      yield file if block_given?
+      file
+    end
   end
 
-  def self.open! path, options = {}
+  def self.open! path, options = {}, &block
     self.open path, options.reverse_merge(:write => true)
   end
 
@@ -104,6 +113,9 @@ module IMW
           break
         end
       end
+
+      # just stick with text if still not set
+      klass = :text unless klass
       
       klass.is_a?(Class) ? klass : class_eval(klass.to_s.downcase.capitalize)
     end

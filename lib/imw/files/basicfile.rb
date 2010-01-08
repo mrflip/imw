@@ -20,7 +20,7 @@ module IMW
       protected
 
       def uri= uri
-        @uri      = URI.parse(uri) if uri.is_a?(String)
+        @uri      = uri.is_a?(URI::Generic) ? uri : URI.parse(uri)
         @host     = self.uri.host
         @path     = local? ? ::File.expand_path(self.uri.path) : self.uri.path
         @dirname  = ::File.dirname path
@@ -53,7 +53,7 @@ module IMW
       # path as a first argument.
       [:executable?, :executable_real?, :file?, :directory?, :ftype, :owned?, :pipe?, :readable?, :readable_real?, :setgid?, :setuid?, :size, :size?, :socket?, :split, :stat, :sticky?, :writable?, :writable_real?, :zero?].each do |class_method|
         define_method class_method do
-          File.send(class_method, path) if local?
+          File.send(class_method, path)
         end
       end
 
@@ -61,7 +61,7 @@ module IMW
       # to open files online too to check.
       def exist?
         if local?
-          ::File.exist?(path) ? true : false
+          ::File.exist?(path)
         else
           begin
             true if open(uri)

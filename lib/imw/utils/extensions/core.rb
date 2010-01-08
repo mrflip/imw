@@ -1,19 +1,3 @@
-#
-# h2. lib/imw/utils/extensions/core.rb -- extensions to the Ruby core
-#
-# == About
-#
-# Some useful extensions to basic Ruby classes.  This file is required
-# by <tt>imw/utils</tt> so any files required here are automatically
-# required when loading IMW.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-# puts "#{File.basename(__FILE__)}: Your monkeywrench does a complicated series of core-burning exercises and emerges with ripped, powerful-looking abs."
-
 require 'imw/utils/extensions/string'
 require 'imw/utils/extensions/array'
 require 'imw/utils/extensions/hash'
