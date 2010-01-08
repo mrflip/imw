@@ -200,6 +200,7 @@ module IMW
       initialize_workflow
       set_root_paths
       set_paths
+      set_tasks
     end
 
   end

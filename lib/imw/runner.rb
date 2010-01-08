@@ -8,8 +8,9 @@ module IMW
   class Runner
 
     DEFAULT_OPTIONS = {
-      :requires => [],
-      :dry_run  => false
+      :requires  => [],
+      :selectors => [],
+      :dry_run   => false
     }
 
     attr_reader :args, :options
@@ -22,83 +23,91 @@ module IMW
 
     def parser
       OptionParser.new do |opts|
-        opts.banner = "usage: imw [OPTIONS] ACTION [DATASET_SELECTOR...]"
+        opts.banner = "usage: imw [OPTIONS] TASK"
+        opts.separator <<EOF
+
+  Run TASK for all datasets in the repository.  IMW will read any
+  *.imw files in the current directory by default.
+
+  Options include
+
+EOF
+
+        opts.on('-l', '--list', "List datasets in repository") do
+          options[:list] = true
+        end
+
+        opts.on('-s', '--selector SELECTOR', "Filter datasets by regexp SELECTOR.  Can be given more than once.") do |selector|
+          options[:selectors] << selector
+        end
         
-        opts.separator ''
-        
-        opts.on('-r', '--require PATH', "Require Ruby file at PATH (recursively if PATH is a directory)") do |path|
+        opts.on('-r', '--require PATH', "Require PATH.  Can be given more than once.") do |path|
           options[:requires] << path
         end
 
-        opts.on('-d', '--dry-run', "Run but do not do anything.") do
-          options[:dry_run] = true
-        end
-        
       end
     end
 
-    def process_imw_files
-      Dir['*.imw'].each { |path| load File.expand_path(path) }
-    end
-
-    def process_required_files
-      options[:requires].each do |requireable|
-        requireable = IMW.open(requireable)
-        if requireable.directory?
-          requireable["*.rb"].each { |path| require path }
-        else
-          require requireable.path
-        end
-      end
-    end
-
-    def action
-      args.first && args.first.to_sym
-    end
-
-    def selector_regexps
-      args[1..-1].map { |selector| Regexp.new(selector) }
-    end
-
-    def dataset_handles
-      handles = Set.new
-      if selector_regexps.blank?
-        # when invoked without a selector regexp, only assume a
-        # dataset if the repository has a single dataset
-        handles.add IMW::REPOSITORY.first.first if IMW::REPOSITORY.size == 1
-      else
-        keys = IMW::REPOSITORY.keys
-        unless keys.empty?
-          selector_regexps.map do |regexp|
-            handles += keys.find_all { |key| key =~ regexp }
+    def require_files
+      Dir['*.imw'].each { |path| load File.expand_path(path) }      
+      options[:requires].each do |path|
+        IMW.open(path) do |requireable|
+          if requireable.directory?
+            requireable["**/*.rb"].each  { |file| require file }
+            requireable["**/*.imw"].each { |file| load    file }
+          else
+            require requireable.path
           end
         end
       end
-      handles.to_a.sort
+    end
+
+    def task
+      args.first
+    end
+
+    def handles
+      matched_handles = Set.new
+      if options[:selectors].blank?
+        matched_handles += IMW::REPOSITORY.keys
+      else
+        keys = IMW::REPOSITORY.keys
+        unless keys.empty?
+          options[:selectors].each do |selector|
+            matched_handles += keys.find_all { |key| key =~ Regexp.new(selector) }
+          end
+        end
+      end
+      matched_handles.to_a.sort
     end
 
     def datasets
-      dataset_handles.map { |handle| IMW::REPOSITORY[handle] }
+      handles.map { |handle| IMW::REPOSITORY[handle] }
     end
 
-    def take_action!
-      case 
-      when action == :list then
-        puts dataset_handles
-      when IMW::Workflow::STEPS.include?(action) then
-        datasets.each do |dataset|
-          dataset[action].execute
-        end
-      else
-        puts parser
+    def list!
+      puts handles
+      exit
+    end
+
+    def run_task!
+      datasets.each do |dataset|
+        dataset[task].invoke
       end
+      exit
     end
-
+      
     def run!
-      process_imw_files
-      process_required_files
-      take_action!
-      return 0
+      require_files
+      case
+      when options[:list]
+        list!
+      when task.blank?
+        puts parser
+        exit 1
+      else
+        run_task!
+      end
     end
   end
 end

@@ -62,7 +62,7 @@ module IMW
     # This allows classes which include IMW::Workflow to use class
     # methods named after each step (+rip+, +parse+, &c.) to directly
     # define tasks.
-    STEPS_PROCS = returning({}) do |steps_procs|
+    STEPS_TASKS = returning({}) do |steps_procs|
       STEPS.each do |step|
         steps_procs[step] = []
       end
@@ -71,16 +71,22 @@ module IMW
     protected
     def self.included klass
       STEPS.each do |step|
-        klass.class_eval "def self.#{step}(&block); STEPS_PROCS[:#{step}] << block ; end"
+        klass.class_eval <<EOF
+def self.#{step}(deps=nil, &block)
+  STEPS_TASKS[:#{step}] << [deps, block]
+end
+EOF
       end
+
+      
     end
 
     def define_workflow_task deps, comment
       @last_description = comment
       define_task(IMW::Task, deps)
-      step = deps.keys.first
-      STEPS_PROCS[step].each do |block|
-        self[step].enhance do
+      step = deps.respond_to?(:keys) ? deps.keys.first : deps
+      STEPS_TASKS[step].each do |deps, block|
+        self[step].enhance(deps) do
           self.instance_eval(&block)
         end
       end
