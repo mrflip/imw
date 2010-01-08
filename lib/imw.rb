@@ -1,42 +1,31 @@
-#
-# h2. lib/imw.rb -- main imw file
-#
-# == About
-#
-# This file is the entry-point to the IMW library.  It loads a minimal
-# setup.  Optional components can be loaded by calling the function
-# <tt>IMW.imw_components</tt>.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-# puts "#{File.basename(__FILE__)}: Behold, the weighty, the munificent, the Infinite Monkeywrench! Approach it with care: it has overwhelmed mightier monkeys than ye."
-
 require 'rubygems'
-require 'YAML' unless defined?('YAML') # some stupid collision with datamapper makes it double include
 require 'imw/boot'
 require 'imw/utils'
 require 'imw/dataset'
+require 'imw/repository'
 require 'imw/files'
 require 'imw/parsers'
 require 'imw/packagers'
 
-# The Infinite Monkeywrench (IMW) is a Ruby library for obtaining,
-# parsing, transforming, reconciling, and packaging datasets.
+# The Infinite Monkeywrench (IMW) is a Ruby library for ripping,
+# extracting, parsing, munging, and packaging datasets.  It allows you
+# to handle different data formats transparently as well as organize
+# transformations of data as a network of dependencies (a la Make or
+# Rake).
 #
-# Data is obtained via FIXME
+# On first reading of IMW examine the classes within the IMW::Files
+# module, all transparently instantiated when using IMW.open (instead
+# of File.open).  These classes do a lot of work to ensure that all
+# objects returned by IMW.open share methods (write, read, load, dump,
+# parse, compress, extract, &c.) while continuing to use existing
+# implementations of these concepts.  
 #
-# Data is loaded into IMW using <tt>IMW.open</tt> which provides a
-# uniform interface across a variety of data formats.  The objects
-# returned will each have +load+ method which will return data in the
-# best form for further processing.  If the data is a YAML file, then
-# Ruby's +YAML+ library will be used to return primitive Ruby objects,
-# if it is a CSV, then the +FasterCSV+ library will be used, &c.
+# Another entrace point is the <tt>IMW::Dataset</tt> class.  It
+# leverages Rake to craft workflows for transforming datasets.  IMW
+# encourages you to organize your data transformations in a step-wise
+# process, managed with dependencies.
 #
-# The main interface to handling data is the <tt>IMW::Dataset</tt>
-# class.  It has methods for summarizing, transforming, and dumping
-# data to a variety of formats.
+# Utilities to help with one step in particular (ripping, parsing,
+# pacaking, &c.) are in their own directories.
 module IMW
 end

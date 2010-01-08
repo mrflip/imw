@@ -3,9 +3,32 @@ require 'ostruct'
 
 module IMW
 
-  # The <tt>IMW::Workflow</tt> module is a collection of methods which
-  # leverage Rake[http://rake.rubyforge.org/] to implement a
-  # dependency chain of processing required by a particular dataset.
+  # IMW encourages you to view a data transformation as a network of
+  # dependencies.  By default, IMW defines five main steps:
+  #
+  # rip::
+  #   Obtain data via HTTP, FTP, SCP, RSYNC, database query, &c.
+  #
+  # extract::
+  #   Extract data from its ripped form to a form which can be
+  #   parsed.
+  #
+  # parse::
+  #   Parse data into a structured form.
+  #
+  # munge::
+  #   Combine, filter, reconcile, and transform already structured
+  #   data into a desired form.
+  #
+  # package::
+  #   Archive, compress, and deliver data in its final form to some
+  #   location (HTTP, FTP, SCP, RSYNC, S3, EBS, &c.).
+  #
+  # Each step depends upon the one before it.  The steps are blank by
+  # default so there's no need to write code for steps you don't need
+  # to use.
+  #
+  # Each step corresponds to a named directory in IMW::Workflow::DIRS.
   module Workflow
 
     # The <tt>Rake::TaskManager</tt> module allows the
@@ -23,39 +46,46 @@ module IMW
       :verbose => false
     }
 
-    # The IMW workflow is composed of five standard steps:
-    #
-    # rip::
-    #   Obtain data from somewhere.
-    #
-    # extract::
-    #   Extract data from its ripped form to a form which can be
-    #   parsed.
-    #
-    # parse::
-    #   Parse data into a structured form.
-    #
-    # munge::
-    #   Transform structured data into the desired form.  <em>This is
-    #   where the magic happens!</em>
-    #
-    # package::
-    #   Archive, compress, and deliver data in its final form.
-    #
-    # Each step depends upon the last but IMW doesn't force you to
-    # write any code that isn't necessary.
-    #
-    # Each step corresponds to a named directory in IMW::Workflow::DIRS
+    # The standard IMW workflow steps.
     STEPS = [:rip,  :extract, :parse, :munge, :package]
 
     # The steps of the IMW workflow each correspond to a directory in
     # which it is customary that they deposit their files <em>once
     # they are finished processing</em> (so ripped files wind up in
     # the +ripd+ directory, packaged files in the +pkgd+ directory,
-    # and so on.
+    # and so on).
     DIRS  = [:ripd, :xtrd,    :prsd,  :mungd, :pkgd   ]
 
+    # Each workflow step can be configured to take default actions,
+    # each action being a proc in the array for the step in this hash.
+    #
+    # This allows classes which include IMW::Workflow to use class
+    # methods named after each step (+rip+, +parse+, &c.) to directly
+    # define tasks.
+    STEPS_PROCS = returning({}) do |steps_procs|
+      STEPS.each do |step|
+        steps_procs[step] = []
+      end
+    end
+
     protected
+    def self.included klass
+      STEPS.each do |step|
+        klass.class_eval "def self.#{step}(&block); STEPS_PROCS[:#{step}] << block ; end"
+      end
+    end
+
+    def define_workflow_task deps, comment
+      @last_description = comment
+      define_task(IMW::Task, deps)
+      step = deps.keys.first
+      STEPS_PROCS[step].each do |block|
+        self[step].enhance do
+          self.instance_eval(&block)
+        end
+      end
+    end
+
     # Create all the instance variables required by Rake::TaskManager
     # and define default tasks for this dataset.
     def initialize_workflow
@@ -69,8 +99,8 @@ module IMW
       define_destroy_task
     end
 
-    # Creates a workflow task <tt>:create_directories</tt> to create
-    # the directory structure for this dataset.
+    # Creates a task <tt>:create_directories</tt> to create the
+    # directory structure for this dataset.
     def define_create_directories_task
       @last_description = "Creates workflow directories for this dataset."
       define_task(IMW::Task, {:create_directories => []}) do
@@ -80,9 +110,8 @@ module IMW
       end
     end
 
-    # Creates a task <tt>:destroy</tt> which does nothing but depends
-    # upon all the tasks required to delete the dataset's data and
-    # remove its footprint from IMW.
+    # Creates a task <tt>:destroy</tt> which removes dataset's
+    # workflow directories.
     def define_destroy_task
       @last_description = "Get rid of all traces of this dataset."
       define_task(IMW::Task, :destroy => [:create_directories]) do
@@ -93,23 +122,15 @@ module IMW
     end
 
     # Creates the task dependency chain <tt>:package => :munge =>
-    # :parse => :extract => :rip => :initialize</tt>.
+    # :parse => :extract => :rip => :initialize</tt> of the
+    # IMW::Workflow.
     def define_workflow_tasks
-      @last_description = "Obtain data from some source."
-      define_task(IMW::Task, :rip     => [:create_directories])
-      
-      @last_description = "Extract data so it's ready to parse."
-      define_task(IMW::Task, :extract    => [:rip])
-      
-      @last_description = "Parse data into a structured form."
-      define_task(IMW::Task, :parse   => [:extract])
-      
-      @last_description = "Munge structured data into desired form."
-      define_task(IMW::Task, :munge     => [:parse])
-      
-      @last_description = "Package dataset in final form."
-      define_task(IMW::Task, :package => [:munge])
+      define_workflow_task({:rip     => [:create_directories]}, "Obtain data from some source."           )
+      define_workflow_task({:extract => [:rip]},                "Extract data so it's ready to parse."    )
+      define_workflow_task({:parse   => [:extract]},            "Parse data into a structured form."      )
+      define_workflow_task({:munge   => [:parse]},              "Munge structured data into desired form.")
+      define_workflow_task({:package => [:munge]},              "Package dataset in final form."          )
     end
-    
+
   end
 end

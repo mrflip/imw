@@ -4,29 +4,61 @@ require 'imw/dataset/paths'
 
 module IMW
 
-  # The basic unit in IMW is the dataset.  Each dataset has a handle
-  # which is meant to be unique (at least in the context of a
-  # particular pool of datasets, see <tt>IMW::Pool</tt>).  A dataset
-  # can also have a taxonomic classification or _taxon_
+  # The IMW::Dataset class is useful organizing a complex data
+  # transformation because it is capable of managing a collection of
+  # paths and the interdependencies between subparts of the
+  # transformation.
   #
-  #   dataset = IMW::Dataset.new :recent_history_of_banana_prices,
-  #                              :taxon => [:economics,:alarming_trends]
+  # == Manipulating Paths
   #
-  # but it isn't required like the handle.
+  # Storing paths makes code shorter and more readable.  By default
+  # (this assumes the executing script is in a file
+  # /home/imw_user/data/foo.rb):
   #
-  # Processing a dataset commonly occurs in four course steps.  IMW
-  # defines a task[http://rake.rubyforge.org] for each of these steps
-  # and keeps files involved in different steps in different
-  # directories.
+  #   dataset = IMW::Dataset.new
+  #   dataset.path_to(:self)
+  #   #=> '/home/imw_user/data'
+  #   dataset.path_to(:ripd)
+  #   #=> '/home/imw_user/data/ripd'
+  #   dataset.path_to(:pkgd, 'final.tar.gz')
+  #   #=> '/home/imw_user/data/pkgd/final.tar.gz'
+  #
+  # Paths can be added
+  #
+  #   dataset.add_path(:sorted_output, :mungd, 'sorted-file-3923.txt')
+  #   dataset.path_to(:sorted_output)
+  #   #=> '/home/imw_user/data/mungd/sorted-file-3923.txt'
+  #
+  # as well as removed (via +remove_path+).
+  #
+  # == Defining Workflows
+  #
+  # IMW encourages you to think of transforming data as a network of
+  # interdependent steps (see IMW::Workflow).  Each of IMW's five
+  # default steps maps to a named directory remembered by each
+  # dataset.
+  #
+  # The following example shows why this is a useful abstraction as
+  # well as illustrating some of the other functionality in IMW.
+  #
+  # == Example Dataset
+  #
+  # The first step is to import IMW and create the dataset
+  #
+  #   require 'rubygems'
+  #   require 'imw'
+  #   dataset = IMW::Dataset.new
+  #
+  # You can pass in a handle (the name or "slug" for the dataset) as
+  # well as some options.  Now define the steps you intend to take to
+  # complete the transformation:
   #
   # rip::
-  #   Managed by the <tt>:rip</tt> task, data is collected from a
-  #   source (+http+, +ftp+, database, &c.) and deposited in a
-  #   subdirectory of the <tt>:ripd</tt> directory named for the URI
-  #   of the source.
+  #   Data is collected from a source (+http+, +ftp+, database, &c.)
+  #   and deposited in the <tt>:ripd</tt> directory of this dataset.
   #
   #     dataset.task :rip do
-  #       IMW::Rip.from_web 'http://econ.chimpu.edu/datasets/produce_prices.tar.bz2'
+  #       IMW.open('http://econ.chimpu.edu/datasets/produce_prices.tar.bz2').cp_to_dir(dataset.path_to(:ripd))
   #         #=> [ripd]/http/econ_chimpu_edu/datasets/produce_prices.tar.bz2
   #         
   #       IMW::Rip.from_database :named  => "weather_records",
@@ -160,17 +192,14 @@ module IMW
     # dataset processing.
     include IMW::Workflow
 
-    attr_accessor :options, :data
-    attr_reader   :handle
+    attr_accessor :handle, :options, :data
 
-    def initialize handle, options = {}
-      self.handle= handle
+    def initialize options = {}
+      @options = options
+      @handle  = options[:handle]
       initialize_workflow
+      set_root_paths
       set_paths
-    end
-
-    def handle= thing
-      @handle = thing.is_a?(String) ? thing.to_handle : thing
     end
 
   end

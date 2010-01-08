@@ -2,6 +2,8 @@ require 'rake'
 
 module IMW
 
+  # A shallow subclass of the Rake::Task class, used for IMW's
+  # workflow's (see IMW::Workflow).
   class Task < Rake::Task
   end
 
