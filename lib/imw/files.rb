@@ -14,7 +14,7 @@ module IMW
   #
   #   IMW.open("/tmp/test.csv") # => IMW::Files::Csv("/tmp/test.csv')
   #
-  # 
+  #
   def self.open path, options = {}, &block
     if File.directory?(File.expand_path(path))
       dir = Files::Directory.new(path)
@@ -50,7 +50,8 @@ module IMW
     autoload :Zip,    'imw/files/compressed_files_and_archives'
     autoload :Xml,    'imw/files/sgml'
     autoload :Html,   'imw/files/sgml'
-    
+    autoload :Excel,  'imw/files/excel'
+
 
     # An array used to match files to classes to handle them.  The
     # first element of each array is the regexp and the second names
@@ -64,7 +65,7 @@ module IMW
     # allows, say, <tt>.tar.gz</tt> to be handled differently from
     # <tt>.gz</tt>.
     EXTENSION_HANDLERS = [
-                          [/\.txt$/,      :text],                          
+                          [/\.txt$/,      :text],
                           [/\.txt$/,      :text],
                           [/\.dat$/,      :text],
                           [/\.ascii$/,    :text],
@@ -84,13 +85,14 @@ module IMW
                           [/\.zip$/,      :zip],
                           [/\.xml$/,      :xml],
                           [/\.html$/,     :html],
-                          [/\.htm$/,      :html]
+                          [/\.htm$/,      :html],
+                          [/\.xlsx?$/,    :excel]
                          ]
 
     SCHEME_HANDLERS = [
                        [/http/, :html]
                        ]
-    
+
     protected
     def self.file_class_for path, options = {}
       klass = options.delete(:as)
@@ -116,7 +118,7 @@ module IMW
 
       # just stick with text if still not set
       klass = :text unless klass
-      
+
       klass.is_a?(Class) ? klass : class_eval(klass.to_s.downcase.capitalize)
     end
   end
