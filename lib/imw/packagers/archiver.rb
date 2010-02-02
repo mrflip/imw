@@ -70,6 +70,10 @@ module IMW
         @dir ||= File.join(tmp_dir, name.to_s)
       end
 
+      # FIXME This needs to be made idempotent -- calling prepare
+      # twice should not do any work the second time (unless the user
+      # is insistent and passes a :force option -- or maybe use bang
+      # and not-bang versions of the method for this distinction).
       def prepare!
         FileUtils.mkdir_p dir unless File.exist?(dir)
         inputs.each_pair do |path, basename|
