@@ -48,7 +48,7 @@ module IMW
           if matcher
             matcher.match(el)
           else
-            options[:text] ? el.inner_text.strip : el
+            options[:html] ? el : el.inner_text.strip
           end
         end
       end
@@ -89,10 +89,10 @@ module IMW
           if matcher
             subdoc.map{|el| matcher.match(el)}
           else
-            if options[:text]
-              subdoc.map{|el| el.inner_text.strip }            
+            if options[:html]
+              subdoc.map{|el| el }              
             else
-              subdoc.map{|el| el }
+              subdoc.map{|el| el.inner_text.strip }            
             end
           end
         end
