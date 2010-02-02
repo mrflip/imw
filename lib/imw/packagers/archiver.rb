@@ -87,7 +87,17 @@ module IMW
           end
         end
       end
-      
+
+      # Package the contents of the temporary directory to an archive
+      # at +output+ but return exceptions instead of raising them.
+      def package output, options={}
+        begin
+          package! output, options={}
+        rescue RuntimeError => e
+          return e
+        end
+      end
+
       # Package the contents of the temporary directory to an archive
       # at +output+.
       def package! output, options={}

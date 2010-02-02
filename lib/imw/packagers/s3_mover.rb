@@ -19,6 +19,14 @@ module IMW
         last_response && last_response.response.class == Net::HTTPOK
       end
 
+      def upload local_path, remote_path
+        begin
+          upload! local_path, remote_path
+        rescue RuntimeError => e
+          return e
+        end
+      end
+
       def upload! local_path, remote_path
         @last_response = AWS::S3::S3Object.store(remote_path, open(local_path), bucket_name)
       end
