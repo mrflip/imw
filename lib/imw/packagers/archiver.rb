@@ -26,6 +26,10 @@ module IMW
         add_inputs inputs
       end
 
+      # FIXME Instead of requiring +new_inputs+ to be either an Array
+      # or Hash just iterate through whatever it is using +each+ and
+      # see if the iterate can be interpreted as a mapping between
+      # strings.
       def add_inputs new_inputs
         @inputs ||= {}
         if new_inputs.is_a?(Array)
