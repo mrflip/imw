@@ -39,7 +39,8 @@ module IMW
       def initialize uri, mode='r', options = {}
         options.reverse_merge!(self.class::DEFAULT_OPTIONS)
         self.uri= uri
-        super open(uri,mode),options
+        options.delete(:write)  # FasterCSV complains about unkown options
+        super open(uri,mode), options
       end
 
       # Return the contents of this CSV file as an array of arrays.
