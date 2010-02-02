@@ -38,7 +38,7 @@ right one to use.  IMW is **not** designed for
 
 IMW is hosted on Gemcutter[http://gemcutter.org] so it's easy to install.
 
-You'll have to set up Gemcutter
+You'll have to set up Gemcutter if you haven't already
 
   $ sudo gem install gemcutter
   $ gem tumble
@@ -47,55 +47,218 @@ and then install IMW
 
   $ sudo gem install imw
 
-= Using IMW
+= IMW Basics
 
 The central goal of IMW is to make workflow involved in processing a
 dataset from a raw source to a finished product as simple as possible.
 
-So consider that there exist two datasets that I want to combine.  The
-first details the historical price of bananas over the past century
-and the second 
+To help achieve this goal, IMW creates lots of convenient structures
+and methods.  The following sections provide a tour of these.  
 
-== Working with paths and files
+It is assumed that you've installed IMW and required it in a script
+via
 
   require 'rubygems'
   require 'imw'
 
+== Paths
+
 IMW holds a registry of paths that you can define on the fly or store
 in a configuration file.
 
-  IMW.add_path :dropbox, "/var/www/public/dropbox"
-  IMW.add_path :raw,     "/mnt/data/raw"
-  IMW.add_path :
+  IMW.add_path(:dropbox, "/var/www/public/dropbox")
+  IMW.path_to(:dropbox)  #=> "/var/www/public/dropbox"
 
-This makes it easeir
+You can combine paths together dynamically.
 
-  IMW.path_to :raw, "one/particular/dataset"
-  #=> "/mnt/data/raw/one/particular/dataset"
+  IMW.add_path(:raw, "/data/raw")
+  IMW.path_to(:raw, "my/dataset") #=> "/data/raw/my/dataset"  
+  IMW.add_path(:rejects, :raw, "rejects")
+  IMW.path_to(:rejects) #=> "/data/raw/rejects"
 
-IMW makes it easy to manipulate compressed files and archives.
+Altering one path will update others
 
+  IMW.add_path(:raw, "/data2/raw")
+  IMW.path_to(:rejects) #=> "/data2/raw/rejects", not "/data/raw/rejects"
 
-  # Move a collection of files from a public dropbox to a processing directory
+== Files & Directories
 
-  raw
+Use IMW.open to open files.  The object returned by IMW.open obeys the
+usual semantics of a File object but it has new methods to manipulate
+and parse the file.
+
+  f1 = IMW.open("/path/to/file")
+  f1.read() # does what you think
   
-  Dir["/public/*"].each do |path|
-    file = IMW.open(path)
-    case
-    when file.compressed?
-      file.decompress.mv_to_dir "/raw"
-    when file.archive?
-      FileUtils.cd("/raw") do
-        file.extract
-      end
-    else
-      file.mv_to_dir("/raw")
-    end
+  # class methods from File are available
+  f1.size
+  f1.writeable?
+
+  # use a bang or a 'w' to write
+  writable_file = IMW.open!('/some/path') # similar to open('/some/path', 'w')
+
+  # as well as methods to manipulate the file on the filesystem
+  f2 = f1.cp("/new/path/to/file") # also try cp_to_dir
+  f1.exist? # true
+  f3 = f1.mv("/yet/another/path") # also try mv_to_dir
+  f1.exist? # false
+
+IMW also knows about directories
+
+  d = IMW.open('/tmp')
+  d.directory? # true
+  d['*'] # Dir['/tmp/*']
+  d.mv('/parent/dir')
+
+== Remote Files
+
+Many operations defined for files are also defined for arbitrary URIs
+through the <tt>open-uri</tt> library.
+
+Files can readily be opened, read, and downloaded from the Internet
+
+  site = IMW.open('http://infochimps.org') #=> Recognized as an HTML document
+  site.read() # does what you think
+  site.cp('/some/local/path')
+  site.exist? # will work in many cases
+
+(writing to remote sources isn't enabled yet).  
+
+== Archives & Compressed Files  
+
+IMW works with a variety of archiving and compression programs (see
+IMW::EXTERNAL_PROGRAMS) to make packaging/unpackaging data easy.
+
+  bz2   = IMW.open('/path/to/big_file.bz2')
+  zip   = IMW.open('/path/to/archive.zip')
+  targz = IMW.open('/path/to/archive.tar.gz')
+
+  # IMW recognizes files by extension
+  bz2.archive?      # false
+  bz2.compressed?   # true
+  zip.archive?      # true
+  zip.compressed?   # false
+  targz.archive?    # true
+  targz.compressed? # true
+
+  # decompress or compress files
+  big_file = bz2.decompress! # skip the ! to preserve the original
+  new_bz2  = big_file.compress!
+
+  # extract and package archives
+  zip.extract    # files show up in working directory
+  tarbz2.extract # no need to decompress first
+  new_tarbz2 = IMW.open!('/new/archive.tar').create(['/path1', '/path/2']).compress!
+
+== Data Formats
+
+IMW encourages you to work with data as Ruby objects as much as
+possible by providing methods to parse common data formats directly
+into Ruby.
+
+The actual parsing is always handled by a separate library appropriate
+for the data format so it will be fast and, if you're familiar with
+the library, you can use many functions of the library directly on the
+object returned by IMW.open.
+
+IMW uses classes (defined in IMW::Files) to interface with each data
+type.  The choice of class is determined by the extension of the path
+supplied to IMW.open.
+
+  IMW.open('file.csv')  #=> IMW::Files::Csv
+  IMW.open('file.xml')  #=> IMW::Files::Xml
+  IMW.open('file.html') #=> IMW::Files::Html
+
+  # default choice will be a text file
+  IMW.open('strange_filename.wuzz') #=> IMW::Files::Text
+
+  # but you force a particular choice
+  IMW.open('strange_filename.wuzz', :as => :csv)  #=> IMW::Files::Csv
+
+Some formats are extremely regular (CSV's, JSON, YAML, &c.) and can
+immediately be converted to simple Ruby objects.  Other formats (flat
+files, HTML, XML, &c.) require parsing before they can be
+unambiguously converted to Ruby objects.
+
+As an example, consider flat, delimited files.  They are extremely
+regular and IMW uses FasterCSV to automatically parse them into nested
+arrays, the only sensible and unambiguous Ruby representation of their
+data:
+
+  delimit1 = IMW.open('/path/to/csv') # IMW::Files::Csv
+  delimit1.entries #=> array of arrays of entries
+  delimit1.each do |row|
+    # passes in parsed rows
+    ...
   end
+
+  # if there's a funny delimiter, it can be passed as an option (in
+  # this case identical to what would be passed to FasterCSV under the
+  # hood
+  delimit2 = IMW.open('/path/to/file.csv', :col_sep => " ")
   
-  
-	
-    
-  
+HTML files, on the other hand, are more complex and typically have to
+be parsed before being converted to plain Ruby objects:
+
+  # Grab a tiny link from the bottom of Google's homepage
+  doc = IMW.open('http://www.google.com') # IMW::Files::Html
+  doc.parse('p a') # 'Privacy'
+
+More complex parsers can also be built
+
+  # Grab each row from an HTML table
+  doc = IMW.open('/path/to/data.html')
+  doc.parse :employees => ["tr", { :name => "td.name", :address => "td.address" } ]
+  #=> [{:name => "John Chimpo", :address => "123 Fake St."}, {...}, ... ]
+
+see IMW::Parsers::HtmlParser for details on parsing HTML (and similar)
+files.  Examine the other parsers in IMW::Parsers for details on
+parsing other data formats.
+
+= The IMW Workflow
+
+The workflow of IMW can be roughly summarized as follows:
+
+rip::
+
+  Data is obtained from a source.  IMW allows you to download data
+  from the web, obtain it by querying databases, or use other services
+  like rsync, ftp, &c. to pull it in from another computer.
+
+extract::
+
+  Ripped data is often compressed or otherwise archived and needs to
+  be extracted.  It may also be sliced in many ways (excluding certain
+  years, say) to reduce the volume to only what is required.
+
+parse::
+
+  Data is parsed into Ruby objects and stored.
+
+munge::
+
+  All the parsed data is combined, reconciled, and further processed
+  into a final form.
+
+package::
+
+  The data is archived and compressed as necessary and moved to an
+  outbox, staging server, S3 bucket, &c.
+
+Not all datasets 
+
+
+== Datasets
+
+== Tasks & Dependencies
+
+== Directory Structure
+
+== Records
+
+= IMW on the Command Line
+
+== Repositories
+
+== Running Tasks
 
