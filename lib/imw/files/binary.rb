@@ -15,14 +15,13 @@ module IMW
   module Files
 
     class Binary
-      
+
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
       def initialize uri
         self.uri= uri
       end
-
     end
   end
 end

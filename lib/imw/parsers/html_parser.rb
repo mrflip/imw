@@ -18,7 +18,7 @@
 # that goes elsewhere.
 #
 #
-# == Sample HTML (http://twitter.com:
+# == Sample HTML (http://twitter.com):
 #
 #   <ul class="about vcard entry-author">
 #     <li         ><span class="label">Name</span>     <span class="fn" >MarsPhoenix       </span> </li>

@@ -26,19 +26,20 @@ module IMW
         add_inputs inputs
       end
 
+      #Create a hash structure where every (key,value) pair
+      #is a file path and corresponding file basename
       def add_inputs new_inputs
         @inputs ||= {}
-        if new_inputs.is_a?(Array)
-          new_inputs.each do |input|
+        new_inputs.each do |input, basename|
+          unless basename == nil
+            @inputs[File.expand_path(input)] = (basename || File.basename(input))
+          else
             @inputs[File.expand_path(input)] = File.basename(input)
           end
-        else
-          new_inputs.each_pair do |input, basename|
-            @inputs[File.expand_path(input)] = (basename || File.basename(input))
-          end
         end
+        
       end
-
+      
       def errors
         @errors ||= []      
       end
@@ -70,6 +71,10 @@ module IMW
         @dir ||= File.join(tmp_dir, name.to_s)
       end
 
+      # FIXME This needs to be made idempotent -- calling prepare
+      # twice should not do any work the second time (unless the user
+      # is insistent and passes a :force option -- or maybe use bang
+      # and not-bang versions of the method for this distinction).
       def prepare!
         FileUtils.mkdir_p dir unless File.exist?(dir)
         inputs.each_pair do |path, basename|
@@ -87,7 +92,59 @@ module IMW
           end
         end
       end
-      
+
+      #Checks to see if a temporary local directory structure containing
+      #the appropriate files has been created.
+      def prepared?
+        #check if the directory exists right here
+        if File.exist?(dir)
+          FileUtils.cd(dir)
+          inputs.each_pair do |path, basename|
+            local_path = File.join(dir, basename)
+            #if file exists plainly in local directory, move on to next file
+            unless File.exist?(local_path)
+              #file does not exist as is, so instantiate a local dummy file and do some checks
+              file = IMW.open(local_path, :as => IMW::Files.file_class_for(basename))
+              if File.exist?(file.decompressed_path)
+                if File.archive?
+                  #check that archive contents exist locally
+                  list_of_names = file.contents
+                  FileUtils.cd(file.decompressed_path) do
+                    list_of_names.each do |filename|
+                      unless File.exist?(filename)
+                        return false
+                      end
+                    end  
+                  end
+                  #archive contents check out ok
+                end
+                #if the file exists in a decompressed way but was not
+                #an archive then, move on to next file
+              else
+                #file does not exist either plainly or in a decompressed form
+                return false
+              end
+            end
+          end
+          #everything checks out
+          return true
+        else
+          #the directory does not exist locally
+          return false
+        end
+      end
+       
+
+      # Package the contents of the temporary directory to an archive
+      # at +output+ but return exceptions instead of raising them.
+      def package output, options={}
+        begin
+          package! output, options={}
+        rescue RuntimeError => e
+          return e
+        end
+      end
+
       # Package the contents of the temporary directory to an archive
       # at +output+.
       def package! output, options={}
@@ -105,4 +162,3 @@ module IMW
     end
   end
 end
-
