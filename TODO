@@ -1,0 +1,18 @@
+lookup basic yarddoc style (@params, etc) -- do a high-level description
+
+learn how to run specs
+write a spec that fails on the old code and passes on the new
+
+convert all references to URI to be Addressable::URI
+don't use URI.parse, use Addressable::URI.heuristic_parse (eg in files/*)
+make basicfile methods delegate to its uri
+
+tmpdir should use the actual system tmpdir libs (eg in archiver)
+move config over to configliere
+
+
+
+
+------ WANT PONY -----
+
+might be nice to learn the delegate pattern

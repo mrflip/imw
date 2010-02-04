@@ -31,13 +31,8 @@ module IMW
       def add_inputs new_inputs
         @inputs ||= {}
         new_inputs.each do |input, basename|
-          unless basename == nil
-            @inputs[File.expand_path(input)] = (basename || File.basename(input))
-          else
-            @inputs[File.expand_path(input)] = File.basename(input)
-          end
+          @inputs[File.expand_path(input)] = (basename || File.basename(input))
         end
-        
       end
       
       def errors
