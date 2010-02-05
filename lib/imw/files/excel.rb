@@ -19,7 +19,7 @@ module IMW
       #it is opened and can be read out with a subsequent call to
       #load(). Otherwise, a new workbook is created and can be written
       #to with the dump() method.
-      def initialize uri, mode, options={}
+      def initialize uri, mode='r', options={}
         self.uri = uri
         @max_lines = options[:max_lines] || 65000
         @idx = 0

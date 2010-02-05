@@ -21,7 +21,7 @@ module IMW
       protected
 
       def uri= uri
-        @uri      = uri.is_a?(Addressable::URI) ? uri : Addressable::URI.heuristic_parse(uri.to_s)
+        @uri      = uri.is_a?(Addressable::URI) ? uri : Addressable::URI.parse(uri.to_s)
         @host     = self.uri.host
         @path     = local? ? ::File.expand_path(self.uri.path) : self.uri.path
         @dirname  = ::File.dirname path
