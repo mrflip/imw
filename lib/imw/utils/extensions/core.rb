@@ -18,8 +18,7 @@ module IMW
   # IMW::SystemCallError if the command fails as well as printing the
   # command appended to the end of <tt>error_message</tt>.
   def self.system *commands
-    command = commands.flatten.join ' '
-    Kernel.system(command)
+    Kernel.system(*commands)
     raise IMW::SystemCallError.new(command) unless $?.success?
   end
 end

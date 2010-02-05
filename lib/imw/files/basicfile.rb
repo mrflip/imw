@@ -1,18 +1,19 @@
-#
-# h2. lib/imw/files/file.rb -- base class for files 
-#
-# == About
-#
-# Defines a base class for classes for specific filetypes to subclass.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-# puts "#{File.basename(__FILE__)}: At the very bottom of the office building, wedged between a small boulder and a rotting log you see a weathered manilla file folder.  The writing on the tab is too faded to make out." # at bottom
+require 'imw/utils/uri'
 module IMW
   module Files
+    #
+    # h2. lib/imw/files/file.rb -- base class for files
+    #
+    # == About
+    #
+    # Defines a base class for classes for specific filetypes to subclass.
+    #
+    # Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
+    # Copyright:: Copyright (c) 2008 infochimps.org
+    # License::   GPL 3.0
+    # Website::   http://infinitemonkeywrench.org/
+    #
+    # puts "#{File.basename(__FILE__)}: At the very bottom of the office building, wedged between a small boulder and a rotting log you see a weathered manilla file folder.  The writing on the tab is too faded to make out." # at bottom
     module BasicFile
 
       attr_reader :uri, :host, :path, :dirname, :basename, :extname, :name
@@ -20,7 +21,7 @@ module IMW
       protected
 
       def uri= uri
-        @uri      = uri.is_a?(URI::Generic) ? uri : URI.parse(uri)
+        @uri      = uri.is_a?(Addressable::URI) ? uri : Addressable::URI.parse(uri.to_s)
         @host     = self.uri.host
         @path     = local? ? ::File.expand_path(self.uri.path) : self.uri.path
         @dirname  = ::File.dirname path
@@ -39,7 +40,7 @@ module IMW
 
       public
 
-      # Is this file on the local machine (the scheme of the file's URI is nil or 
+      # Is this file on the local machine (the scheme of the file's URI is nil or
       def local?
         host == 'file' || host.nil?
       end

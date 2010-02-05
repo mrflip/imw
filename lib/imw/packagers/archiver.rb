@@ -26,23 +26,15 @@ module IMW
         add_inputs inputs
       end
 
-      # FIXME Instead of requiring +new_inputs+ to be either an Array
-      # or Hash just iterate through whatever it is using +each+ and
-      # see if the iterate can be interpreted as a mapping between
-      # strings.
+      #Create a hash structure where every (key,value) pair
+      #is a file path and corresponding file basename
       def add_inputs new_inputs
         @inputs ||= {}
-        if new_inputs.is_a?(Array)
-          new_inputs.each do |input|
-            @inputs[File.expand_path(input)] = File.basename(input)
-          end
-        else
-          new_inputs.each_pair do |input, basename|
-            @inputs[File.expand_path(input)] = (basename || File.basename(input))
-          end
+        new_inputs.each do |input, basename|
+          @inputs[File.expand_path(input)] = (basename || File.basename(input))
         end
       end
-
+      
       def errors
         @errors ||= []      
       end
@@ -96,6 +88,51 @@ module IMW
         end
       end
 
+<<<<<<< HEAD:lib/imw/packagers/archiver.rb
+=======
+      #Checks to see if a temporary local directory structure containing
+      #the appropriate files has been created.
+      def prepared?
+        #check if the directory exists right here
+        if File.exist?(dir)
+          FileUtils.cd(dir)
+          inputs.each_pair do |path, basename|
+            local_path = File.join(dir, basename)
+            #if file exists plainly in local directory, move on to next file
+            unless File.exist?(local_path)
+              #file does not exist as is, so instantiate a local dummy file and do some checks
+              file = IMW.open(local_path, :as => IMW::Files.file_class_for(basename))
+              if File.exist?(file.decompressed_path)
+                if File.archive?
+                  #check that archive contents exist locally
+                  list_of_names = file.contents
+                  FileUtils.cd(file.decompressed_path) do
+                    list_of_names.each do |filename|
+                      unless File.exist?(filename)
+                        return false
+                      end
+                    end  
+                  end
+                  #archive contents check out ok
+                end
+                #if the file exists in a decompressed way but was not
+                #an archive then, move on to next file
+              else
+                #file does not exist either plainly or in a decompressed form
+                return false
+              end
+            end
+          end
+          #everything checks out
+          return true
+        else
+          #the directory does not exist locally
+          return false
+        end
+      end
+       
+
+>>>>>>> 7fce7ad55a5824dd84d7c33204b322a566ef2295:lib/imw/packagers/archiver.rb
       # Package the contents of the temporary directory to an archive
       # at +output+ but return exceptions instead of raising them.
       def package output, options={}
@@ -123,4 +160,3 @@ module IMW
     end
   end
 end
-
