@@ -88,8 +88,6 @@ module IMW
         end
       end
 
-<<<<<<< HEAD:lib/imw/packagers/archiver.rb
-=======
       #Checks to see if a temporary local directory structure containing
       #the appropriate files has been created.
       def prepared?
@@ -131,8 +129,6 @@ module IMW
         end
       end
        
-
->>>>>>> 7fce7ad55a5824dd84d7c33204b322a566ef2295:lib/imw/packagers/archiver.rb
       # Package the contents of the temporary directory to an archive
       # at +output+ but return exceptions instead of raising them.
       def package output, options={}
