@@ -142,11 +142,8 @@ module IMW
 
       # Overrides default behvaior of IMW::Files::Archive#create to
       # compress files after creating them.
-      def create paths, opts={}
-        opts = opts.reverse_merge({:force => false})
-        raise IMW::Error.new("An archive already exists at #{@path}.") if exist? and not opts[:force]
-        paths = [paths] if paths.class == String
-        IMW.system IMW::EXTERNAL_PROGRAMS[@archive[:program]], @archive[:create_flags], path_between_archive_and_compression, *paths
+      def create *paths
+        IMW.system IMW::EXTERNAL_PROGRAMS[@archive[:program]], @archive[:create_flags], path_between_archive_and_compression, *paths.flatten
         IMW.open(path_between_archive_and_compression).compress!(:bzip2)
       end
 
@@ -202,10 +199,10 @@ module IMW
       # The default flags used creating, appending to, listing, and
       # extracting a zip archive.
       DEFAULT_FLAGS = {
-        :create => "-q -r",
-        :append => "-q -g",
+        :create => "-qqr",
+        :append => "-qqg",
         :list => "-l",
-        :extract => "-q -o",
+        :extract => "-qqo",
         :unarchiving_program => :unzip
       }
       

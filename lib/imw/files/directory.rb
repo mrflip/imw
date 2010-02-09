@@ -27,6 +27,10 @@ module IMW
       def [] selector='*'
         Dir[File.join(path, selector)] if local?
       end
+      def contents
+        []
+      end
+      
       
       # Copy the contents of this directory to +new_dir+.
       def cp new_dir

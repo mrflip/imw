@@ -40,6 +40,7 @@ module IMW
     autoload :Binary, 'imw/files/binary'
     autoload :Yaml,   'imw/files/yaml'
     autoload :Csv,    'imw/files/csv'
+    autoload :Tsv,    'imw/files/csv'
     autoload :Json,   'imw/files/json'
     autoload :Bz2,    'imw/files/compressed_files_and_archives'
     autoload :Gz,     'imw/files/compressed_files_and_archives'

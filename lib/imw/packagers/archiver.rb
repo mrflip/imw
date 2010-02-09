@@ -147,7 +147,8 @@ module IMW
         output.rm!                        if output.exist?
         FileUtils.cd(tmp_dir) do
           temp_output = IMW.open(output.basename)
-          packaged_output = temp_output.create(name.to_s + '/*').mv(output.path)
+          puts "MOther FUCKER MY CLASS IS #{temp_output.class}"
+          packaged_output = temp_output.create(*Dir["#{name}/**/*"]).mv(output.path)
           temp_output.rm if temp_output.exist?
           add_processing_error "Archiver: couldn't create archive #{output.path}" unless output.exists?
         end

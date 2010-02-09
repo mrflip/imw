@@ -5,7 +5,7 @@ module IMWTest
 
     STRING_CHARS        = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ']
     TEXT_CHARS          = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + [' ',' ',' ',' ',' ',"\n"]
-    FILENAME_CHARS      = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + ["-","_"]
+    FILENAME_CHARS      = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a + ["-","_",' ']
     FILENAME_MAX_LENGTH = 9
     TEXT_MAX_LENGTH     = 1024
     EXTENSIONS          = {

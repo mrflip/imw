@@ -19,13 +19,12 @@ describe IMW::Packagers::Archiver do
     @rar      = "foobar-rar.rar"
     @archives = [@zip, @tarbz2]
 
-    @files = [@csv, @xml, @txt, @blah, @bz2, @zip, @tarbz2]
+    @files = [@csv, @xml, @txt, @blah, @zip, @bz2, @tarbz2]
     
     @files.each do |path|
       IMWTest::Random.file path
     end
   end
-
 
   describe "when preparing files" do
     before do

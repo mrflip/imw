@@ -19,7 +19,7 @@ module IMW
   # command appended to the end of <tt>error_message</tt>.
   def self.system *commands
     Kernel.system(*commands)
-    raise IMW::SystemCallError.new(command) unless $?.success?
+    raise IMW::SystemCallError.new($?.dup, commands.join(' ')) unless $?.success?
   end
 end
 

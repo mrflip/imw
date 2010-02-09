@@ -17,7 +17,7 @@ end
 Spec::Runner.configure do |config|
 
   config.include CustomMatchers
-
+  
   config.before do
     FileUtils.mkdir_p IMWTest::TMP_DIR
     FileUtils.cd IMWTest::TMP_DIR

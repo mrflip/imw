@@ -4,50 +4,45 @@ require "imw"
 
 describe IMW::Files::BasicFile do
 
-  describe "a local file" do
+  describe "when local" do
     before do
       @path = "foobar.txt"
       IMWTest::Random.file @path
       @file = IMW.open(@path)
-      
       @new_path = "foobar2.txt"
-
       @new_dir = "bazbaz"
-      FileUtils.mkdir_p(@new_dir)
+      FileUtils.mkdir_p(@new_dir)      
     end
 
     it "should now that it's local" do
       @file.local?.should be_true
-      @file.remote?.should be_false
     end
 
     it "knows the parts of its URI" do
-      @file.host.should == nil
-      @file.path.should == File.join(IMWTest::TMP_DIR, @path)
-      @file.dirname.should == IMWTest::TMP_DIR
+      @file.host.should     == nil
+      @file.path.should     == File.join(IMWTest::TMP_DIR, @path)
+      @file.dirname.should  == IMWTest::TMP_DIR
       @file.basename.should == @path
-      @file.extname.should == ".txt"
-      @file.name.should == "foobar"
+      @file.extname.should  == ".txt"
+      @file.name.should     == "foobar"
     end
 
-    it "can copy a file" do
-      @file.cp(@new_path)
-      @path.should exist
-      @new_path.should exist
+    it "can copy itself to a new path" do
+      @file.cp(@new_path).exist?.should be_true
     end
 
-    it "can move a file" do
-      @file.mv(@new_path)
-      @path.should_not exist
-      @new_path.should exist
+    it "can move itself to a new path" do
+      @file.mv(@new_path).exist?.should be_true
+      @file.exist?.should be_false
     end
 
-    it "can delete a file" do
+    it "can delete itself" do
       @file.rm!
-      @path.should_not exist
+      @file.exist?.should be_false
     end
 
-    it "can copy to a directory" do
+    it "can copy itself to a directory" do
+
       @file.cp_to_dir(@new_dir)
       @new_dir.should contain(@path)
       @path.should exist      
@@ -67,7 +62,7 @@ describe IMW::Files::BasicFile do
   end
 
 
-  describe "a remote file" do
+  describe "when remote" do
     before do
       @path = "http://www.google.com"      
       @file = IMW.open(@path)
@@ -95,7 +90,7 @@ describe IMW::Files::BasicFile do
 
     it "can open the file" do
       @file.should be
-      @file.class.should == IMW::Files::Text      
+      @file.class.should == IMW::Files::Html
     end
 
     it "should raise an error when trying to write" do
