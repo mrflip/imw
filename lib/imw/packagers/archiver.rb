@@ -71,62 +71,55 @@ module IMW
       # is insistent and passes a :force option -- or maybe use bang
       # and not-bang versions of the method for this distinction).
       def prepare!
-        FileUtils.mkdir_p dir unless File.exist?(dir)
-        inputs.each_pair do |path, basename|
-          new_path = File.join(dir, basename)
-          file = IMW.open(path, :as => IMW::Files.file_class_for(basename)) # file's original path is meaningless: RackMultipart20091203-958-1nkgc61-0
-          case
-          when file.archive?
-            FileUtils.cd(dir) do
-              file.extract
+        unless self.prepared?
+          FileUtils.mkdir_p dir unless File.exist?(dir)
+          inputs.each_pair do |path, basename|
+            new_path = File.join(dir, basename)
+            file = IMW.open(path, :as => IMW::Files.file_class_for(basename)) # file's original path is meaningless: RackMultipart20091203-958-1nkgc61-0
+            case
+            when file.archive?
+              FileUtils.cd(dir) do
+                file.extract
+              end
+            when file.compressed?
+              file.cp(new_path).decompress!
+            else
+              file.cp(new_path)
             end
-          when file.compressed?
-            file.cp(new_path).decompress!
-          else
-            file.cp(new_path)
           end
-        end
+        end        
       end
-
+      
       #Checks to see if a temporary local directory structure containing
       #the appropriate files has been created.
       def prepared?
-        #check if the directory exists right here
-        if File.exist?(dir)
-          FileUtils.cd(dir)
-          inputs.each_pair do |path, basename|
-            local_path = File.join(dir, basename)
-            #if file exists plainly in local directory, move on to next file
-            unless File.exist?(local_path)
-              #file does not exist as is, so instantiate a local dummy file and do some checks
-              file = IMW.open(local_path, :as => IMW::Files.file_class_for(basename))
-              if File.exist?(file.decompressed_path)
-                if File.archive?
-                  #check that archive contents exist locally
-                  list_of_names = file.contents
-                  FileUtils.cd(file.decompressed_path) do
-                    list_of_names.each do |filename|
-                      unless File.exist?(filename)
-                        return false
-                      end
-                    end  
-                  end
-                  #archive contents check out ok
-                end
-                #if the file exists in a decompressed way but was not
-                #an archive then, move on to next file
-              else
-                #file does not exist either plainly or in a decompressed form
-                return false
-              end
-            end
-          end
-          #everything checks out
-          return true
-        else
-          #the directory does not exist locally
-          return false
+        files_list.values.flatten.each do |filepath|
+          return false unless File.exist?(filepath)
         end
+        true
+      end
+      
+      #make a method that returns a hash that maps {path=>['contents']}
+      #this way we can take the key and make the corresponding path,
+      #or take the value and check that the corresponding file exists
+      def files_list
+        list = {}
+        inputs.each_pair do |path, basename|
+          new_path = File.join(dir, basename)
+          file = IMW.open(path, :as => IMW::Files.file_class_for(basename))
+          case
+          when file.archive?
+            #eg something.tar.bz2
+            list[path] = file.contents.map{ |filename| File.join(dir, filename) }
+          when file.compressed?
+            #eg. something.gz
+            list[path] = [IMW.open(new_path).decompressed_path]
+          else
+            #eg. something.txt
+            list[path] = [new_path]
+          end
+        end
+        list
       end
        
       # Package the contents of the temporary directory to an archive
