@@ -1,3 +1,5 @@
+require 'imw/utils/extensions/hash'
+
 module IMW
   module Config
 
@@ -30,8 +32,8 @@ module IMW
 
     # Source the config files
     def self.load_config
+      load user_config_file if File.exist? user_config_file
       require site_config_file
-      load    user_config_file   if File.exist? user_config_file
     end
   end
 end

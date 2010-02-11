@@ -24,7 +24,8 @@
 #
 
 module IMW
-  PATHS = {
+
+  DEFAULT_PATHS = {
     :home         => ENV['HOME'],
     :data_root    => "/var/lib/imw",
     :log_root     => "/var/log/imw",
@@ -45,20 +46,22 @@ module IMW
     :fixd_root  => [:data_root, 'fixd'],
     :pkgd_root  => [:data_root, 'pkgd']
   }
+  defined?(PATHS) ? PATHS.reverse_merge!(DEFAULT_PATHS) : PATHS = DEFAULT_PATHS
 
   # Default time format.
   STRFTIME_FORMAT = "%Y%m%d-%H%M%S" unless defined? STRFTIME_FORMAT
 
   # Paths to external programs used by IMW.
-  EXTERNAL_PROGRAMS = {
-    :tar => "tar",
-    :rar => "rar",
-    :zip => "zip",
+  DEFAULT_EXTERNAL_PROGRAMS = {
+    :tar   => "tar",
+    :rar   => "rar",
+    :zip   => "zip",
     :unzip => "unzip",
-    :gzip => "gzip",
+    :gzip  => "gzip",
     :bzip2 => "bzip2",
-    :wget => "wget"
-  } unless defined? ::IMW::EXTERNAL_PROGRAMS
+    :wget  => "wget"
+  }
+  defined?(::IMW::EXTERNAL_PROGRAMS) ? ::IMW::EXTERNAL_PROGRAMS.reverse_merge!(DEFAULT_EXTERNAL_PROGRAMS) : ::IMW::EXTERNAL_PROGRAMS = DEFAULT_EXTERNAL_PROGRAMS
 
   module Files
     # Regular expressions which match pathnames to the name of the
