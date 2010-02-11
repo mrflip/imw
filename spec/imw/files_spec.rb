@@ -23,8 +23,12 @@ describe IMW::Files do
     IMW.open(@none).class.should == IMW::Files::Text    
   end
 
-  it "will use a different class if asked" do
+  it "will use a different class if asked with a symbol" do
     IMW.open(@csv, :as => :Text).class.should == IMW::Files::Text
+  end
+
+  it "will use a different class if asked with a constant" do
+    IMW.open(@csv, :as => IMW::Files::Text).class.should == IMW::Files::Text
   end
   
   it "can write to a new file" do
