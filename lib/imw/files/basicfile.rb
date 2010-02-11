@@ -27,7 +27,7 @@ module IMW
         @dirname  = ::File.dirname path
         @basename = ::File.basename path
         @extname  = find_extname
-        @name     = @basename[0,@basename.length - @extname.length]
+        @name     = @extname ? @basename[0,@basename.length - @extname.length] : @basename
       end
 
       # Some files (like <tt>.tar.gz</tt>) have an "extra" extension.
