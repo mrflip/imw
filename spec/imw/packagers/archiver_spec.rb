@@ -26,41 +26,54 @@ describe IMW::Packagers::Archiver do
     end
   end
 
-  describe "when preparing files" do
+  describe "preparing input files" do
     before do
-      @archiver = IMW::Packagers::Archiver.new @name, @files
-      @archiver.prepare!      
+      @archiver = IMW::Packagers::Archiver.new @name, @files 
     end
 
     after do
       FileUtils.rm_rf @archiver.tmp_dir
     end
 
-    it "should name its archive directory properly" do
-      @archiver.tmp_dir.should contain(@name)
-    end
-
-    it "should copy regular files to its archive directory" do
-      @archiver.dir.should contain(@csv, @xml, @txt)
-    end
-
-    it "should uncompress compressed files to its archive directory" do
-      @archiver.dir.should     contain('foobar-bz2')
-      @archiver.dir.should_not contain(@bz2)
-    end
-
-    it "should copy the content of archive files to its archive directory (but not the actual archives)" do
-      @archives.each do |archive|
-        @archiver.dir.should_not contain(archive)
-        @archiver.dir.should contain(*IMW.open(archive).contents)
+    describe "before preparing input files" do
+      it "should not be prepared when initialized" do
+        @archiver.prepared?.should be_false
       end
     end
 
-    it "should not move any of the original files" do
-      IMWTest::TMP_DIR.should contain(@files)
+    describe "after preparing files" do
+      before { @archiver.prepare! }
+
+      it "should be prepared" do
+        @archiver.prepared?.should be_true
+      end
+
+      it "should name its archive directory properly" do
+        @archiver.tmp_dir.should contain(@name)
+      end
+      
+      it "should copy regular files to its archive directory" do
+        @archiver.dir.should contain(@csv, @xml, @txt)
+      end
+      
+      it "should uncompress compressed files to its archive directory" do
+        @archiver.dir.should     contain('foobar-bz2')
+        @archiver.dir.should_not contain(@bz2)
+      end
+      
+      it "should copy the content of archive files to its archive directory (but not the actual archives)" do
+        @archives.each do |archive|
+          @archiver.dir.should_not contain(archive)
+          @archiver.dir.should contain(*IMW.open(archive).contents)
+        end
+      end
+
+      it "should not move any of the original files" do
+        IMWTest::TMP_DIR.should contain(@files)
+      end
     end
   end
-
+  
   describe "when preparing files while renaming them" do
     before do
 
@@ -93,7 +106,6 @@ describe IMW::Packagers::Archiver do
   describe "when packaging files" do
     before do
       @archiver = IMW::Packagers::Archiver.new @name, @files
-      @archiver.prepare!
 
       @package_tarbz2 = "package.tar.bz2"
       @package_zip    = "package.zip"
@@ -117,8 +129,24 @@ describe IMW::Packagers::Archiver do
         output.basename.should == package
       end
     end
-    
-    
+
+    describe 'when packaging into multiple output formats' do
+
+      it "should prepare input files without being asked" do
+        @archiver.prepared?.should be_false
+        @archiver.package! @packages.first
+        @archiver.prepared?.should be_true
+      end
+      
+      it "should not prepare input files once they've already been prepared" do
+        @archiver.prepared?.should be_false        
+        @archiver.package! @packages.first
+        @archiver.prepared?.should be_true        
+        @archiver.should_not_receive(:prepare!)
+        @archiver.package! @packages.last
+      end
+    end
   end
 end
+
 

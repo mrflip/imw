@@ -66,62 +66,46 @@ module IMW
         @dir ||= File.join(tmp_dir, name.to_s)
       end
 
-      # FIXME This needs to be made idempotent -- calling prepare
-      # twice should not do any work the second time (unless the user
-      # is insistent and passes a :force option -- or maybe use bang
-      # and not-bang versions of the method for this distinction).
+      # Copy, decompress, or extract the input paths to the temporary
+      # directory, readying them for pacakging.
       def prepare!
-        unless self.prepared?
-          FileUtils.mkdir_p dir unless File.exist?(dir)
-          inputs.each_pair do |path, basename|
-            new_path = File.join(dir, basename)
-            file = IMW.open(path, :as => IMW::Files.file_class_for(basename)) # file's original path is meaningless: RackMultipart20091203-958-1nkgc61-0
-            case
-            when file.archive?
-              FileUtils.cd(dir) do
-                file.extract
-              end
-            when file.compressed?
-              file.cp(new_path).decompress!
-            else
-              file.cp(new_path)
-            end
-          end
-        end        
-      end
-      
-      #Checks to see if a temporary local directory structure containing
-      #the appropriate files has been created.
-      def prepared?
-        files_list.values.flatten.each do |filepath|
-          return false unless File.exist?(filepath)
-        end
-        true
-      end
-      
-      #make a method that returns a hash that maps {path=>['contents']}
-      #this way we can take the key and make the corresponding path,
-      #or take the value and check that the corresponding file exists
-      def files_list
-        list = {}
+        FileUtils.mkdir_p dir unless File.exist?(dir)
         inputs.each_pair do |path, basename|
           new_path = File.join(dir, basename)
           file = IMW.open(path, :as => IMW::Files.file_class_for(basename))
           case
           when file.archive?
-            #eg something.tar.bz2
-            list[path] = file.contents.map{ |filename| File.join(dir, filename) }
+            FileUtils.cd(dir) do
+              file.extract
+            end
           when file.compressed?
-            #eg. something.gz
-            list[path] = [IMW.open(new_path).decompressed_path]
+            file.cp(new_path).decompress!
           else
-            #eg. something.txt
-            list[path] = [new_path]
+            file.cp(new_path)
           end
         end
-        list
+      end        
+      
+      # Checks to see if all expected files exist in the temporary
+      # directory for this packager.
+      def prepared?
+        inputs.each_pair do |path, basename|
+          new_path = File.join(dir, basename)
+          file = IMW.open(path, :as => IMW::Files.file_class_for(basename))
+          case
+          when file.archive?
+            file.contents.each do |archived_file_path|
+              return false unless File.exist?(File.join(dir, archived_file_path))
+            end
+          when file.compressed?
+            return false unless File.exist?(IMW.open(new_path).decompressed_path)
+          else
+            return false unless File.exist?(new_path)
+          end
+        end
+        true
       end
-       
+      
       # Package the contents of the temporary directory to an archive
       # at +output+ but return exceptions instead of raising them.
       def package output, options={}
@@ -135,12 +119,12 @@ module IMW
       # Package the contents of the temporary directory to an archive
       # at +output+.
       def package! output, options={}
+        prepare!                          unless prepared?
         output = IMW.open(output)         if output.is_a?(String)
         FileUtils.mkdir_p(output.dirname) unless File.exist?(output.dirname)        
         output.rm!                        if output.exist?
         FileUtils.cd(tmp_dir) do
           temp_output = IMW.open(output.basename)
-          puts "MOther FUCKER MY CLASS IS #{temp_output.class}"
           packaged_output = temp_output.create(*Dir["#{name}/**/*"]).mv(output.path)
           temp_output.rm if temp_output.exist?
           add_processing_error "Archiver: couldn't create archive #{output.path}" unless output.exists?
