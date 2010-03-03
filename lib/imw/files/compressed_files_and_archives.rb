@@ -240,6 +240,7 @@ module IMW
         # last 2 (5 = 2 + 3)
         file_rows = rows[3,(rows.length - 5)]
         file_rows.map! do |row|
+          next unless row       # FIXME we're getting a weird nil class error...
           # discard extra whitespace before after main text
           row.lstrip!.rstrip!
           # split the remaining text at spaces...columns beyond the
