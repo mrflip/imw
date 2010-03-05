@@ -39,12 +39,10 @@ module IMW
     # Source the config files
     def self.load_config
       if File.exist?(user_config_file)
-        puts "loading user config file (#{user_config_file})"
         load user_config_file
       end
 
       if File.exist?(site_config_file)
-        puts "requiring site config file (#{site_config_file})"
         load site_config_file
       end
 
