@@ -109,7 +109,12 @@ module IMW
 
       # try to choose klass from uri scheme if not already set
       unless klass
-        scheme = URI.parse(path).scheme
+        begin 
+          uri = Addressable::URI.parse(path)
+        rescue URI::InvalidURIError
+          uri = Addressable::URI.parse(Addressable::URI.encode(path))
+        end
+        scheme = uri.scheme
         SCHEME_HANDLERS.reverse_each do |regexp, thing| # end has greater precedence
           next unless regexp =~ scheme
           klass = thing
