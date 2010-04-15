@@ -74,35 +74,6 @@ describe IMW::Packagers::Archiver do
     end
   end
   
-  describe "when preparing files while renaming them" do
-    before do
-
-      # to test renaming, consider the new paths to be the old paths
-      # but with the hyphens mapped to underscores...
-      @renaming_hash = {}
-      @files.each { |f| @renaming_hash[f] = f.gsub(/-/,'_') }
-      
-      @archiver = IMW::Packagers::Archiver.new @name, @renaming_hash
-      @archiver.prepare!
-    end
-
-    after do
-      FileUtils.rm_rf @archiver.tmp_dir
-    end
-
-    it "should copy regular files to its archive directory, renaming them" do
-      @archiver.dir.should_not contain([@csv, @xml, @txt])
-      @archiver.dir.should contain([@csv, @xml, @txt].map { |f| @renaming_hash[f] })
-    end
-
-    it "should uncompress compressed files to its archive directory, renaming them" do
-      @archiver.dir.should     contain('foobar_bz2')
-      @archiver.dir.should_not contain('foobar-bz2')      
-      @archiver.dir.should_not contain(@renaming_hash[@bz2])
-      @archiver.dir.should_not contain(@bz2)
-    end
-  end
-
   describe "when packaging files" do
     before do
       @archiver = IMW::Packagers::Archiver.new @name, @files

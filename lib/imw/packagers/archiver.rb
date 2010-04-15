@@ -12,29 +12,15 @@ module IMW
     # directory (the file hierarchy of the archive will be preserved).
     # If any of the input files are compressed, they will first be
     # uncompressed before being added to the directory.
-    #
-    # Input files can be renamed by passing in a Hash instead of an
-    # Array.  Each key in this hash is the path to an input file and its
-    # value is the new basename to give it.  If the basename is +nil+
-    # then the original path's basename will be used.
     class Archiver
 
       attr_accessor :name, :inputs
 
       def initialize name, inputs
         @name   = name
-        add_inputs inputs
+        @inputs = inputs.map { |input| File.expand_path(input) }
       end
 
-      #Create a hash structure where every (key,value) pair
-      #is a file path and corresponding file basename
-      def add_inputs new_inputs
-        @inputs ||= {}
-        new_inputs.each do |input, basename|
-          @inputs[File.expand_path(input)] = (basename || File.basename(input))
-        end
-      end
-      
       def errors
         @errors ||= []      
       end
@@ -70,18 +56,18 @@ module IMW
       # directory, readying them for pacakging.
       def prepare!
         FileUtils.mkdir_p dir unless File.exist?(dir)
-        inputs.each_pair do |path, basename|
-          new_path = File.join(dir, basename)
-          file = IMW.open(path, :as => IMW::Files.file_class_for(basename))
+        inputs.each do |path|
+          existing_file = IMW.open(path)          
+          new_path      = File.join(dir, File.basename(path))
           case
-          when file.archive?
+          when existing_file.archive?
             FileUtils.cd(dir) do
-              file.extract
+              existing_file.extract
             end
-          when file.compressed?
-            file.cp(new_path).decompress!
+          when existing_file.compressed?
+            existing_file.cp(new_path).decompress!
           else
-            file.cp(new_path)
+            existing_file.cp(new_path)
           end
         end
       end        
@@ -89,15 +75,15 @@ module IMW
       # Checks to see if all expected files exist in the temporary
       # directory for this packager.
       def prepared?
-        inputs.each_pair do |path, basename|
-          new_path = File.join(dir, basename)
-          file = IMW.open(path, :as => IMW::Files.file_class_for(basename))
+        inputs.each do |path|
+          existing_file = IMW.open(path)
+          new_path      = File.join(dir, File.basename(path))
           case
-          when file.archive?
-            file.contents.each do |archived_file_path|
+          when existing_file.archive?
+            existing_file.contents.each do |archived_file_path|
               return false unless File.exist?(File.join(dir, archived_file_path))
             end
-          when file.compressed?
+          when existing_file.compressed?
             return false unless File.exist?(IMW.open(new_path).decompressed_path)
           else
             return false unless File.exist?(new_path)
