@@ -24,57 +24,44 @@
 #
 
 module IMW
-  PATHS = {
-    :home       => ENV['HOME'],
-    :imw_root   => File.expand_path(File.join(File.dirname(__FILE__), '..')),
-    :super_root => File.expand_path(File.join(File.dirname(__FILE__), '../..')),
 
-    # Data processing scripts
-    :scripts_root => [:super_root, 'infochimps-data'],
+  DEFAULT_PATHS = {
+    :home         => ENV['HOME'],
+    :data_root    => "/var/lib/imw",
+    :log_root     => "/var/log/imw",
+    :scripts_root => "/usr/share/imw",
+    :tmp_root     => "/tmp/imw",
 
     # the imw library
+    :imw_root  => File.expand_path(File.dirname(__FILE__) + "/.."),
     :imw_bin   => [:imw_root, 'bin'],
     :imw_etc   => [:imw_root, 'etc'],
     :imw_lib   => [:imw_root, 'lib'],
 
-    # Data
-    :data_root  => [:super_root, 'data'],
+    # workflow
     :ripd_root  => [:data_root, 'ripd'],
     :peeld_root => [:data_root, 'peeld'],
-    :mungd_root => [:data_root, 'mungd'],    
+    :mungd_root => [:data_root, 'mungd'],
     :temp_root  => [:data_root, 'temp'],
     :fixd_root  => [:data_root, 'fixd'],
-    :pkgd_root  => [:data_root, 'pkgd'],
-    :log_root   => [:data_root, 'log'],
+    :pkgd_root  => [:data_root, 'pkgd']
   }
-  PATHS[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
+  defined?(PATHS) ? PATHS.reverse_merge!(DEFAULT_PATHS) : PATHS = DEFAULT_PATHS
 
   # Default time format.
   STRFTIME_FORMAT = "%Y%m%d-%H%M%S" unless defined? STRFTIME_FORMAT
 
   # Paths to external programs used by IMW.
-  EXTERNAL_PROGRAMS = {
-    :tar => "tar",
-    :rar => "rar",
-    :zip => "zip",
+  DEFAULT_EXTERNAL_PROGRAMS = {
+    :tar   => "tar",
+    :rar   => "rar",
+    :zip   => "zip",
     :unzip => "unzip",
-    :gzip => "gzip",
+    :gzip  => "gzip",
     :bzip2 => "bzip2",
-    :wget => "wget"
-  } unless defined? ::IMW::EXTERNAL_PROGRAMS
-
-  # Directories where IMW will write and look for files.
-  DIRECTORIES = {
-    :instructions => File.expand_path("~/imw/instructions"),
-    :log => File.expand_path("~/imw/data/log"),
-    :dump => "/tmp/imw",
-    :data => File.expand_path("~/imw/data"),
-    :rip => File.expand_path("~/imw/data/ripd"),
-    :parse => File.expand_path("~/imw/data/prsd"),
-    :munge => File.expand_path("~/imw/data/mungd"),
-    :fix => File.expand_path("~/imw/data/fixd"),
-    :package => File.expand_path("~/imw/data/pkgd")
-  } unless defined? ::IMW::DIRECTORIES
+    :wget  => "wget"
+  }
+  defined?(::IMW::EXTERNAL_PROGRAMS) ? ::IMW::EXTERNAL_PROGRAMS.reverse_merge!(DEFAULT_EXTERNAL_PROGRAMS) : ::IMW::EXTERNAL_PROGRAMS = DEFAULT_EXTERNAL_PROGRAMS
 
   module Files
     # Regular expressions which match pathnames to the name of the
@@ -84,18 +71,8 @@ module IMW
     # <tt>IMW::Files</tt> prefix, i.e. - the file object
     # <tt>IMW::Files::Bz2</tt> should be referenced by the string
     # <tt>"Bz2"</tt>.
-    FILE_REGEXPS = {
-    } unless defined? ::IMW::Files::FILE_REGEXPS
+    FILE_REGEXPS = [] unless defined? ::IMW::Files::FILE_REGEXPS
   end
-
-  # Default settings for uploading datasets to
-  # archive.org[http://archive.org].
-  ARCHIVE_ORG_UPLOAD_SETTINGS = {
-    :server => "items-uploads.archive.org",
-    :collection => "Infochimps",
-    :mediatype => "Data"
-  }
-
 
 end
 
