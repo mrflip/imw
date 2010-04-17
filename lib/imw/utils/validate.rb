@@ -1,16 +1,3 @@
-#
-# h2. imw/lib/utils/validate.rb -- functions to validate certain quantities like domains, emails, &c.
-#
-# == About
-#
-# The functions herein implement simple checks of strings like emails,
-# urls, &c.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-# 
 
 
 # Return true if <tt>email</tt> is a valid email address

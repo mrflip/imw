@@ -38,16 +38,14 @@ module IMW
     :imw_lib   => [:imw_root, 'lib'],
 
     # Data
-    :data_root => [:super_root,  'data'],
-    :ripd_root => [:data_root, 'ripd'],
-    :rawd_root => [:data_root, 'rawd'],
-    :temp_root => [:data_root, 'tmp'],
-    :tmp_root  => [:data_root, 'tmp'],
-    :fixd_root => [:data_root, 'fixd'],
-    :pkgd_root => [:data_root, 'pkgd'],
-    :log_root  => [:data_root, 'log'],
+    :data_root  => [:super_root, 'data'],
+    :ripd_root  => [:data_root, 'ripd'],
     :peeld_root => [:data_root, 'peeld'],
-    :mungd_root => [:data_root, 'mungd'],
+    :mungd_root => [:data_root, 'mungd'],    
+    :temp_root  => [:data_root, 'temp'],
+    :fixd_root  => [:data_root, 'fixd'],
+    :pkgd_root  => [:data_root, 'pkgd'],
+    :log_root   => [:data_root, 'log'],
   }
   PATHS[:site_root] = [RAILS_ROOT] if defined?(RAILS_ROOT)
 
@@ -72,7 +70,6 @@ module IMW
     :dump => "/tmp/imw",
     :data => File.expand_path("~/imw/data"),
     :rip => File.expand_path("~/imw/data/ripd"),
-    :tmp   => File.expand_path("~/imw/data/tmp"),
     :parse => File.expand_path("~/imw/data/prsd"),
     :munge => File.expand_path("~/imw/data/mungd"),
     :fix => File.expand_path("~/imw/data/fixd"),
@@ -89,22 +86,6 @@ module IMW
     # <tt>"Bz2"</tt>.
     FILE_REGEXPS = {
     } unless defined? ::IMW::Files::FILE_REGEXPS
-      # /\.bz2$/      => "Bz2",
-      # /\.gz$/       => "Gz",
-      # /\.tar\.bz2$/ => "TarBz2",
-      # /\.tbz2$/     => "TarBz2",
-      # /\.tar\.gz$/  => "TarGz",
-      # /\.tgz$/      => "TarGz",
-      # /\.rar$/      => "Rar",
-      # /\.zip$/      => "Zip",
-      # /\.txt$/      => "Text",
-      # /\.ascii$/    => "Text",
-      # /\.csv$/      => "Csv",
-      # /\.tsv$/      => "Tsv",
-      # /\.xml$/      => "Xml",
-      # /\.html$/     => "Html",
-      # /\.yaml$/     => "Yaml",
-      # /\.yml$/      => "Yaml"
   end
 
   # Default settings for uploading datasets to

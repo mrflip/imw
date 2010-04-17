@@ -1,7 +1,0 @@
-#!/bin/bash
-
-TAGS_DIR=/home/dhruv/projects/infochimps/imw
-DIRS_TO_TAG="lib spec bin"
-
-cd $TAGS_DIR
-ctags-exuberant -e --exclude=".#*" -R $DIRS_TO_TAG

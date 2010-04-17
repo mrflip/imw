@@ -35,90 +35,62 @@
 # Website::   http://infinitemonkeywrench.org/
 # 
 # puts "#{File.basename(__FILE__)}: Put it all in one place so that when something goes wrong you'll know it immediately.  You'll regret it, but at least you'll know." # at bottom
-
-require 'fileutils'
-
-require 'imw/utils'
-
 module IMW
   module Files
+
+    module BasicFile
+
+      # Is this file an archive?
+      def archive?
+        false
+      end
+    end
+    
     module Archive
 
       attr_reader :archive
 
-      private
-      # Ensure a path is stripped of any leading directory prefixes
-      # shared by the directory of this archive.
-      def strip_leading_directories path
-        # the `+1' is to make it a relative path
-        return path.starts_with?(@dirname) ? path.slice(@dirname.length + 1,path.length) : path
+      # Is this file an archive?
+      def archive?
+        true
       end
-      
+
       public
-      # Create this archive containing the given +paths+, which can be
-      # either a string or list of strings to be interpreted as paths
-      # to files/directories by the shell.
-      #
-      # Options:
-      # <tt>:force</tt> (false):: overwrite any existing archive at this path.
-      def create paths, opts = {}
-        opts.reverse_merge!({:force => false})
-        raise IMW::Error.new("An archive already exists at #{@path}.") if exist? and not opts[:force]
-        raise IMW::Error.new("Cannot create an archive of type #{@archive[:program]}") unless @archive[:create_flags]
-
-        paths = [paths] if paths.class == String
-        paths.map! {|file| strip_leading_directories file}
-
-        FileUtils.cd(@dirname) do
-          command = ([IMW::EXTERNAL_PROGRAMS[@archive[:program]],@archive[:create_flags],@basename] + paths).join ' '
-          IMW.system(command)
-        end
+      # Create this archive containing the given +paths+.
+      def create *paths
+        raise IMW::Error.new("Cannot create an archive of type #{@extname}") unless @archive[:create_flags]
+        IMW.system IMW::EXTERNAL_PROGRAMS[@archive[:program]], @archive[:create_flags], @path, *paths.flatten
+        self
       end
 
-      # Append to this archive the given +paths+, which can be
-      # either a string or list of strings to be interpreted as paths
-      # to files/directories by the shell.
-      def append paths
+      # Append to this archive the given +paths+.
+      def append *paths
         raise IMW::Error.new("Cannot append to an archive of type #{@archive[:program]}.") unless @archive[:append_flags]
-        
-        paths = [paths] if paths.class == String
-        paths.map! {|file| strip_leading_directories file}
-        
-        FileUtils.cd(@dirname) do
-          command = ([IMW::EXTERNAL_PROGRAMS[@archive[:program]],@archive[:append_flags],@basename] + paths).join ' '
-          IMW.system(command)
-        end
+        IMW.system IMW::EXTERNAL_PROGRAMS[@archive[:program]], @archive[:append_flags], @path, *paths.flatten
+        self
       end
 
-      # Extract the files from this archive to its directory.
+      # Extract the files from this archive to the current directory.
       def extract
-        raise IMW::Error.new("Cannot extract, #{@path} does not exist.") unless exist?
-        
-        FileUtils.cd(@dirname) do
-          program = @archive[:unarchiving_program] || @archive[:program]
-          command = [IMW::EXTERNAL_PROGRAMS[program],@archive[:extract_flags],@basename].join ' '
-          IMW.system(command)
-        end
+        raise IMW::Error.new("Cannot extract, #{@path} does not exist") unless exist?
+        program = (@archive[:unarchiving_program] or @archive[:program])
+        IMW.system IMW::EXTERNAL_PROGRAMS[program], @archive[:extract_flags], @path
       end
 
       # Return a (sorted) list of contents in this archive.
       def contents
-        raise IMW::Error.new("Cannot list contents, #{@path} does not exist.") unless exist?
-
-        program = @archive[:unarchiving_program] || @archive[:program]
-        output = ''
-        FileUtils.cd(@dirname) do
-          command = [IMW::EXTERNAL_PROGRAMS[program],@archive[:list_flags],@basename].join ' '
-          output += `#{command}`
-        end
-
+        raise IMW::Error.new("Cannot list contents, #{path} does not exist") unless exist?
+        program = (@archive[:unarchiving_program] or @archive[:program])
+        # FIXME this needs to be more robust        
+        command = [IMW::EXTERNAL_PROGRAMS[program], @archive[:list_flags], path.gsub(' ', '\ ')].join ' '
+        output  = `#{command}`
         archive_contents_string_to_array(output)
       end
 
       # Parse and format the output from the archive program's "list"
       # command into an array of filenames.
       #
-      # An including class can customize this method to match the
+      # An including class can override this method to match the
       # output from the archiving program of that class.
       def archive_contents_string_to_array string
         string.split("\n")

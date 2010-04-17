@@ -14,10 +14,6 @@
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
 
 require 'fastercsv'
-
-require 'imw/files/basicfile'
-require 'imw/files/compressible'
-
 module IMW
   module Files
 
@@ -39,15 +35,12 @@ module IMW
         :skip_blanks    => false,
         :force_quotes   => false
       }
-        
-      def initialize path, mode='r', options = {}
-        options.reverse_merge!(self.class::DEFAULT_OPTIONS)        
-        if File.exist?(File.expand_path(path)) then
-          self.path= path
-          super File.new(@path,mode),options
-        else
-          super path,options
-        end
+      
+      def initialize uri, mode='r', options = {}
+        options.reverse_merge!(self.class::DEFAULT_OPTIONS)
+        self.uri= uri
+        options.delete(:write)  # FasterCSV complains about unkown options
+        super open(uri,mode), options
       end
 
       # Return the contents of this CSV file as an array of arrays.
@@ -61,13 +54,38 @@ module IMW
       # <tt>:flush</tt> (true):: flush the file buffer, writing it to disk
       # <tt>:close</tt> (true):: close the file after writing +data+
       def dump data, options = {}
-        options.reverse_merge!({:close => true, :flush => true})
+        options = options.reverse_merge :close => true, :flush => true
         data.each {|row| self << row}
         self.flush if options[:flush]
         self.close if options[:close]
         self
       end
+
+      # Return a random sample of rows.
+      def sample length=10
+        rows, indices = [], Set.new
+        begin
+          each_with_index do |row, index|
+            break if rows.size == length
+            next if index != 0 && rand < 0.75   # skip 3/4 of rows after the 1st
+            rows    << row
+            indices << index
+          end
+          # now fill up to length if not there already
+          while rows.length < length
+            each_with_index do |row, index|
+              break if rows.size == length
+              next if index indices.include?(index)
+              rows << row
+            end
+          end
+          rows
+        rescue FasterCSV::MalformedCSVError
+          rows
+        end
+      end
     end
+    
 
     # Represents a file of comma-separated values (CSV).  This class
     # is a subclass of <tt>FasterCSV</tt> so the methods of that
@@ -88,8 +106,8 @@ module IMW
       DEFAULT_OPTIONS = {:col_sep => "\t"}.reverse_merge DEFAULT_OPTIONS
     end
 
-    FILE_REGEXPS[Regexp.new("\.csv$")] = IMW::Files::Csv
-    FILE_REGEXPS[Regexp.new("\.tsv$")] = IMW::Files::Tsv
+    FILE_REGEXPS << [/\.csv$/, IMW::Files::Csv]
+    FILE_REGEXPS << [/\.tsv$/, IMW::Files::Tsv]
 
   end
 end

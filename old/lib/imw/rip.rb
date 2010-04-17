@@ -1,0 +1,1 @@
+require 'imw/rip/http'

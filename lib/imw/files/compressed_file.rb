@@ -29,14 +29,15 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 # puts "#{File.basename(__FILE__)}: Have you ever folded up the wrapper of a soda straw into a little accordian shape and let a drop of water soak into it?" # at bottom
-
-require 'fileutils'
-
-require 'imw/files/basicfile'
-require 'imw/utils'
-
 module IMW
   module Files
+
+    module BasicFile
+      def compressed?
+        false
+      end
+    end
+    
     # A module which provides methods for decompressing a compressed
     # file.  An including should define an instance variable
     # <tt>@compression</tt> with two keys:
@@ -46,6 +47,11 @@ module IMW
     module CompressedFile
 
       attr_reader :compression
+
+      # Is this file compressed?
+      def compressed?
+        true
+      end
       
       # Construct the command passed to the shell to decompress this
       # file.

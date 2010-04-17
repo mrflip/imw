@@ -1,23 +1,20 @@
-#
-# h2. Rakefile -- master rakefile for imw
-#
-# == About
-#
-# This is the master Rakefile for the Infinite Monkeywrench.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-# 
+require 'rubygems'
+require 'rake'
 
-# This task is for running Nick Sieger's "autotest rspec
-# plugin"[http://blog.nicksieger.com/articles/2007/01/30/rspec-autotest-for-standalone-projects].
-namespace :spec do
-  task :autotest do
-    require './spec/rspec_autotest'
-    RspecAutotest.run
+begin
+  # http://github.com/technicalpickles/jeweler
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "imw"
+    gem.summary = "The Infinite Monkeywrench (IMW) makes acquiring, extracting, transforming, loading, and packaging data easy."
+    gem.description = "The Infinite Monkeywrench (IMW) is a Ruby frameworks to simplify the tasks of acquiring, extracting, transforming, loading, and packaging data. It minimizes programmer time by encapsulating common data workflows and patterns and creating interfaces to many other useful Ruby libraries."
+    gem.email = "coders@infochimps.org"
+    gem.homepage = "http://github.com/infochimps/imw"
+    gem.authors = ["Dhruv Bansal", "Philip (flip) Kromer"]
+    
+    gem.files.exclude "old/**/*"
   end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available.  Install it with: sudo gem install jeweler"
 end
-
-# puts "#{File.basename(__FILE__)}: Line 'em up and knock 'em down." # at bottom

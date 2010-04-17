@@ -26,20 +26,26 @@ module IMW
   class NotImplementedError < NotImplementedError
   end
 
+  class ParseError < Error
+  end
+
   # An error meant to be used when a system call goes awry.  It will
   # report exit status and the process id of the offending call.
   class SystemCallError < IMW::Error
 
-    def initialize(message)
+    attr_reader :status, :message
+
+    def initialize(status, message)
+      @status  = status
       @message = message
     end
 
     def display
-      "(error code: #{$?.exitstatus}, pid: #{$?.pid}) #{@message}"
+      "(error code: #{status.exitstatus}, pid: #{status.pid}) #{message}"
     end
 
     def to_s
-      "(error code: #{$?.exitstatus}, pid: #{$?.pid}) #{@message}"
+      "(error code: #{status.exitstatus}, pid: #{status.pid}) #{message}"
     end
 
   end

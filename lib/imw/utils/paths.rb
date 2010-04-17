@@ -1,53 +1,62 @@
-#
-# h2. lib/imw/utils/paths.rb -- defines local paths to IMW directories
-#
-# == About
-#
-# IMW uses lots of different directories to keep information on data
-# and datasets separate.  This module interfaces with the
-# configuration files to establish the paths to these IMW directories
-# and provides functions and mixins for IMW objects to use to access
-# these paths.
-#
-# Author::    (Philip flip Kromer, Dhruv Bansal) for Infinite Monkeywrench Project (mailto:coders@infochimps.org)
-# Copyright:: Copyright (c) 2008 infochimps.org
-# License::   GPL 3.0
-# Website::   http://infinitemonkeywrench.org/
-#
-
 module IMW
+
+  # Implements methods designed to work with an object's
+  # <tt>@paths</tt> attributes, adding and deleting symbolic
+  # references to paths and expanding calls to +path_to+ from that
+  # attribute or (when a miss) from <tt>IMW::PATHS</tt>.
+  #
+  # An including class should therefore define an array attribute
+  # <tt>@paths</tt>.
   module Paths
-    # Returns the root of workflow `step'
-    def self.root_of(step)
-      unless IMW::DIRECTORIES.has_key? step
-        raise IMW::ArgumentError.new("No such IMW directory, `#{step}'.  Choose from #{IMW::DIRECTORIES.keys.map do |key| '`' + key.to_s + '\'' end.join ', '}")
+
+    # Expands a shorthand workflow path specification to an
+    # actual file path.
+    #
+    #   add_path :mlb_08, 'gd2.mlb.com/components/game/mlb/year_2008'
+    #   path_to :ripd, :mlb_08, 'month_06', 'day_08', 'miniscoreboard.xml'
+    #   => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
+    def path_to *pathsegs
+      begin
+        path = Pathname.new path_to_helper(*pathsegs)
+        path.absolute? ? File.expand_path(path) : path.to_s
+      rescue Exception => e
+        raise("Can't find path to '#{pathsegs}': #{e}");
       end
-      IMW::DIRECTORIES[step]
+    end
+
+    private
+    def path_to_helper *pathsegs # :nodoc:
+      # +path_to_helper+ handles the recursive calls for +path_to+.
+      expanded = pathsegs.flatten.compact.map do |pathseg|
+        case
+        when pathseg.is_a?(Symbol) && @paths.include?(pathseg)     then path_to(@paths[pathseg])
+        when pathseg.is_a?(Symbol) && IMW::PATHS.include?(pathseg) then path_to(IMW::PATHS[pathseg])
+        when pathseg.is_a?(Symbol)                                 then raise IMW::PathError.new("No path expansion set for #{pathseg.inspect}")
+        else pathseg
+        end
+      end
+      File.join(*expanded)
+    end
+    public
+
+    # Adds a symbolic path for expansion by +path_to+.
+    def add_path sym, *pathsegs
+      @paths[sym] = pathsegs.flatten
+    end
+
+    # Removes a symbolic path for expansion by +path_to+.
+    def remove_path sym
+      @paths.delete sym if @paths.include? sym
     end
   end
 
-  # expands a shorthand workflow path specification to an
-  # actual file path.
-  #
-  # Ex:
-  #
-  # Dir[IMW.path_to(:temp, 'foo', '*')]
-  #
-  # IMW.add_path :mlb_08, 'gd2.mlb.com/components/game/mlb/year_2008'
-  # IMW.path_to :ripd, :mlb_08, 'month_06', 'day_08', 'miniscoreboard.xml'
-  # => (...)/data/ripd/gd2.mlb.com/components/game/mlb/year_2008/month_06/day_08/miniscoreboard.xml
-  #
   def self.path_to *pathsegs
     begin
-      path = Pathname.new path_to_helper(*pathsegs)
+      path = Pathname.new IMW.path_to_helper(*pathsegs)
       path.absolute? ? File.expand_path(path) : path.to_s
     rescue Exception => e
       raise("Can't find path to '#{pathsegs}': #{e}");
     end
-  end
-
-  def path_to *pathsegs
-    self.path_to *pathsegs
   end
 
   private
@@ -55,8 +64,8 @@ module IMW
     # +path_to_helper+ handles the recursive calls for +path_to+.
     expanded = pathsegs.flatten.compact.map do |pathseg|
       case
-      when pathseg.is_a?(Symbol) &&    IMW::PATHS.include?(pathseg)  then path_to(IMW::PATHS[pathseg])
-      when pathseg.is_a?(Symbol) && (! IMW::PATHS.include?(pathseg)) then raise IMW::PathError.new("No path expansion set for #{pathseg.inspect}")
+      when pathseg.is_a?(Symbol) && IMW::PATHS.include?(pathseg) then path_to(IMW::PATHS[pathseg])
+      when pathseg.is_a?(Symbol)                                 then raise IMW::PathError.new("No path expansion set for #{pathseg.inspect}")
       else pathseg
       end
     end
@@ -64,10 +73,8 @@ module IMW
   end
   public
 
-  #
-  # Adds a symbolic path for expansion by path_to
-  #
-  def add_path sym, *pathsegs
+  # Adds a symbolic path for expansion by +path_to+.
+  def self.add_path sym, *pathsegs
     IMW::PATHS[sym] = pathsegs.flatten
   end
   def paths() IMW::PATHS  end
@@ -119,12 +126,10 @@ module IMW
 
 protected
 
-  #
-  #   :fixd # => :fixd_root
-  def pathseg_root pathseg
-    (pathseg.to_s + '_root').to_sym
+  # Removes a symbolic path for expansion by +path_to+.
+  def self.remove_path sym
+    IMW::PATHS.delete sym if IMW::PATHS.include? sym
   end
-
 end
 
 # puts "#{File.basename(__FILE__)}: Your monkeywrench glows alternately dim then bright as you wander, suggesting to you which paths to take."

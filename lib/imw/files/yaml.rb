@@ -12,8 +12,6 @@
 # 
 
 require 'yaml'
-
-require 'imw/utils'
 require 'imw/files/text'
 
 module IMW
@@ -21,8 +19,8 @@ module IMW
 
     class Yaml < IMW::Files::Text
 
-      def initialize path, mode='r', options = {}
-        super path, mode
+      def initialize uri, mode='r', options = {}
+        super uri, mode
       end
 
       # Return the contents of this YAML file.
@@ -39,8 +37,8 @@ module IMW
       
     end
 
-    FILE_REGEXPS[Regexp.new("\.yaml$")] = IMW::Files::Yaml
-    FILE_REGEXPS[Regexp.new("\.yml$")]  = IMW::Files::Yaml    
+    FILE_REGEXPS << [/\.yaml$/, IMW::Files::Yaml]
+    FILE_REGEXPS << [/\.yml$/,  IMW::Files::Yaml]
     
   end
 end

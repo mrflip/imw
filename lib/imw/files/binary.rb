@@ -11,23 +11,17 @@
 # Website::   http://infinitemonkeywrench.org/
 #
 # puts "#{File.basename(__FILE__)}: Something clever" # at bottom
-
-require 'imw/utils'
-require 'imw/files/basicfile'
-require 'imw/files/compressible'
-
 module IMW
   module Files
 
     class Binary
-      
+
       include IMW::Files::BasicFile
       include IMW::Files::Compressible
 
-      def initialize path
-        self.path= path
+      def initialize uri
+        self.uri= uri
       end
-
     end
   end
 end

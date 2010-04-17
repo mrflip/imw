@@ -104,6 +104,22 @@ class Array
     merged_hash
   end
 
+  # Recurses through the elements of this Array collecting all String
+  # or Symbol "terminal" nodes.
+  def terminals &block
+    terminals = []
+    each do |element|
+      if element.respond_to? :terminals then
+        terminals += element.terminals
+      else
+        terminals << element
+      end
+    end
+    terminals.map! {|terminal| yield terminal } if block
+    terminals
+  end
+  
+
 end
 
 # puts "#{File.basename(__FILE__)}: I have a loooong list of complaints.  Firstly, ..." # at bottom

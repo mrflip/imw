@@ -1,9 +1,18 @@
+lookup basic yarddoc style (@params, etc) -- do a high-level description
 
-* Kill off the (huge quantity) of crap we don't need in the imw/ directory
+learn how to run specs
+write a spec that fails on the old code and passes on the new
+
+convert all references to URI to be Addressable::URI
+don't use URI.parse, use Addressable::URI.heuristic_parse (eg in files/*)
+make basicfile methods delegate to its uri
+
+tmpdir should use the actual system tmpdir libs (eg in archiver)
+move config over to configliere
 
 
-* We need to set data partitioning as a design goal: make it easy to define a
-  number of worker processes and a worker #, then have steps attempt to only
-  do that specific fraction of the data.  (for ripd, how does this work? file
-  glob on dl? insist on separate steps, and make a 'distribute' command? rip
-  files probabilistically?)
+
+
+------ WANT PONY -----
+
+might be nice to learn the delegate pattern

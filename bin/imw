@@ -1,24 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'imw/runner'
+exit IMW::Runner.new(*ARGV).run!
 
-# if [[ -z "$pool" ]] ; then 
-#   munger_dir="$PWD"
-# else
-#   munger_dir="${IMW_ROOT}/pools/$pool"
-# fi
-# munger_file=${munger_dir}/munge_`basename "${munger_dir}"`.rake 
-# 
-# if [[ -f $munger_file ]] ; then
-#   rake_file_flag="-f $munger_dir/$munger_file"
-# else 
-#   unset rake_file_flag
-# fi
-rake_file_flag="-f $IMW_ROOT/imw/Rakefile"
-
-    # $rake_file_flag \
-#    --trace \
-    
-rake \
-    --require="$IMW_ROOT"/lib/tasks/boot.rb \
-    --rakelibdir="$IMW_ROOT"//lib/tasks      \
-    -f "$IMW_ROOT"/Rakefile \
-    -v "$@"
